@@ -1,2 +1,7 @@
 export { default as Card } from './Card'
 export { default as LeaderBoard } from './LeaderBoard'
+export { default as ControlButtons } from './ControlButtons'
+export { default as GameBoard } from './GameBoard'
+export { default as GameInfo } from './GameInfo'
+export { default as GameUI } from './GameUI'
+export { default as GamePage } from './GamePage'

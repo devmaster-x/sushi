@@ -1,39 +1,24 @@
-// Leaderboard.tsx
-import { useEffect, useState } from 'react';
+import React from "react";
+import { useGameContext } from "src/context/gameContext";
 
-const Leaderboard = () => {
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/leaderboard');
-        const data = await response.json();
-        setLeaderboard(data);
-      } catch (error) {
-        console.error('Error fetching leaderboard:', error);
-      }
-    };
-
-    fetchLeaderboard();
-  }, []);
+const LeaderBoard = () => {
+  const { leaderBoard } = useGameContext();
 
   return (
-    <div className="absolute top-5 right-5 p-4 bg-white shadow-lg rounded-md max-w-xs">
-      <h2 className="text-xl text-center font-bold">Leaderboard</h2>
-      {leaderboard.length === 0 ? (
-        <p>Loading...</p>
-      ) : (
-        <ul className="space-y-2">
-          {leaderboard.map((player, index) => (
-            <li key={index} className="text-lg">
-              {index + 1}. {player.address} - {player.score} points
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="fixed top-1/4 right-3 bg-slate-400 bg-opacity-30 w-fit p-6 rounded-md shadow-md h-[300px] overflow-y-auto">
+      <h3 className="text-xl font-semibold mb-4">Leaderboard</h3>
+      <ul className="space-y-3">
+        {leaderBoard.map((player) => (
+          <li key={player.wallet} className="flex justify-between">
+            <span className="text-sm">
+              {player.wallet} {player.isVIP && "🌟"}
+            </span>
+            <span className="font-bold text-yellow-500">{player.score} pts</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default Leaderboard;
+export default LeaderBoard;
