@@ -56,17 +56,19 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    // const socketInstance = io("http://localhost:5000");
-    const socketInstance = io(`${process.env.NEXT_PUBLIC_URL}`);
-    setSocket(socketInstance);
-
-    socketInstance.on("update_leaderboard", (data: LeaderBoard) => {
-      setLeaderBoard(data);
-    });
-
-    return () => {
-      socketInstance.disconnect();
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch("/api/leaderboard");
+        if (response.ok) {
+          const data: LeaderBoard = await response.json();
+          setLeaderBoard(data);
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      }
     };
+  
+    fetchLeaderboard();
   }, []);
 
   // Register user when connected
@@ -78,7 +80,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const registerUser = async () => {
     if (!address) return;
-    
+  
     const defaultUsername = `user-${address.slice(0, 4)}...${address.slice(-4)}`;
     const userName = prompt("Enter your username:", defaultUsername) || defaultUsername;
   
@@ -86,8 +88,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const isVIP = await checkVIPStatus(address);
   
     try {
-      // const response = await fetch("http://localhost:5000/register", {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/register`, {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -98,6 +99,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           current_score: 0,
         }),
       });
+  
       if (!response.ok) {
         console.error("Failed to register user");
       }
@@ -105,6 +107,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       console.error("Error in user registration:", error);
     }
   };
+  
 
   // Mock VIP status check
   const checkVIPStatus = async (wallet: string): Promise<boolean> => {
@@ -306,10 +309,28 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   };
   
-  const sendScore = (newScore: number) => {
-    if (!socket || !address) return;
-    const isVIP = leaderBoard.find((user) => user.wallet === address)?.isVIP || false;
-    socket.emit("score-update", { wallet: address, score: newScore, vip: isVIP });
+  const sendScore = async (newScore: number) => {
+    if (!address) return;
+    
+    const isVIP = leaderBoard.find(user => user.wallet === address)?.isVIP || false;
+  
+    try {
+      const response = await fetch("/api/leaderboard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          wallet: address,
+          username: address.slice(0, 4),  // You can replace this with actual username logic
+          score: newScore,
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to update leaderboard");
+      }
+    } catch (error) {
+      console.error("Error updating leaderboard:", error);
+    }
   };
   
   const restartGame = () => {
