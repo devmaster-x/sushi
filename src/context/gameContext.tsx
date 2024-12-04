@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
   useEffect,
+  useRef
 } from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { io, Socket } from "socket.io-client";
@@ -53,6 +54,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
+  const loseLifeCalledRef = useRef(false);
 
   // Initialize WebSocket connection
   useEffect(() => {
@@ -107,7 +109,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       console.error("Error in user registration:", error);
     }
   };
-  
 
   // Mock VIP status check
   const checkVIPStatus = async (wallet: string): Promise<boolean> => {
@@ -124,7 +125,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
     // Calculate card area size based on total number of cards and card size
     const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize; // Adjusted to fit totalCards evenly in square area
-    const offset_size = Math.floor((600 - cardAreaSize) / 2); // Center the card area in a 600x600 space
+    const offset_size = Math.floor((700 - cardAreaSize) / 2); // Center the card area in a 700x700 space
  
     console.log("cardAreaSize : ", cardAreaSize);
     console.log("Offset Size : ", offset_size);
@@ -180,6 +181,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
             if (retryCount > 100) { // Maximum retries to avoid infinite loop
               console.log("error was occured : restarting with offest ", offset)
               generateCards(round, offset + 1);
+              break;
             }
   
           } while (isOverlappingWithExisting); // Retry if there was overlap
@@ -216,7 +218,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setSlotAvailablity(true);
   };
   
-  
   // Move first three cards to additional slots
   const moveToAdditionalSlots = () => {
     setSlotAvailablity(false);
@@ -236,13 +237,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       return prevSlots;
     });
   };
-  
 
   // Rollback cards from additional slots to the bucket
   const rollbackFromAdditionalSlots = () => {
     setSlotAvailablity(false);
     setBucket((prevBucket) => {
-      const spaceLeft = 7 - prevBucket.length;
+      const spaceLeft = 6 - prevBucket.length;
       const toMove = additionalSlots.slice(0, spaceLeft);
   
       // Mark the moved cards as not being in the additional slots anymore
@@ -252,7 +252,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       return [...prevBucket, ...toMove];
     });
   };
-  
 
   // Start the next round
   const startNextRound = () => {
@@ -273,7 +272,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setAdditionalSlots([]);
     generateCards(currentRound);
   };
-
 
   // Add card to the bucket
   const addToBucket = (card: CardNode) => {
@@ -302,10 +300,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       }
   
       // Check for bucket overflow (7 cards limit)
-      if (updatedBucket.length > 7) {
+      if (updatedBucket.length === 7 && !loseLifeCalledRef.current) {
+        loseLifeCalledRef.current = true; // Mark that loseLife is being called
         setTimeout(() => {
-          alert("Game Over! Restarting...");
-          restartGame();
+          loseLife();
+          loseLifeCalledRef.current = false; // Reset after timeout
         }, 500);
       }
   
@@ -416,7 +415,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     card.isInAdditionalSlot = false;
     addToBucket(card);
   };
-  
 
   const value = useMemo(
     () => ({

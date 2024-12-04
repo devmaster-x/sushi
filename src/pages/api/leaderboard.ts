@@ -1,38 +1,19 @@
-// pages/api/leaderboard.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-interface LeaderboardEntry {
-  wallet: string;
-  username: string;
-  score: number;
-}
-
-const leaderboard: LeaderboardEntry[] = []; // Temporary in-memory leaderboard
+let leaderboard: any[] = []; // This will act as an in-memory leaderboard for the sake of simplicity
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const leaderboard = [
+    { username: 'Player 1', score: 150, wallet: '0x123' },
+    { username: 'Player 2', score: 120, wallet: '0x456' },
+    { username: 'Player 3', score: 100, wallet: '0x789' },
+    { username: 'Player 4', score: 80, wallet: '0xabc' },
+    { username: 'Player 5', score: 70, wallet: '0xdef' },
+  ];
+
   if (req.method === 'GET') {
-    // Return the leaderboard
     return res.status(200).json(leaderboard);
   }
 
-  if (req.method === 'POST') {
-    const { wallet, username, score } = req.body;
-
-    // Add or update user score in leaderboard
-    const existingEntry = leaderboard.find(entry => entry.wallet === wallet);
-    if (existingEntry) {
-      existingEntry.score = Math.max(existingEntry.score, score); // Update score if higher
-    } else {
-      leaderboard.push({ wallet, username, score });
-    }
-
-    // Sort leaderboard by score (descending)
-    leaderboard.sort((a, b) => b.score - a.score);
-
-    // Respond with the updated leaderboard
-    return res.status(200).json(leaderboard);
-  }
-
-  res.setHeader('Allow', ['GET', 'POST']);
-  return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+  res.status(405).json({ message: 'Method Not Allowed' });
 }
