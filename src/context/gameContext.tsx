@@ -268,6 +268,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     generateCards(_round);
   };
 
+  const startCurrentRound = () => {
+    setBucket([]);
+    setAdditionalSlots([]);
+    generateCards(currentRound);
+  };
+
+
   // Add card to the bucket
   const addToBucket = (card: CardNode) => {
     setBucket((prevBucket) => {
@@ -310,6 +317,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     if (lives > 1) {
       setLives((prev) => prev - 1);
       alert("You lost a life!");
+      startCurrentRound();
     } else {
       alert("Game Over!");
       restartGame();
