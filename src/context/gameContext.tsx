@@ -125,7 +125,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     // Calculate card area size based on total number of cards and card size
     const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize; // Adjusted to fit totalCards evenly in square area
     const offset_size = Math.floor((600 - cardAreaSize) / 2); // Center the card area in a 600x600 space
-  
+ 
+    console.log("cardAreaSize : ", cardAreaSize);
+    console.log("Offset Size : ", offset_size);
+
     // Step 1: Create a pool of cards with shuffled types
     for (let i = 0; i < totalCards; i++) {
       const type = i % cardTypeNumber;
@@ -175,6 +178,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
             retryCount++; // Increment retry count
             if (retryCount > 100) { // Maximum retries to avoid infinite loop
+              console.log("error was occured : restarting with offest ", offset)
               generateCards(round, offset + 1);
             }
   
@@ -197,6 +201,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           isInBucket: false,
           isInAdditionalSlot: false,
         };
+
+        console.log("new card generated : ", newCard);
   
         generatedCards.push(newCard);
       }
@@ -258,6 +264,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       deepLayer: currentRound.roundNumber >= 4 ? currentRound.deepLayer + 1 : 2  
     }
     setCurrentRound(_round);
+    console.log("generating cards started ");
     generateCards(_round);
   };
 
