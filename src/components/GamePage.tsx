@@ -68,7 +68,7 @@ const GameBoard = () => {
         const data: User = await response.json();
         setUserName(data.username);
       } else {
-        setUserName(`user-${address!.slice(0, 4)}...${address!.slice(-4)}`)
+        setUserName(`user-${address!.slice(2, 6)}${address!.slice(-4)}`)
         setModalOpen(true);
       }
     } catch (error) {
