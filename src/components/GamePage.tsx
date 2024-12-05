@@ -128,7 +128,8 @@ const GameBoard = () => {
     else {
       setInvalid(false);
       setModalOpen(false);
-      registerUser(_user);  
+      registerUser(_user);
+      setCurrentUser(_user);
     }
   }
   const handleNextRound = () => {
@@ -218,7 +219,7 @@ const GameBoard = () => {
             <h2 className=" text-center text-xl font-bold">Leaderboard</h2>
             <div className="bg-gray-700 rounded-lg p-4">
               {leaderBoard.length === 0 ? (
-                <p>No leaderboard data yet.</p>
+                <p className='text-center'>No leaderboard data yet.</p>
               ) : (
                 <ul>
                   {leaderBoard.map((user, index) => (
@@ -303,10 +304,21 @@ const GameBoard = () => {
               placeholder="Enter new username"
             />
             { invalid && <p className='text-red-500'>Username is invalid</p> }
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-around space-x-4">
+              <button
+                onClick={()=> {
+                  setModalOpen(false);
+                  setUserName(currentUser);
+                }}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-400 text-white rounded"
+                disabled={ _user === ''}
+              >
+                Cancel
+              </button>
+
               <button
                 onClick={changeUserName}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-400 text-white rounded"
                 disabled={ _user === ''}
               >
                 {checkingName ? 'Saving...' : 'Save'}
