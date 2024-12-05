@@ -239,15 +239,6 @@ const GameBoard = () => {
             />
             <div className="flex justify-end space-x-4">
               <button
-                onClick={()=> {
-                  setModalOpen(false);
-                  setIsModalOpen(false);
-                }}
-                className="px-4 py-2 bg-gray-300 rounded"
-              >
-                Cancel
-              </button>
-              <button
                 onClick={()=>{
                   setModalOpen(false);
                   setIsModalOpen(false);

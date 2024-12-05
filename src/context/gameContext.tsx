@@ -60,7 +60,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const loseLifeCalledRef = useRef(false);
 
   useEffect(()=>{
-    if(score == 0 && currentUser == '') return;
     console.log("updating: ");
     sendScore(score);
   },[score])
