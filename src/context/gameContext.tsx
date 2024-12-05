@@ -113,77 +113,97 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const totalCards = cardTypeNumber * deepLayer * 3;
     const generatedCards: CardNode[] = [];
     const cardSize = 40;
+    const allCards: number[] = [];
     const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize;
     const offset_size = Math.floor((700 - cardAreaSize) / 2);
-    const occupiedPositions: { [key: number]: { top: number; left: number }[] } = {};
-  
-    const allCards: number[] = [];
+
+    console.log("cardAreaSize : ", cardAreaSize);
+    console.log("Offset Size : ", offset_size);
+
+    // Step 1: Create a pool of cards with shuffled types
     for (let i = 0; i < totalCards; i++) {
-      allCards.push(i % cardTypeNumber);
+      const type = i % cardTypeNumber;
+      allCards.push(type);
     }
-  
-    // Shuffle card types
-    const shuffleArray = (array: any[]) => {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
+
+    // Step 2: Shuffle the cards to randomize their order
+    const shuffleCards = (array: number[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
     };
-    shuffleArray(allCards);
-  
+
+    // Function to check if a card overlaps with another card
+    const isOverlapping = (left1: number, left2: number, top1: number, top2: number) => {
+    return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
+    };
+
+    // Step 3: Generate the cards layer by layer
     for (let layer = deepLayer; layer > 0; layer--) {
-      occupiedPositions[layer] = [];
-      for (let i = 0; i < cardTypeNumber * 3; i++) {
-        let top : number, left: number;
-        let retryCount = 0;
-  
-        do {
-          top = Math.floor(Math.random() * (cardAreaSize - cardSize));
-          left = Math.floor(Math.random() * (cardAreaSize - cardSize));
-  
-          if (
-            !occupiedPositions[layer].some(
-              (pos) =>
-                Math.abs(pos.left - left) < cardSize &&
-                Math.abs(pos.top - top) < cardSize
-            )
-          ) {
-            occupiedPositions[layer].push({ top, left });
-            break;
-          }
-  
-          retryCount++;
-          if (retryCount > 100) {
-            console.log("Retry limit reached, increasing offset");
-            generateCards(round, offset + 1);
-            break;
-          }
-        } while (true);
-  
-        const parents = generatedCards.filter(
-          (card) =>
-            card.zIndex > layer &&
-            Math.abs(card.left - left - offset_size) < cardSize &&
-            Math.abs(card.top - top - offset_size) < cardSize
-        );
-  
-        const newCard: CardNode = {
-          id: generatedCards.length,
-          type: allCards[(cardTypeNumber * 3) * (deepLayer - layer) + i],
-          top: offset_size + top,
-          left: offset_size + left,
-          size: { width: cardSize, height: cardSize },
-          zIndex: layer,
-          parents,
-          state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable",
-          isInBucket: false,
-          isInAdditionalSlot: false,
-        };
-  
-        generatedCards.push(newCard);
-      }
+    for (let i = 0; i < cardTypeNumber * 3; i++) {
+    let top, left;
+    let isOverlappingWithExisting = false;
+    let parents: CardNode[] = [];
+    let retryCount = 0; // Retry counter to avoid infinite loop
+
+    // Find a non-overlapping position
+    try {
+    do {
+    top = Math.floor(Math.random() * (cardAreaSize - cardSize)); // Random top position within the card area
+    left = Math.floor(Math.random() * (cardAreaSize - cardSize)); // Random left position within the card area
+    isOverlappingWithExisting = false;
+    parents = [];
+
+    // Check for overlap with other cards in the same layer and higher layers
+    for (const card of generatedCards) {
+    if (isOverlapping(card.left, left + offset_size, card.top, top + offset_size)) {
+    // If the card is in a higher layer, it's a parent
+    if (card.zIndex > layer) {
+    parents.push(card);
+    } else if (card.zIndex === layer) {
+    isOverlappingWithExisting = true; // Card in the same layer overlaps
     }
-  
+    }
+    }
+
+    retryCount++; // Increment retry count
+    if (retryCount > 100) { // Maximum retries to avoid infinite loop
+    console.log("error was occured : restarting with offest ", offset)
+    generateCards(round, offset + 1);
+                  break;
+    }
+
+    } while (isOverlappingWithExisting); // Retry if there was overlap
+    } catch (error) {
+    console.error("Error while checking overlap:", error);
+    continue;
+    }
+
+    // Create the card node
+    const newCard: CardNode = {
+    id: generatedCards.length,
+    type: allCards[(cardTypeNumber * 3) * (deepLayer - layer) + i],
+    top: offset_size + top,
+    left: offset_size + left,
+    size: { width: cardSize, height: cardSize },
+    zIndex: layer,
+    parents,
+    state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable", // Cards in the deepest layer or those with no parents are available
+    isInBucket: false,
+    isInAdditionalSlot: false,
+    };
+
+    console.log("new card generated : ", newCard);
+
+    generatedCards.push(newCard);
+    }
+    }
+
+    // Shuffle cards to randomize their position and parents
+    shuffleCards(allCards);
+
+    // Set the generated cards in state
     setCards(generatedCards);
     setSlotAvailablity(true);
   };

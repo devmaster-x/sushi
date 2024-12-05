@@ -157,7 +157,7 @@ const GameBoard = () => {
               ) : (
                 <ul>
                   {leaderBoard.map((user, index) => (
-                    <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
+                    (index < 3 || user.wallet == address) && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
                       <p>{index + 1}.</p>
                       <p>{user.username}</p> 
                       <p>{user.current_score} points</p>
@@ -229,12 +229,12 @@ const GameBoard = () => {
       {modalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-semibold mb-4">Edit Username</h2>
+            <h2 className="text-xl font-semibold mb-4 text-black text-center">Edit Username</h2>
             <input
               type="text"
               value={_user}
               onChange={handleUsernameChange}
-              className="border p-2 w-full mb-4 rounded text-black"
+              className="border p-2 w-full mb-4 rounded text-gray-600"
               placeholder="Enter new username"
             />
             <div className="flex justify-end space-x-4">

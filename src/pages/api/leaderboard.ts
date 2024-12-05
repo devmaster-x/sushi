@@ -11,8 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const leaderboard = await db
         .collection("users")
         .find({})
-        .sort({ top_score: 1 }) // Sort by top_score in descending order
-        .limit(3) // Get only the top 3 users
+        .sort({ current_score: -1 }) // Sort by top_score in descending order
         .toArray();
 
       res.status(200).json(leaderboard);
