@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { createAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, arbitrum } from '@reown/appkit/networks'
+import { FaUserCircle } from "react-icons/fa";
 import { useGameContext } from 'src/context/gameContext';
+import { User } from "src/types/type"
 
 const GameBoard = () => {
   const {
+    currentUser,
     currentRound,
     bucket,
     additionalSlots,
@@ -14,10 +17,14 @@ const GameBoard = () => {
     cards,
     leaderBoard,
     slotAvailablity,
+    isModalOpen,
+    setIsModalOpen,
+    setCurrentUser,
     handleCardClick,
     moveToAdditionalSlots,
     rollbackFromAdditionalSlots,
     restartGame,
+    registerUser,
     startNextRound,
     setCards,
     setSlotAvailablity,
@@ -26,6 +33,8 @@ const GameBoard = () => {
 
   const [showCongrats, setShowCongrats] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [_user, setUserName]  = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const { address, isConnected } = useAppKitAccount()
 
   useEffect(() => {
@@ -37,23 +46,45 @@ const GameBoard = () => {
       themeMode: 'dark'
     })
     if(!isConnected) return;
+    else {
+      checkUserName();
+    }
     setGameStarted(true)
     restartGame();
   
   }, [isConnected, address]);
 
   useEffect(() => {
-    console.log("current cards : ", cards);
     if (cards.length == 0 && gameStarted) {
-      checkRoundCompletion();  // Check if the round is complete on each render
+      checkRoundCompletion();
     }
   }, [cards]);
+  
+  const checkUserName = async () => {
+    try {
+      const response = await fetch(`/api/register?wallet=${address}`, { method: "GET" });
+      console.log(" checking User Name : ", response);
+      if (response.ok) {
+        const data: User = await response.json();
+        setUserName(data.username);
+      } else {
+        setUserName(`user-${address!.slice(0, 4)}...${address!.slice(-4)}`)
+        setModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+    }
+  }
 
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("username changed : ", event.target.value);
+    setUserName(event.target.value);
+  };
+  
   // Check if all cards have been removed or matched
   const checkRoundCompletion = () => {
     setShowCongrats(true);
   };
-
 
   const handleNextRound = () => {
     // Reset necessary states for the next round
@@ -108,10 +139,15 @@ const GameBoard = () => {
           </div>
         </div>
         
-        <div className="flex flex-col w-full h-full justify-around gap-12">
+        <div className="flex flex-col w-full h-full justify-between gap-12">
           <div className="flex justify-between items-center">
             <appkit-button />
-            User
+            <button
+              onClick={()=>setModalOpen(true)}
+              className="flex items-center p-4"
+            >
+              <FaUserCircle size={28} className="text-gray-100 bg-gray-800 rounded-full" />
+            </button>
           </div>
           <div>
             <h2 className=" text-center text-xl font-bold">Leaderboard</h2>
@@ -120,10 +156,11 @@ const GameBoard = () => {
                 <p>No leaderboard data yet.</p>
               ) : (
                 <ul>
-                  {leaderBoard.map((user) => (
-                    <li key={user.wallet} className={`text-lg flex justify-around ${user.wallet === address ? 'text-green-600' : ''}`}>
-                      <p>{user.username}:</p> 
-                      <p>{user.score} points</p>
+                  {leaderBoard.map((user, index) => (
+                    <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
+                      <p>{index + 1}.</p>
+                      <p>{user.username}</p> 
+                      <p>{user.current_score} points</p>
                     </li>
                   ))}
                 </ul>
@@ -185,6 +222,43 @@ const GameBoard = () => {
             >
               Start Next Round
             </button>
+          </div>
+        </div>
+      )}
+
+      {modalOpen && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Edit Username</h2>
+            <input
+              type="text"
+              value={_user}
+              onChange={handleUsernameChange}
+              className="border p-2 w-full mb-4 rounded text-black"
+              placeholder="Enter new username"
+            />
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={()=> {
+                  setModalOpen(false);
+                  setIsModalOpen(false);
+                }}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={()=>{
+                  setModalOpen(false);
+                  setIsModalOpen(false);
+                  setCurrentUser(_user);
+                  registerUser(_user);
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
       )}

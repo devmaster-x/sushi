@@ -1,19 +1,52 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-
-let leaderboard: any[] = []; // This will act as an in-memory leaderboard for the sake of simplicity
+import type { NextApiRequest, NextApiResponse } from "next";
+import clientPromise from "src/lib/mongodb";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const leaderboard = [
-    { username: 'Player 1', score: 150, wallet: '0x123' },
-    { username: 'Player 2', score: 120, wallet: '0x456' },
-    { username: 'Player 3', score: 100, wallet: '0x789' },
-    { username: 'Player 4', score: 80, wallet: '0xabc' },
-    { username: 'Player 5', score: 70, wallet: '0xdef' },
-  ];
+  const client = await clientPromise;
+  const db = client.db("raulminibattle");
 
-  if (req.method === 'GET') {
-    return res.status(200).json(leaderboard);
+  if (req.method === "GET") {
+    try {
+      // Fetch the top 3 users with the highest top_score
+      const leaderboard = await db
+        .collection("users")
+        .find({})
+        .sort({ top_score: 1 }) // Sort by top_score in descending order
+        .limit(3) // Get only the top 3 users
+        .toArray();
+
+      res.status(200).json(leaderboard);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to fetch leaderboard." });
+    }
+  } else if (req.method === "POST") {
+    try {
+      const { wallet, score } = req.body;
+
+      if (!wallet || typeof score !== "number") {
+        return res.status(400).json({ error: "Wallet and score are required." });
+      }
+
+      const user = await db.collection("users").findOne({ wallet });
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found." });
+      }
+
+      const updatedScore = Math.max(user.top_score || 0, score);
+      await db.collection("users").updateOne(
+        { wallet },
+        { $set: { current_score: score, top_score: updatedScore } }
+      );
+
+      res.status(200).json({ message: "Score updated successfully." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to update score." });
+    }
+  } else {
+    res.setHeader("Allow", ["GET", "POST"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-
-  res.status(405).json({ message: 'Method Not Allowed' });
 }

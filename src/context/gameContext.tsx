@@ -8,22 +8,24 @@ import React, {
   useRef
 } from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
-import { io, Socket } from "socket.io-client";
 import { User, CardNode, Round } from "src/types/type";
 
 type LeaderBoard = User[];
 
 type GameContextType = {
+  currentUser: string;
   currentRound: Round;
   bucket: CardNode[];
   additionalSlots: CardNode[];
   lives: number;
   cards: CardNode[];
   leaderBoard: LeaderBoard;
-  socket: Socket | null;
   score: number;
   slotAvailablity: boolean;
-  registerUser: () => Promise<void>;
+  isModalOpen: boolean;
+  setCurrentUser: (name: string) => void;
+  setIsModalOpen: (flag : boolean) => void;
+  registerUser: (user: string) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
   startNextRound: () => void;
@@ -45,6 +47,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     cardTypeNumber: 3,
     deepLayer: 2,
   });
+  const [currentUser, setCurrentUser] = useState<string>('');
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
   const [score, setScore] = useState(0);
@@ -52,43 +55,33 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [lives, setLives] = useState(3);
   const [cards, setCards] = useState<CardNode[]>([]);
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const loseLifeCalledRef = useRef(false);
 
-  // Initialize WebSocket connection
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await fetch("/api/leaderboard");
-        if (response.ok) {
-          const data: LeaderBoard = await response.json();
-          setLeaderBoard(data);
-        }
-      } catch (error) {
-        console.error("Error fetching leaderboard:", error);
+  useEffect(()=>{
+    if(score == 0 && currentUser == '') return;
+    console.log("updating: ");
+    sendScore(score);
+  },[score])
+
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await fetch("/api/leaderboard");
+      if (response.ok) {
+        const data: LeaderBoard = await response.json();
+        setLeaderBoard(data);
+      } else {
+        console.error("Failed to fetch leaderboard");
       }
-    };
-  
-    fetchLeaderboard();
-  }, []);
-
-  // Register user when connected
-  useEffect(() => {
-    if (isConnected && address) {
-      registerUser();
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
     }
-  }, [isConnected, address]); 
+  };
 
-  const registerUser = async () => {
+  const registerUser = async (userName: string) => {
     if (!address) return;
-  
-    const defaultUsername = `user-${address.slice(0, 4)}...${address.slice(-4)}`;
-    const userName = prompt("Enter your username:", defaultUsername) || defaultUsername;
-  
-    // Check VIP status (mock check; replace with real contract interaction)
-    const isVIP = await checkVIPStatus(address);
-  
+    
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -96,19 +89,19 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         body: JSON.stringify({
           wallet: address,
           username: userName,
-          isVIP,
-          top_score: 0,
-          current_score: 0,
         }),
       });
   
-      if (!response.ok) {
-        console.error("Failed to register user");
+      if (response.ok) {
+        fetchLeaderboard(); // Fetch leaderboard after registration
+      } else {
+        console.error("Failed to register user.");
       }
     } catch (error) {
       console.error("Error in user registration:", error);
     }
   };
+  
 
   // Mock VIP status check
   const checkVIPStatus = async (wallet: string): Promise<boolean> => {
@@ -121,76 +114,60 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const totalCards = cardTypeNumber * deepLayer * 3;
     const generatedCards: CardNode[] = [];
     const cardSize = 40;
-    const allCards: number[] = [];
+    const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize;
+    const offset_size = Math.floor((700 - cardAreaSize) / 2);
+    const occupiedPositions: { [key: number]: { top: number; left: number }[] } = {};
   
-    // Calculate card area size based on total number of cards and card size
-    const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize; // Adjusted to fit totalCards evenly in square area
-    const offset_size = Math.floor((700 - cardAreaSize) / 2); // Center the card area in a 700x700 space
- 
-    console.log("cardAreaSize : ", cardAreaSize);
-    console.log("Offset Size : ", offset_size);
-
-    // Step 1: Create a pool of cards with shuffled types
+    const allCards: number[] = [];
     for (let i = 0; i < totalCards; i++) {
-      const type = i % cardTypeNumber;
-      allCards.push(type);
+      allCards.push(i % cardTypeNumber);
     }
   
-    // Step 2: Shuffle the cards to randomize their order
-    const shuffleCards = (array: number[]) => {
+    // Shuffle card types
+    const shuffleArray = (array: any[]) => {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        [array[i], array[j]] = [array[j], array[i]];
       }
     };
+    shuffleArray(allCards);
   
-    // Function to check if a card overlaps with another card
-    const isOverlapping = (left1: number, left2: number, top1: number, top2: number) => {
-      return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
-    };
-  
-    // Step 3: Generate the cards layer by layer
     for (let layer = deepLayer; layer > 0; layer--) {
+      occupiedPositions[layer] = [];
       for (let i = 0; i < cardTypeNumber * 3; i++) {
-        let top, left;
-        let isOverlappingWithExisting = false;
-        let parents: CardNode[] = [];
-        let retryCount = 0; // Retry counter to avoid infinite loop
+        let top : number, left: number;
+        let retryCount = 0;
   
-        // Find a non-overlapping position
-        try {
-          do {
-            top = Math.floor(Math.random() * (cardAreaSize - cardSize)); // Random top position within the card area
-            left = Math.floor(Math.random() * (cardAreaSize - cardSize)); // Random left position within the card area
-            isOverlappingWithExisting = false;
-            parents = [];
+        do {
+          top = Math.floor(Math.random() * (cardAreaSize - cardSize));
+          left = Math.floor(Math.random() * (cardAreaSize - cardSize));
   
-            // Check for overlap with other cards in the same layer and higher layers
-            for (const card of generatedCards) {
-              if (isOverlapping(card.left, left + offset_size, card.top, top + offset_size)) {
-                // If the card is in a higher layer, it's a parent
-                if (card.zIndex > layer) {
-                  parents.push(card);
-                } else if (card.zIndex === layer) {
-                  isOverlappingWithExisting = true; // Card in the same layer overlaps
-                }
-              }
-            }
+          if (
+            !occupiedPositions[layer].some(
+              (pos) =>
+                Math.abs(pos.left - left) < cardSize &&
+                Math.abs(pos.top - top) < cardSize
+            )
+          ) {
+            occupiedPositions[layer].push({ top, left });
+            break;
+          }
   
-            retryCount++; // Increment retry count
-            if (retryCount > 100) { // Maximum retries to avoid infinite loop
-              console.log("error was occured : restarting with offest ", offset)
-              generateCards(round, offset + 1);
-              break;
-            }
+          retryCount++;
+          if (retryCount > 100) {
+            console.log("Retry limit reached, increasing offset");
+            generateCards(round, offset + 1);
+            break;
+          }
+        } while (true);
   
-          } while (isOverlappingWithExisting); // Retry if there was overlap
-        } catch (error) {
-          console.error("Error while checking overlap:", error);
-          continue;
-        }
+        const parents = generatedCards.filter(
+          (card) =>
+            card.zIndex > layer &&
+            Math.abs(card.left - left - offset_size) < cardSize &&
+            Math.abs(card.top - top - offset_size) < cardSize
+        );
   
-        // Create the card node
         const newCard: CardNode = {
           id: generatedCards.length,
           type: allCards[(cardTypeNumber * 3) * (deepLayer - layer) + i],
@@ -199,25 +176,19 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           size: { width: cardSize, height: cardSize },
           zIndex: layer,
           parents,
-          state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable", // Cards in the deepest layer or those with no parents are available
+          state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable",
           isInBucket: false,
           isInAdditionalSlot: false,
         };
-
-        console.log("new card generated : ", newCard);
   
         generatedCards.push(newCard);
       }
     }
   
-    // Shuffle cards to randomize their position and parents
-    shuffleCards(allCards);
-  
-    // Set the generated cards in state
     setCards(generatedCards);
     setSlotAvailablity(true);
   };
-  
+
   // Move first three cards to additional slots
   const moveToAdditionalSlots = () => {
     setSlotAvailablity(false);
@@ -263,7 +234,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       deepLayer: currentRound.roundNumber >= 4 ? currentRound.deepLayer + 1 : 2  
     }
     setCurrentRound(_round);
-    console.log("generating cards started ");
     generateCards(_round);
   };
 
@@ -289,10 +259,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         if (count >= 3) {
           setScore((prevScore) => {
             const newScore = prevScore + 10; // Award points for triplets
-            sendScore(newScore);
             return newScore;
           });
-  
+
           // Remove 3 matching cards from the bucket
           const removedCards = updatedBucket.filter((card) => card.type === parseInt(typeId));
           return updatedBucket.filter((card) => !removedCards.includes(card));
@@ -325,8 +294,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
   const sendScore = async (newScore: number) => {
     if (!address) return;
-    
-    const isVIP = leaderBoard.find(user => user.wallet === address)?.isVIP || false;
   
     try {
       const response = await fetch("/api/leaderboard", {
@@ -334,18 +301,20 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           wallet: address,
-          username: address.slice(0, 4),  // You can replace this with actual username logic
           score: newScore,
         }),
       });
   
-      if (!response.ok) {
-        console.error("Failed to update leaderboard");
+      if (response.ok) {
+        fetchLeaderboard();
+      } else {
+        console.error("Failed to update leaderboard.");
       }
     } catch (error) {
       console.error("Error updating leaderboard:", error);
     }
   };
+  
   
   const restartGame = () => {
     setBucket([]);
@@ -353,7 +322,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setLives(3);
     setScore(0);
     setCurrentRound({ roundNumber: 1, cardTypeNumber: 3, deepLayer: 2 });
-    generateCards({ roundNumber: 1, cardTypeNumber: 3, deepLayer: 2 });
+    generateCards({ roundNumber: 1, cardTypeNumber: 3, deepLayer: 2});
+    sendScore(0);
   };
 
   // Handle card click
@@ -373,7 +343,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       });
       return;
     }
-    
+  
     if (card.state !== "available") {
       return;
     }
@@ -382,28 +352,35 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     addToBucket(card);
   
     // Remove the card from the board (cards state)
-    setCards((prevCards) => prevCards.filter((c) => c.id !== card.id));
+    setCards((prevCards) => {
+      const updatedCards = prevCards.filter((c) => c.id !== card.id);
   
-    // Update card states to make children available if their parents are available
-    setCards((prevCards) =>
-      prevCards.map((c) => {
-        // Check if the card has this card as a parent and all parents are available
-        if (
-          c.parents.includes(card) &&
-          c.parents.every((parent) => parent.state === "available")
-        ) {
-          return { ...c, state: "available" };
+      // Update the parents of the remaining cards
+      return updatedCards.map((c) => {
+        if (c.parents.some((parent) => parent.id === card.id)) {
+          const updatedParents = c.parents.filter((parent) => parent.id !== card.id);
+  
+          // If the card has no parents left, set the state to "available"
+          if (updatedParents.length === 0) {
+            return { ...c, state: "available", parents: updatedParents };
+          }
+  
+          // If there are still parents left, check if all are "available" 
+          const allParentsAvailable = updatedParents.every((parent) => parent.state === "available");
+          if (allParentsAvailable) {
+            return { ...c, state: "unavailable", parents: updatedParents };
+          }
+  
+          // If not all parents are available, leave the state unchanged but update parents
+          return { ...c, parents: updatedParents };
         }
   
-        // If this card had the removed card as a parent, make it unavailable
-        if (c.parents.includes(card)) {
-          return { ...c, state: "unavailable" };
-        }
-  
+        // If the card doesn't have `card` as a parent, return it unchanged
         return c;
-      })
-    );
+      });
+    });
   };
+  
   
   
   const handleAdditionalCardClick = (card: CardNode) => {
@@ -418,6 +395,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const value = useMemo(
     () => ({
+      currentUser,
       currentRound,
       bucket,
       additionalSlots,
@@ -425,9 +403,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       cards,
       leaderBoard,
       isConnected,
-      socket,
       score,
       slotAvailablity,
+      isModalOpen,
+      setCurrentUser,
+      setIsModalOpen,
       registerUser,
       restartGame,
       generateCards,
@@ -449,7 +429,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       cards,
       leaderBoard,
       isConnected,
-      socket,
       score,
     ]
   );
