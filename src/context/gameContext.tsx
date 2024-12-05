@@ -22,10 +22,8 @@ type GameContextType = {
   leaderBoard: LeaderBoard;
   score: number;
   slotAvailablity: boolean;
-  isModalOpen: boolean;
   setCurrentUser: (name: string) => void;
-  setIsModalOpen: (flag : boolean) => void;
-  registerUser: (user: string) => Promise<void>;
+  registerUser: (user?: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
   startNextRound: () => void;
@@ -56,7 +54,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [cards, setCards] = useState<CardNode[]>([]);
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const loseLifeCalledRef = useRef(false);
 
   useEffect(()=>{
@@ -78,9 +75,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const registerUser = async (userName: string) => {
+  const registerUser = async (userName : string = '') => {
     if (!address) return;
-    
+    if(userName == '') userName = `user-${address!.slice(2, 6)}${address!.slice(-4)}`;
+
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -92,7 +90,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       });
   
       if (response.ok) {
-        fetchLeaderboard(); // Fetch leaderboard after registration
+        fetchLeaderboard();
       } else {
         console.error("Failed to register user.");
       }
@@ -116,9 +114,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const allCards: number[] = [];
     const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize;
     const offset_size = Math.floor((700 - cardAreaSize) / 2);
-
-    console.log("cardAreaSize : ", cardAreaSize);
-    console.log("Offset Size : ", offset_size);
 
     // Step 1: Create a pool of cards with shuffled types
     for (let i = 0; i < totalCards; i++) {
@@ -193,8 +188,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           isInBucket: false,
           isInAdditionalSlot: false,
         };
-
-        console.log("new card generated : ", newCard);
 
         generatedCards.push(newCard);
       }
@@ -424,9 +417,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       isConnected,
       score,
       slotAvailablity,
-      isModalOpen,
       setCurrentUser,
-      setIsModalOpen,
       registerUser,
       restartGame,
       generateCards,

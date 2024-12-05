@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, arbitrum } from '@reown/appkit/networks'
@@ -17,8 +17,6 @@ const GameBoard = () => {
     cards,
     leaderBoard,
     slotAvailablity,
-    isModalOpen,
-    setIsModalOpen,
     setCurrentUser,
     handleCardClick,
     moveToAdditionalSlots,
@@ -33,9 +31,14 @@ const GameBoard = () => {
 
   const [showCongrats, setShowCongrats] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-  const [_user, setUserName]  = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount();
+  //username checking
+  const [_user, setUserName]  = useState("");
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [checkingName, setCheckingName] = useState(false);
+  const [invalid, setInvalid] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || ''
@@ -45,51 +48,92 @@ const GameBoard = () => {
       projectId,
       themeMode: 'dark'
     })
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
     if(!isConnected) return;
-    else {
-      checkUserName();
-    }
-    setGameStarted(true)
-    restartGame();
-  
+    else checkUserName();  
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [isConnected, address]);
 
   useEffect(() => {
     if (cards.length == 0 && gameStarted) {
-      checkRoundCompletion();
+      setShowCongrats(true);
     }
   }, [cards]);
   
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
+  };
+
+  const handleEdit = () => {
+    setModalOpen(true);
+    setDropdownOpen(false);
+  };
+
+
   const checkUserName = async () => {
     try {
       const response = await fetch(`/api/register?wallet=${address}`, { method: "GET" });
-      console.log(" checking User Name : ", response);
       if (response.ok) {
         const data: User = await response.json();
         setUserName(data.username);
+        registerUser(data.username);
       } else {
         setUserName(`user-${address!.slice(2, 6)}${address!.slice(-4)}`)
-        setModalOpen(true);
+        registerUser();
       }
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     }
   }
 
+  const isValidUserName = async (username : string) : Promise<boolean> => {
+    setCheckingName(true);
+    const response = await fetch(`/api/checkusername?username=${username}`, { method: "GET" });
+    if(response.ok) { 
+      setCheckingName(false);
+      const data: User[] = await response.json();
+      if(data.length == 1) {
+        if(data[0].wallet == address) return true;
+        else return false;
+      }
+      else return false;
+    }
+    else if(response.status == 404) {
+      setCheckingName(false);
+      return true;
+    }
+    else {
+      setCheckingName(false);
+      return false;
+    }
+  }
+
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("username changed : ", event.target.value);
     setUserName(event.target.value);
   };
   
-  // Check if all cards have been removed or matched
-  const checkRoundCompletion = () => {
-    setShowCongrats(true);
-  };
-
+  const changeUserName = async () => {
+    const isValidName = await isValidUserName(_user);
+    if(!isValidName) setInvalid(true);
+    else {
+      setInvalid(false);
+      setModalOpen(false);
+      registerUser(_user);  
+    }
+  }
   const handleNextRound = () => {
-    // Reset necessary states for the next round
     setShowCongrats(false);
-    startNextRound(); // Proceed to the next round
+    startNextRound();
   };
 
   return (
@@ -118,20 +162,23 @@ const GameBoard = () => {
           </div>
           <div className="w-full mx-auto justify-center mt-6 flex gap-4">
             <button
-              className="bg-red-500 text-white py-2 px-4 rounded-md shadow-md"
-              onClick={restartGame}
+              className={`${gameStarted ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white py-2 px-4 rounded-md shadow-md`}
+              onClick={() => {
+                setGameStarted(true);
+                restartGame();
+              }}
             >
-              Restart Game
+              {gameStarted ? 'Restart Game' : 'Play'}
             </button>
             <button
-              className="bg-yellow-500 text-white py-2 px-4 rounded-md shadow-md"
+              className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
               onClick={moveToAdditionalSlots}
               disabled={!slotAvailablity}
             >
               Move 3 Items to Stash
             </button>
             <button
-              className="bg-gray-500 text-white py-2 px-4 rounded-md shadow-md"
+              className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
               onClick={rollbackFromAdditionalSlots}
             >
               Rollback from Stash
@@ -142,12 +189,30 @@ const GameBoard = () => {
         <div className="flex flex-col w-full h-full justify-between gap-12">
           <div className="flex justify-between items-center">
             <appkit-button />
-            <button
-              onClick={()=>setModalOpen(true)}
-              className="flex items-center p-4"
+            <div
+              ref = { dropdownRef }
+              className='relative'
             >
-              <FaUserCircle size={28} className="text-gray-100 bg-gray-800 rounded-full" />
-            </button>
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center p-4"
+              >
+                <FaUserCircle size={28} className="text-gray-100 bg-gray-600 rounded-full" />
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-0 w-48 px-4 bg-gray-600 rounded-md shadow-lg z-10">
+                  <div className="flex justify-between items-center">
+                    <p className="text-gray-100 overflow-clip">{_user === '' ? "Loading..." : _user}</p>
+                    <button
+                      onClick={handleEdit}
+                      className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div>
             <h2 className=" text-center text-xl font-bold">Leaderboard</h2>
@@ -237,17 +302,14 @@ const GameBoard = () => {
               className="border p-2 w-full mb-4 rounded text-gray-600"
               placeholder="Enter new username"
             />
+            { invalid && <p className='text-red-500'>Username is invalid</p> }
             <div className="flex justify-end space-x-4">
               <button
-                onClick={()=>{
-                  setModalOpen(false);
-                  setIsModalOpen(false);
-                  setCurrentUser(_user);
-                  registerUser(_user);
-                }}
+                onClick={changeUserName}
                 className="px-4 py-2 bg-blue-500 text-white rounded"
+                disabled={ _user === ''}
               >
-                Save
+                {checkingName ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>

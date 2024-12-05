@@ -54,11 +54,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const newUser = {
           ...existingUser,
           username: username,
+          current_score: 0
         };
         await db.collection("users").updateOne(
           { wallet },
           { $set: newUser }
         );
+        return res.status(201).json({ message: "User updated successfully." });
       }
     } catch (error) {
       console.error(error);
