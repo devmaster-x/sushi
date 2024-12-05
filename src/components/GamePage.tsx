@@ -8,7 +8,6 @@ import { User } from "src/types/type"
 
 const GameBoard = () => {
   const {
-    currentUser,
     currentRound,
     bucket,
     additionalSlots,
@@ -17,7 +16,6 @@ const GameBoard = () => {
     cards,
     leaderBoard,
     slotAvailablity,
-    setCurrentUser,
     handleCardClick,
     moveToAdditionalSlots,
     rollbackFromAdditionalSlots,
@@ -33,6 +31,7 @@ const GameBoard = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const { address, isConnected } = useAppKitAccount();
+  const [currentUser, setCurrentUser] = useState('');
   //username checking
   const [_user, setUserName]  = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -86,9 +85,11 @@ const GameBoard = () => {
       if (response.ok) {
         const data: User = await response.json();
         setUserName(data.username);
+        setCurrentUser(data.username);
         registerUser(data.username);
       } else {
         setUserName(`user-${address!.slice(2, 6)}${address!.slice(-4)}`)
+        setCurrentUser(`user-${address!.slice(2, 6)}${address!.slice(-4)}`);
         registerUser();
       }
     } catch (error) {

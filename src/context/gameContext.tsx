@@ -13,7 +13,6 @@ import { User, CardNode, Round } from "src/types/type";
 type LeaderBoard = User[];
 
 type GameContextType = {
-  currentUser: string;
   currentRound: Round;
   bucket: CardNode[];
   additionalSlots: CardNode[];
@@ -22,7 +21,6 @@ type GameContextType = {
   leaderBoard: LeaderBoard;
   score: number;
   slotAvailablity: boolean;
-  setCurrentUser: (name: string) => void;
   registerUser: (user?: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
@@ -45,7 +43,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     cardTypeNumber: 3,
     deepLayer: 2,
   });
-  const [currentUser, setCurrentUser] = useState<string>('');
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
   const [score, setScore] = useState(0);
@@ -407,7 +404,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const value = useMemo(
     () => ({
-      currentUser,
       currentRound,
       bucket,
       additionalSlots,
@@ -417,7 +413,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       isConnected,
       score,
       slotAvailablity,
-      setCurrentUser,
       registerUser,
       restartGame,
       generateCards,
