@@ -39,6 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const existingUser = await db.collection("users").findOne({ wallet });
+      const oneMinuteAgo = new Date(Date.now() - 10 * 1000);
 
       if (!existingUser) {
         const newUser = {
@@ -54,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const newUser = {
           ...existingUser,
           username: username,
-          current_score: 0
+          current_score: existingUser.active > oneMinuteAgo ? existingUser.currnt_score : 0
         };
         await db.collection("users").updateOne(
           { wallet },

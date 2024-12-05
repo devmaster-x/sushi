@@ -54,7 +54,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const loseLifeCalledRef = useRef(false);
 
   useEffect(()=>{
-    console.log("updating: ");
     sendScore(score);
   },[score])
 
@@ -164,7 +163,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
             if (retryCount > 100) { // Maximum retries to avoid infinite loop
               console.log("error was occured : restarting with offest ", offset)
               generateCards(round, offset + 1);
-              break;
+              return;
             }
 
           } while (isOverlappingWithExisting); // Retry if there was overlap
