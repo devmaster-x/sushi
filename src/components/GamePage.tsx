@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { createAppKit, useAppKitAccount } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, arbitrum } from '@reown/appkit/networks'
@@ -37,6 +38,7 @@ const GameBoard = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [checkingName, setCheckingName] = useState(false);
   const [invalid, setInvalid] = useState(false);
+  const [activeID, setActiveID] = useState<NodeJS.Timeout>();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -56,9 +58,15 @@ const GameBoard = () => {
     document.addEventListener('mousedown', handleClickOutside);
 
     if(!isConnected) return;
-    else checkUserName();  
+    else 
+    {
+      const id = setInterval(() => sendUserActive(), 10000);
+      setActiveID(id);
+      checkUserName();  
+    }
 
     return () => {
+      if(activeID) clearInterval(activeID);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isConnected, address]);
@@ -69,6 +77,9 @@ const GameBoard = () => {
     }
   }, [cards]);
   
+  function sendUserActive() {
+    axios.post('/api/useractive', { wallet : address });
+  }
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
   };

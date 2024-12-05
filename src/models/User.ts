@@ -8,6 +8,7 @@ interface IUser extends Document {
   score: number;
   top_score: number;
   isVIP: boolean;
+  active: Date;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -16,6 +17,7 @@ const UserSchema = new Schema<IUser>({
   score: { type: Number, required: true },
   top_score: { type: Number, required: true },
   isVIP: { type: Boolean, required: true },
+  active: { type: Date, default: Date.now }
 });
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

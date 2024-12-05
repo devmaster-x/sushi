@@ -58,6 +58,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     sendScore(score);
   },[score])
 
+
   const fetchLeaderboard = async () => {
     try {
       const response = await fetch("/api/leaderboard");

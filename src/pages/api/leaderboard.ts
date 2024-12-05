@@ -4,13 +4,14 @@ import clientPromise from "src/lib/mongodb";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const client = await clientPromise;
   const db = client.db("raulminibattle");
-
+  const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+  
   if (req.method === "GET") {
     try {
       // Fetch the top 3 users with the highest top_score
       const leaderboard = await db
         .collection("users")
-        .find({})
+        .find({ active: { $gte: oneMinuteAgo } })
         .sort({ current_score: -1 }) // Sort by top_score in descending order
         .toArray();
 
