@@ -6,6 +6,7 @@ import { mainnet, arbitrum } from '@reown/appkit/networks'
 import { FaUserCircle } from "react-icons/fa";
 import { useGameContext } from 'src/context/gameContext';
 import { User } from "src/types/type"
+import { useMediaQuery } from 'react-responsive';
 
 const GameBoard = () => {
   const {
@@ -17,15 +18,15 @@ const GameBoard = () => {
     cards,
     leaderBoard,
     slotAvailablity,
+    cardBoardWidth,
     handleCardClick,
     moveToAdditionalSlots,
     rollbackFromAdditionalSlots,
     restartGame,
     registerUser,
     startNextRound,
-    setCards,
-    setSlotAvailablity,
-    handleAdditionalCardClick
+    handleAdditionalCardClick,
+    setCardBoardWidth
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
@@ -40,6 +41,17 @@ const GameBoard = () => {
   const [invalid, setInvalid] = useState(false);
   const [activeID, setActiveID] = useState<NodeJS.Timeout>();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      console.log("handle Resize : ", window.innerWidth, window.innerHeight);
+      MIN(window.innerWidth, window.innerHeight) <=750 ? setCardBoardWidth(MIN(window.innerWidth, window.innerHeight) - 50) : setCardBoardWidth(700);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || ''
@@ -76,6 +88,10 @@ const GameBoard = () => {
       setShowCongrats(true);
     }
   }, [cards]);
+
+  const MIN  = (a : number, b : number) : number => {
+    return a < b ? a : b;
+  }
   
   function sendUserActive() {
     axios.post('/api/useractive', { wallet : address });
@@ -150,16 +166,63 @@ const GameBoard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white p-8 items-center flex">
-      <div className="max-w-[1280px] mx-auto flex gap-12 bg-gray-800 text-white p-6">
-        <div className='flex flex-col'>
-          <div className="relative w-[700px] h-[700px] bg-gray-700 rounded-lg shadow-md overflow-hidden">
+    <div className="min-h-screen bg-gray-800 text-white items-center flex lg:p-8">
+      <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row gap-12 bg-gray-800 text-white p-6">
+        <div className='flex flex-col items-center'>
+
+          {/* Header in Mobile */}
+          <div className="justify-between items-center flex w-full lg:hidden">
+            <appkit-button />
+            <div
+              ref = { dropdownRef }
+              className='relative'
+            >
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center p-4"
+              >
+                <FaUserCircle size={28} className="text-gray-100 bg-gray-600 rounded-full" />
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-0 w-48 px-4 bg-gray-600 rounded-md shadow-lg z-10">
+                  <div className="flex justify-between items-center">
+                    <p className="text-gray-100 overflow-clip">{_user === '' ? "Loading..." : _user}</p>
+                    <button
+                      onClick={handleEdit}
+                      className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Current Game Info */}
+          <div className="w-full bg-gray-700 rounded-lg p-2 lg:hidden">
+            <h2 className="text-xl text-center font-bold p-2">Player Game Info</h2>
+            <div className="flex justify-around gap-6">
+              <p className="text-lg">Lives: {lives}</p>
+              <p className="text-lg">Score: {score}</p>
+              <p className="text-lg">Round: {currentRound.roundNumber}</p>
+            </div>
+          </div>
+
+          {/* Card board */}
+          <div 
+            className={`relative mt-4 lg:mt-0 bg-gray-700 rounded-lg shadow-md overflow-hidden`}
+            style={{
+              width: cardBoardWidth,
+              height: cardBoardWidth
+            }}
+          >
             {cards.map((card) => (
               <div
                 key={card.id}
                 className={`absolute bg-blue-500 text-white font-bold flex items-center justify-center rounded-lg cursor-pointer bg-cover ${
                   // card.state === 'available' ? 'opacity-100' : 'opacity-50'
-                  card.state === 'available' ? 'bg-blue-500' : 'bg-gray-200 opacity-50'
+                  card.state === 'available' ? 'bg-blue-500' : 'bg-gray-600'
                 }`}
                 style={{
                   backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
@@ -173,16 +236,73 @@ const GameBoard = () => {
               />
             ))}
           </div>
-          <div className="w-full mx-auto justify-center mt-6 flex gap-4">
-            <button
-              className={`${gameStarted ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white py-2 px-4 rounded-md shadow-md`}
-              onClick={() => {
-                setGameStarted(true);
-                restartGame();
-              }}
-            >
-              {gameStarted ? 'Restart Game' : 'Play'}
-            </button>
+
+          {/* Mobile */}
+          <div className="flex lg:hidden gap-4 w-full justify-between mt-4 lg:px-8">
+            <div className="flex flex-col gap-4">
+              <div>
+                <h2 className="text-lg text-center font-bold">Bucket</h2>
+                <div className="flex flex-wrap gap-1 p-2 bg-gray-700 rounded-lg">
+                  {bucket.map((card) => (
+                    <div
+                      key={card.id}
+                      className="w-8 h-8 bg-green-500 text-center rounded-md flex items-center justify-center bg-cover"
+                      style={{ backgroundImage: `url(assets/sushi/${card.type + 1}.png)` }}
+                    />
+                  ))}
+                  {Array.from({ length: 7 - bucket.length }).map((_, idx) => (
+                    <div key={`empty-${idx}`} className="w-8 h-8 bg-gray-500 rounded-md" />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-lg text-center font-bold">Stash</h2>
+                <div className="flex gap-1 p-2 bg-gray-700 rounded-lg">
+                  {additionalSlots.map((card) => (
+                    <div
+                      key={card.id}
+                      className="w-8 h-8 bg-yellow-500 text-center rounded-md flex items-center justify-center bg-cover"
+                      style={{ backgroundImage: `url(assets/sushi/${card.type + 1}.png)` }}
+                      onClick={() => handleAdditionalCardClick(card)}
+                    />
+                  ))}
+                  {Array.from({ length: 3 - additionalSlots.length }).map((_, idx) => (
+                    <div key={`empty-slot-${idx}`} className="w-8 h-8 bg-gray-500 rounded-md" />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="my-auto justify-center mt-6 flex flex-col gap-4 text-sm lg:text-base">
+              <button
+                className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
+                onClick={moveToAdditionalSlots}
+                disabled={!slotAvailablity}
+              >
+                Move 3 Items to Stash
+              </button>
+              <button
+                className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
+                onClick={rollbackFromAdditionalSlots}
+              >
+                Rollback from Stash
+              </button>
+              <button
+                className={`${gameStarted ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white py-2 px-4 rounded-md shadow-md`}
+                onClick={() => {
+                  setGameStarted(true);
+                  restartGame();
+                }}
+                disabled={!isConnected}
+              >
+                {gameStarted ? 'Restart Game' : 'Play'}
+              </button>
+            </div>
+          </div>
+
+          {/* Button */}
+          <div className="mx-auto justify-center mt-6 gap-4 text-sm lg:text-base hidden lg:flex">
             <button
               className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
               onClick={moveToAdditionalSlots}
@@ -196,10 +316,39 @@ const GameBoard = () => {
             >
               Rollback from Stash
             </button>
+            <button
+              className={`${gameStarted ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white py-2 px-4 rounded-md shadow-md`}
+              onClick={() => {
+                setGameStarted(true);
+                restartGame();
+              }}
+              disabled={!isConnected}
+            >
+              {gameStarted ? 'Restart Game' : 'Play'}
+            </button>
+          </div>
+
+          <div className='mt-4 w-full bg-gray-700 p-2 rounded-lg lg:hidden'>
+            <h2 className=" text-center text-xl font-bold p-2">Leaderboard</h2>
+            <div className="bg-gray-700 rounded-lg px-4">
+              {leaderBoard.length === 0 ? (
+                <p className='text-center'>No leaderboard data yet.</p>
+              ) : (
+                <ul>
+                  {leaderBoard.map((user, index) => (
+                    (index < 3 || user.wallet == address) && gameStarted && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
+                      <p>{index + 1}.</p>
+                      <p>{user.username}</p> 
+                      <p>{user.current_score} points</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
         
-        <div className="flex flex-col w-full h-full justify-between gap-12">
+        <div className="flex-col w-full h-full justify-between gap-12 hidden lg:flex">
           <div className="flex justify-between items-center">
             <appkit-button />
             <div
@@ -235,7 +384,7 @@ const GameBoard = () => {
               ) : (
                 <ul>
                   {leaderBoard.map((user, index) => (
-                    (index < 3 || user.wallet == address) && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
+                    (index < 3 || user.wallet == address) && gameStarted && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
                       <p>{index + 1}.</p>
                       <p>{user.username}</p> 
                       <p>{user.current_score} points</p>

@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { User, CardNode, Round } from "src/types/type";
+import { useMediaQuery } from 'react-responsive';
 
 type LeaderBoard = User[];
 
@@ -21,6 +22,7 @@ type GameContextType = {
   leaderBoard: LeaderBoard;
   score: number;
   slotAvailablity: boolean;
+  cardBoardWidth: number;
   registerUser: (user?: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
@@ -33,25 +35,27 @@ type GameContextType = {
   setCards: (cards: CardNode[]) => void;
   setSlotAvailablity: (flag: boolean) => void;
   handleAdditionalCardClick: (card: CardNode) => void;
+  setCardBoardWidth: (width : number) => void
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: PropsWithChildren) => {
+  const { address, isConnected } = useAppKitAccount();
   const [currentRound, setCurrentRound] = useState<Round>({
     roundNumber: 1,
-    cardTypeNumber: 3,
-    deepLayer: 2,
+    cardTypeNumber: 6,
+    deepLayer: 3,
   });
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
   const [score, setScore] = useState(0);
-  const { address, isConnected } = useAppKitAccount();
   const [lives, setLives] = useState(3);
   const [cards, setCards] = useState<CardNode[]>([]);
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
   const loseLifeCalledRef = useRef(false);
+  const [cardBoardWidth, setCardBoardWidth] = useState(0);
 
   useEffect(()=>{
     sendScore(score);
@@ -105,15 +109,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const generateCards = (round: Round, offset: number = 1) => {
     const { cardTypeNumber, deepLayer } = round;
-    const totalCards = cardTypeNumber * deepLayer * 3;
+    const totalCards = cardTypeNumber * 3;
     const generatedCards: CardNode[] = [];
-    const cardSize = 40;
+    const cardSize = 32;
     const allCards: number[] = [];
     const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize;
-    const offset_size = Math.floor((700 - cardAreaSize) / 2);
+    const offset_size = Math.floor((cardBoardWidth - cardAreaSize) / 2);
 
     // Step 1: Create a pool of cards with shuffled types
-    for (let i = 0; i < totalCards; i++) {
+    for (let i = 0; i < totalCards * deepLayer; i++) {
       const type = i % cardTypeNumber;
       allCards.push(type);
     }
@@ -239,8 +243,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setAdditionalSlots([]);
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
-      cardTypeNumber: currentRound.cardTypeNumber + 1, 
-      deepLayer: currentRound.roundNumber >= 4 ? currentRound.deepLayer + 1 : 2  
+      cardTypeNumber: currentRound.cardTypeNumber < 22 ? currentRound.cardTypeNumber + 1 : 22 , 
+      deepLayer: currentRound.roundNumber >= 4 ? currentRound.deepLayer + 1 : 3  
     }
     setCurrentRound(_round);
     generateCards(_round);
@@ -330,8 +334,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setAdditionalSlots([]);
     setLives(3);
     setScore(0);
-    setCurrentRound({ roundNumber: 1, cardTypeNumber: 3, deepLayer: 2 });
-    generateCards({ roundNumber: 1, cardTypeNumber: 3, deepLayer: 2});
+    setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
+    generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
     sendScore(0);
   };
 
@@ -413,6 +417,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       isConnected,
       score,
       slotAvailablity,
+      cardBoardWidth,
       registerUser,
       restartGame,
       generateCards,
@@ -424,7 +429,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       rollbackFromAdditionalSlots,
       setCards,
       setSlotAvailablity,
-      handleAdditionalCardClick
+      handleAdditionalCardClick,
+      setCardBoardWidth
     }),
     [
       currentRound,
@@ -435,6 +441,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       leaderBoard,
       isConnected,
       score,
+      slotAvailablity,
+      cardBoardWidth,
     ]
   );
 
