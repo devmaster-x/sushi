@@ -336,7 +336,7 @@ const GameBoard = () => {
               ) : (
                 <ul>
                   {leaderBoard.map((user, index) => (
-                    (index < 3 || user.wallet == address) && gameStarted && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
+                    (index < 3 || user.wallet == address) && gameStarted && isConnected && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
                       <p>{index + 1}.</p>
                       <p>{user.username}</p> 
                       <p>{user.current_score} points</p>
@@ -384,7 +384,7 @@ const GameBoard = () => {
               ) : (
                 <ul>
                   {leaderBoard.map((user, index) => (
-                    (index < 3 || user.wallet == address) && gameStarted && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
+                    (index < 3 || user.wallet == address) && gameStarted && isConnected && <li key={user.wallet} className={`text-lg flex justify-between ${user.wallet === address ? 'text-green-600' : ''}`}>
                       <p>{index + 1}.</p>
                       <p>{user.username}</p> 
                       <p>{user.current_score} points</p>

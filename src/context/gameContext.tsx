@@ -111,7 +111,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const { cardTypeNumber, deepLayer } = round;
     const totalCards = cardTypeNumber * 3;
     const generatedCards: CardNode[] = [];
-    const cardSize = 32;
+    const cardSize = 40;
     const allCards: number[] = [];
     const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize;
     const offset_size = Math.floor((cardBoardWidth - cardAreaSize) / 2);
