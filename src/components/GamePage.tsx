@@ -294,7 +294,7 @@ const GameBoard = () => {
                   setGameStarted(true);
                   restartGame();
                 }}
-                disabled={!isConnected}
+                // disabled={!isConnected}
               >
                 {gameStarted ? 'Restart Game' : 'Play'}
               </button>
@@ -322,7 +322,7 @@ const GameBoard = () => {
                 setGameStarted(true);
                 restartGame();
               }}
-              disabled={!isConnected}
+              // disabled={!isConnected}
             >
               {gameStarted ? 'Restart Game' : 'Play'}
             </button>
