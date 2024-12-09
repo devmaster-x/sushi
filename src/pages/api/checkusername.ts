@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const existingUsers = await db.collection("users").find({ username }).toArray();
 
       if (existingUsers.length === 0) {
-        console.log('No users found with that username.');
         return res.status(404).json([{}]); // Send a proper response
       }
 

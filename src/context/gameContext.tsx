@@ -23,6 +23,8 @@ type GameContextType = {
   score: number;
   slotAvailablity: boolean;
   cardBoardWidth: number;
+  rollbackAvailable : boolean,
+  rollbackPressed: boolean,
   registerUser: (user?: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
@@ -45,7 +47,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [currentRound, setCurrentRound] = useState<Round>({
     roundNumber: 1,
     cardTypeNumber: 6,
-    deepLayer: 3,
+    deepLayer: 5,
   });
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
@@ -56,6 +58,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [slotAvailablity, setSlotAvailablity] = useState(true);
   const loseLifeCalledRef = useRef(false);
   const [cardBoardWidth, setCardBoardWidth] = useState(0);
+  const [cardMatchingCount, setCardMatchingCount] = useState(3);
+  const [rollbackAvailable, setRollbackAvailable] = useState(false); 
+  const [rollbackPressed, setRollbackPressed] = useState(false);
+  const cardSize = 40;
 
   useEffect(()=>{
     sendScore(score);
@@ -99,7 +105,20 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       console.error("Error in user registration:", error);
     }
   };
-  
+
+  const gcd = (x: number, y: number): number => {
+    while (y !== 0) {
+        const temp = y;
+        y = x % y;
+        x = temp;
+    }
+    return x;
+  };
+
+  const lcd = (x: number, y: number): number => {
+    return x * y / gcd(x,y);
+  }
+
 
   // Mock VIP status check
   const checkVIPStatus = async (wallet: string): Promise<boolean> => {
@@ -107,37 +126,56 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     return new Promise((resolve) => setTimeout(() => resolve(Math.random() > 0.5), 1000));
   };
 
+  // Shuffle cards to randomize their position and parents
+  const shuffleCards = (array: number[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  };
+
+  // Function to check if a card overlaps with another card
+  const isOverlapping = (left1: number, left2: number, top1: number, top2: number, ) => {
+    return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
+  };
+  
+
   const generateCards = (round: Round, offset: number = 1) => {
     const { cardTypeNumber, deepLayer } = round;
-    const totalCards = cardTypeNumber * 3;
     const generatedCards: CardNode[] = [];
-    const cardSize = 40;
     const allCards: number[] = [];
-    const cardAreaSize = Math.floor(Math.sqrt(totalCards) + offset) * cardSize;
-    const offset_size = Math.floor((cardBoardWidth - cardAreaSize) / 2);
+    const cardsPerLayer: number[] = [];
+    let maxCardsLayer: number = 0;
+    const totalCards: number = Math.floor(0.6 * cardTypeNumber) * lcd(cardMatchingCount, deepLayer);
 
     // Step 1: Create a pool of cards with shuffled types
-    for (let i = 0; i < totalCards * deepLayer; i++) {
+    for (let i = 0; i <  totalCards / cardMatchingCount; i++) {
       const type = i % cardTypeNumber;
+      allCards.push(type);
+      allCards.push(type);
       allCards.push(type);
     }
 
-    // Step 2: Shuffle the cards to randomize their order
-    const shuffleCards = (array: number[]) => {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    };
+    //step 2: generate cards cound per layer
+    for (let i = 0 ; i < deepLayer; i++) cardsPerLayer.push(totalCards / deepLayer);
+    for (let i = 0 ; i < Math.floor(deepLayer / 2) ; i++) {
+      const _rand_amount = Math.floor(Math.random() * Math.min(totalCards / deepLayer, 10));
+      cardsPerLayer[i] -= _rand_amount;
+      cardsPerLayer[deepLayer-i-1] += _rand_amount;
 
-    // Function to check if a card overlaps with another card
-    const isOverlapping = (left1: number, left2: number, top1: number, top2: number) => {
-      return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
-    };
+      if(maxCardsLayer < cardsPerLayer[deepLayer-i-1]) maxCardsLayer = cardsPerLayer[i];
+    }
 
-    // Step 3: Generate the cards layer by layer
-    for (let layer = deepLayer; layer > 0; layer--) {
-      for (let i = 0; i < cardTypeNumber * 3; i++) {
+    const cardAreaSize = Math.floor(Math.sqrt(maxCardsLayer) + offset) * cardSize;
+    const offset_size = Math.floor((cardBoardWidth - cardAreaSize) / 2);
+
+    // Step 3: Shuffle the cards to randomize their order
+
+    shuffleCards(allCards);
+
+    // Step 4: Generate the cards layer by layer
+    for (let layer = deepLayer-1; layer >= 0; layer--) {
+      for (let i = 0; i < cardsPerLayer[layer]; i++) {
         let top, left;
         let isOverlappingWithExisting = false;
         let parents: CardNode[] = [];
@@ -165,7 +203,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
             retryCount++; // Increment retry count
             if (retryCount > 100) { // Maximum retries to avoid infinite loop
-              console.log("error was occured : restarting with offest ", offset)
               generateCards(round, offset + 1);
               return;
             }
@@ -179,7 +216,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         // Create the card node
         const newCard: CardNode = {
           id: generatedCards.length,
-          type: allCards[(cardTypeNumber * 3) * (deepLayer - layer) + i],
+          type: allCards[generatedCards.length],
           top: offset_size + top,
           left: offset_size + left,
           size: { width: cardSize, height: cardSize },
@@ -194,9 +231,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       }
     }
 
-    // Shuffle cards to randomize their position and parents
-    shuffleCards(allCards);
-
     // Set the generated cards in state
     setCards(generatedCards);
     setSlotAvailablity(true);
@@ -205,10 +239,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Move first three cards to additional slots
   const moveToAdditionalSlots = () => {
     setSlotAvailablity(false);
+    setRollbackAvailable(false);
     setAdditionalSlots((prevSlots) => {
-      if (bucket.length >= 3) {
-        const firstThree = bucket.slice(0, 3);  // Get first 3 items
-        const remainingBucket = bucket.slice(3);  // Get the remaining items after first 3
+      if (bucket.length > 0) {
+        const firstThree = bucket.slice(0, Math.min(cardMatchingCount, bucket.length));  // Get first 3 items
+        const remainingBucket = bucket.slice(Math.min(cardMatchingCount, bucket.length));  // Get the remaining items after first 3
   
         // Update bucket state with the remaining items
         setBucket(remainingBucket);
@@ -224,27 +259,44 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   // Rollback cards from additional slots to the bucket
   const rollbackFromAdditionalSlots = () => {
-    setSlotAvailablity(false);
-    setBucket((prevBucket) => {
-      const spaceLeft = 6 - prevBucket.length;
-      const toMove = additionalSlots.slice(0, spaceLeft);
-  
-      // Mark the moved cards as not being in the additional slots anymore
-      toMove.forEach(card => card.isInAdditionalSlot = false);
-  
-      setAdditionalSlots((prevSlots) => prevSlots.slice(toMove.length));
-      return [...prevBucket, ...toMove];
-    });
+    setRollbackPressed(true);
+
+    // Find the last `CardNode` item from the `bucket` array
+    if (bucket.length > 0) {
+      const lastCardNode = bucket[bucket.length - 1];
+
+      // Remove the last item from the `bucket` array
+      bucket.pop();
+
+      // Add the last `CardNode` item to the `cards` array
+      setCards((prevCards) => {
+        const updatedCards = [...prevCards, lastCardNode];
+        return updatedCards.map((card)=>{
+          if(isOverlapping(card.left, lastCardNode.left, card.top, lastCardNode.top) && card.id != lastCardNode.id) {
+            const updatedParents = [...card.parents, lastCardNode];
+            return {
+              ...card,
+              state: "unavailable",
+              parents: updatedParents
+            }
+          }
+          return card;
+        })
+      });
+    }
   };
 
   // Start the next round
   const startNextRound = () => {
     setBucket([]);
     setAdditionalSlots([]);
+    setRollbackAvailable(false);
+    setRollbackPressed(false);
+    setSlotAvailablity(true);
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
       cardTypeNumber: currentRound.cardTypeNumber < 22 ? currentRound.cardTypeNumber + 1 : 22 , 
-      deepLayer: currentRound.roundNumber >= 4 ? currentRound.deepLayer + 1 : 3  
+      deepLayer: currentRound.roundNumber >= 4 ? currentRound.deepLayer + 1 : 5  
     }
     setCurrentRound(_round);
     generateCards(_round);
@@ -269,11 +321,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
       // If there is a triplet (three cards of the same type), remove them and add points
       for (const [typeId, count] of Object.entries(typeCounts)) {
-        if (count >= 3) {
+        if (count >= cardMatchingCount) {
           setScore((prevScore) => {
             const newScore = prevScore + 10; // Award points for triplets
             return newScore;
           });
+          setRollbackAvailable(false);
 
           // Remove 3 matching cards from the bucket
           const removedCards = updatedBucket.filter((card) => card.type === parseInt(typeId));
@@ -332,15 +385,19 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const restartGame = () => {
     setBucket([]);
     setAdditionalSlots([]);
+    setRollbackAvailable(false);
+    setRollbackPressed(false);
+    setSlotAvailablity(true);
     setLives(3);
     setScore(0);
-    setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
-    generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
+    setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 5 });
+    generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 5 });
     sendScore(0);
   };
 
   // Handle card click
   const handleCardClick = (card: CardNode) => {
+    if(card.state=="available") setRollbackAvailable(true && !rollbackPressed);
     if (card.isInAdditionalSlot) {
       setAdditionalSlots((prevSlots) => {
         // Remove the clicked card from the additional slots
@@ -418,6 +475,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       score,
       slotAvailablity,
       cardBoardWidth,
+      rollbackAvailable,
+      rollbackPressed,
       registerUser,
       restartGame,
       generateCards,
@@ -443,6 +502,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       score,
       slotAvailablity,
       cardBoardWidth,
+      rollbackAvailable,
+      rollbackPressed
     ]
   );
 

@@ -6,7 +6,6 @@ import { mainnet, arbitrum } from '@reown/appkit/networks'
 import { FaUserCircle } from "react-icons/fa";
 import { useGameContext } from 'src/context/gameContext';
 import { User } from "src/types/type"
-import { useMediaQuery } from 'react-responsive';
 
 const GameBoard = () => {
   const {
@@ -19,6 +18,8 @@ const GameBoard = () => {
     leaderBoard,
     slotAvailablity,
     cardBoardWidth,
+    rollbackAvailable,
+    rollbackPressed,
     handleCardClick,
     moveToAdditionalSlots,
     rollbackFromAdditionalSlots,
@@ -44,7 +45,6 @@ const GameBoard = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      console.log("handle Resize : ", window.innerWidth, window.innerHeight);
       MIN(window.innerWidth, window.innerHeight) <=750 ? setCardBoardWidth(MIN(window.innerWidth, window.innerHeight) - 50) : setCardBoardWidth(700);
     }
     handleResize();
@@ -84,10 +84,10 @@ const GameBoard = () => {
   }, [isConnected, address]);
 
   useEffect(() => {
-    if (cards.length == 0 && gameStarted) {
+    if (cards.length === 0 && gameStarted && bucket.length === 0 && additionalSlots.length === 0) {
       setShowCongrats(true);
     }
-  }, [cards]);
+  }, [cards, bucket, additionalSlots]);
 
   const MIN  = (a : number, b : number) : number => {
     return a < b ? a : b;
@@ -276,17 +276,18 @@ const GameBoard = () => {
 
             <div className="my-auto justify-center mt-6 flex flex-col gap-4 text-sm lg:text-base">
               <button
-                className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
+                className="disabled:bg-gray-500 bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-md"
                 onClick={moveToAdditionalSlots}
-                disabled={!slotAvailablity}
+                disabled={!slotAvailablity || bucket.length == 0}
               >
                 Move 3 Items to Stash
               </button>
               <button
-                className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
+                className="disabled:bg-gray-500 bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-md"
                 onClick={rollbackFromAdditionalSlots}
+                disabled={!rollbackAvailable || rollbackPressed}
               >
-                Rollback from Stash
+                Rollback
               </button>
               <button
                 className={`${gameStarted ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white py-2 px-4 rounded-md shadow-md`}
@@ -298,23 +299,32 @@ const GameBoard = () => {
               >
                 {gameStarted ? 'Restart Game' : 'Play'}
               </button>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-md"
+                onClick={() => {
+                  handleNextRound();
+                }}
+              >
+                Next Round
+              </button>
             </div>
           </div>
 
           {/* Button */}
           <div className="mx-auto justify-center mt-6 gap-4 text-sm lg:text-base hidden lg:flex">
             <button
-              className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
+              className="disabled:bg-gray-500 bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-md"
               onClick={moveToAdditionalSlots}
-              disabled={!slotAvailablity}
+              disabled={!slotAvailablity || bucket.length === 0}
             >
               Move 3 Items to Stash
             </button>
             <button
-              className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md shadow-md"
+              className="disabled:bg-gray-500 bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-md"
               onClick={rollbackFromAdditionalSlots}
+              disabled={!rollbackAvailable || rollbackPressed}
             >
-              Rollback from Stash
+              Rollback
             </button>
             <button
               className={`${gameStarted ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'} text-white py-2 px-4 rounded-md shadow-md`}
@@ -325,6 +335,14 @@ const GameBoard = () => {
               // disabled={!isConnected}
             >
               {gameStarted ? 'Restart Game' : 'Play'}
+            </button>
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-md"
+              onClick={() => {
+                handleNextRound();
+              }}
+            >
+              Next Round
             </button>
           </div>
 
