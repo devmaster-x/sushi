@@ -159,7 +159,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     //step 2: generate cards cound per layer
     for (let i = 0 ; i < deepLayer; i++) cardsPerLayer.push(totalCards / deepLayer);
     for (let i = 0 ; i < Math.floor(deepLayer / 2) ; i++) {
-      const _rand_amount = Math.floor(Math.random() * Math.min(totalCards / deepLayer, 10));
+      const _rand_amount = Math.floor(Math.random() * Math.max(Math.min(totalCards / deepLayer, 10), 4));
       cardsPerLayer[i] -= _rand_amount;
       cardsPerLayer[deepLayer-i-1] += _rand_amount;
 
