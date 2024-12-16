@@ -174,9 +174,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     console.log("Cards Per Layer : ", cardsPerLayer);
 
     // const arraySize = Math.floor(Math.sqrt(maxCardsLayer) + offset);
-    const arraySize = Math.floor(Math.sqrt(maxCardsLayer) + 3);
+    const arraySize = Math.floor(Math.sqrt(maxCardsLayer) + Math.min(4, offset));
     const cardAreaSize = arraySize * cardSize;
     const offset_size = Math.floor((cardBoardWidth - cardAreaSize) / 2);
+    console.log("card Area size : ", cardAreaSize);
+    console.log("Offset size : ", offset_size);
     // Step 3: Shuffle the cards to randomize their order
 
     shuffleCards(allCards);
@@ -185,7 +187,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     // Step 4: Generate the cards layer by layer
     for (let layer = deepLayer - 1; layer >= 0; layer--) {
       const n = arraySize * 2 - 1;
-      const numberizedArray = Array.from({ length: (n-1) }, () => Array(n+1).fill(0));
+      const numberizedArray = Array.from({ length: (n+1) }, () => Array(n+1).fill(0));
 
       const setMarkArray = (t: number, b: number) => {
         numberizedArray[t][b] = 1;
@@ -210,7 +212,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         // Find a non-overlapping position
         try {
           do {
-            top = Math.floor(Math.random() * (n-2));
+            top = Math.floor(Math.random() * (n));
             left = Math.floor(Math.random() * (n));
             isOverlappingWithExisting = false;
 
