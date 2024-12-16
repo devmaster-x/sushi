@@ -23,8 +23,10 @@ type GameContextType = {
   score: number;
   slotAvailablity: boolean;
   cardBoardWidth: number;
-  rollbackAvailable : boolean,
-  rollbackPressed: boolean,
+  rollbackAvailable : boolean;
+  rollbackPressed: boolean;
+  gameStarted: boolean;
+  setGameStarted: (f: boolean) => void;
   registerUser: (user?: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
@@ -61,6 +63,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [cardMatchingCount, setCardMatchingCount] = useState(3);
   const [rollbackAvailable, setRollbackAvailable] = useState(false); 
   const [rollbackPressed, setRollbackPressed] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
   const cardSize = 40;
 
   useEffect(()=>{
@@ -477,6 +480,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       cardBoardWidth,
       rollbackAvailable,
       rollbackPressed,
+      gameStarted,
+      setGameStarted,
       registerUser,
       restartGame,
       generateCards,
@@ -492,6 +497,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCardBoardWidth
     }),
     [
+      gameStarted,
       currentRound,
       bucket,
       additionalSlots,
