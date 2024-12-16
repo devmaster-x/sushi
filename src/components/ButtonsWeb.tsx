@@ -8,6 +8,7 @@ const ButtonsWeb = () => {
     rollbackPressed,
     gameStarted,
     setGameStarted,
+    startNextRound,
     restartGame,
     moveToAdditionalSlots,
     rollbackFromAdditionalSlots,
@@ -22,8 +23,8 @@ const ButtonsWeb = () => {
     <div className="gap-4 hidden lg:flex">
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={()=>{}}
-        disabled={!slotAvailablity || bucket.length === 0}
+        onClick={startNextRound}
+        // disabled={!slotAvailablity || bucket.length === 0}
       >
         Shop
       </button>

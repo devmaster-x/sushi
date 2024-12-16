@@ -15,28 +15,29 @@ const CardBoard = () => {
         height: cardBoardWidth,
       }}
     >
-      {cards.map((card) => (
+      {cards.map((card, index) => (
         <div
-        className={`absolute bg-cover rounded-md ${
-          card.state === "available" ? "bg-green-600" : "bg-gray-600"
-        }`}
-        style={{
-          top: `${card.top}px`,
-          left: `${card.left}px`,
-          width: `40px`,
-          height: `40px`,
-          zIndex: card.zIndex,
-        }}
-        onClick={()=>handleCardClick(card)}
-      >
-        <div
-          className="absolute inset-0 bg-cover"
+          key={index}
+          className={`absolute bg-cover rounded-sm ${
+            card.state === "available" ? "bg-green-600" : "bg-gray-600"
+          }`}
           style={{
-            backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
-            opacity: card.state === "available" ? 1 : 0.5,
+            top: `${card.top}px`,
+            left: `${card.left}px`,
+            width: `39px`,
+            height: `39px`,
+            zIndex: card.zIndex,
           }}
-        />
-      </div>
+          onClick={()=>handleCardClick(card)}
+        >
+          <div
+            className="absolute inset-0 bg-cover"
+            style={{
+              backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
+              opacity: card.state === "available" ? 1 : 0.5,
+            }}
+          />
+        </div>
       ))}
     </div>
   )
