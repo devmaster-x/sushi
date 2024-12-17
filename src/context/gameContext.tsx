@@ -59,7 +59,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(1);
   const [cards, setCards] = useState<CardNode[]>([]);
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
@@ -447,7 +447,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setRollbackAvailable(false);
     setRollbackPressed(false);
     setSlotAvailablity(true);
-    setLives(3);
+    setLives(1);
     setScore(0);
     setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
     generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
