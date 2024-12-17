@@ -11,6 +11,11 @@ import { useAppKitAccount } from "@reown/appkit/react";
 import { User, CardNode, Round } from "src/types/type";
 import { useMediaQuery } from 'react-responsive';
 
+interface position {
+  x: number,
+  y: number
+}
+
 type LeaderBoard = User[];
 
 type GameContextType = {
@@ -137,13 +142,91 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const shuffleSignCards = (array: position[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  };
+
   // Function to check if a card overlaps with another card
   const isOverlapping = (left1: number, left2: number, top1: number, top2: number, ) => {
     return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
   };
   
+  const genereateCardsByLayer = (cardsAmount: number, layer: number, offset: number = 1): position[] => {
+    const arraySize = Math.floor(Math.sqrt(cardsAmount) + Math.min(4, offset));
+    const n = arraySize * 2 - 1;
+    const numberizedArray = Array.from({ length: n+1 }, () => Array(n+1).fill(0));
+    let markedArray: position[] = [];
+  
+    const setMarkArray = (t: number, b: number) => {
+      numberizedArray[t][b] = 1;
+      numberizedArray[t][b + 1] = 1;
+      numberizedArray[t + 1][b] = 1;
+      numberizedArray[t + 1][b + 1] = 1;
+    };
+  
+    const checkArray = (s: number, l: number, es: number, el: number): boolean => {
+      for (let i = Math.max(0, s); i <= es; i++) {
+        for (let j = Math.max(0, l); j <= el; j++) {
+          if (numberizedArray[i][j] === 1) return false;
+        }
+      }
+      return true;
+    };
+  
+    const getNewPosition = (): position => {
+      let _tempArray: position[] = [...markedArray];
+      while (_tempArray.length > 0) {
+        const randomIndex = Math.floor(Math.random() * _tempArray.length);
+        const selectedPosition = _tempArray[randomIndex];
+        _tempArray.splice(randomIndex, 1); // Remove the selected position directly
+  
+        const signArray: position[] = [
+          { x: -2, y: -2 },
+          { x: 0, y: -2 },
+          { x: 2, y: -2 },
+          { x: -2, y: 0 },
+          { x: 2, y: 0 },
+          { x: -2, y: 2 },
+          { x: 0, y: 2 },
+          { x: 2, y: 2 },
+        ];
+  
+        shuffleSignCards(signArray);
+  
+        for (const offset of signArray) {
+          const left = selectedPosition.x + offset.x;
+          const top = selectedPosition.y + offset.y;
+  
+          if (top >= 0 && top <= n - 1 && left >= 0 && left <= n - 1 && checkArray(top-1, left-1, top+1, left+1))
+            return { x: left, y: top };
+        }
+      }
+      return { x: -1, y: -1 };
+    };
+  
+    const initial_x = Math.floor(Math.random() * (n - 1));
+    const initial_y = Math.floor(Math.random() * (n - 1));
+    setMarkArray(initial_y, initial_x);
+    markedArray.push({ x: initial_x, y: initial_y });
+  
+    for (let i = 1; i < cardsAmount; i++) {
+      const newPosition = getNewPosition();
+      if (newPosition.x === -1) {
+        return genereateCardsByLayer(cardsAmount, layer, offset + 1);
+      }
+      setMarkArray(newPosition.y, newPosition.x);
+      markedArray.push({ x: newPosition.x, y: newPosition.y });
+    }
+    const offsetSize = (cardBoardWidth - arraySize * 40) / 2;
+    markedArray = markedArray.map((array) => ({ x: array.x * 20 + offsetSize, y: array.y * 20 + offsetSize }));
+    return markedArray;
+  };
+  
 
-  const generateCards = (round: Round, offset: number = 1) => {
+  const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer } = round;
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
@@ -151,7 +234,29 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     let maxCardsLayer: number = 0;
     // const totalCards: number = Math.floor(0.6 * cardTypeNumber) * lcd(cardMatchingCount, deepLayer);
     const totalCards: number = cardTypeNumber * deepLayer;
-    console.log("ROund INfo, ", cardTypeNumber, deepLayer);
+
+    const addToGeneratedCards = (t: number, l: number ,layer: number) => {
+      let parents = [];
+      // Check for overlap with other cards in the same layer and higher layers
+      for (const card of generatedCards) {
+        if (isOverlapping(card.left, t, card.top, l) && (card.zIndex > layer)) {
+          parents.push(card);
+        }
+      }
+      const newCard: CardNode = {
+        id: generatedCards.length,
+        type: allCards[generatedCards.length],
+        top: l,
+        left:  t,
+        size: { width: cardSize, height: cardSize },
+        zIndex: layer,
+        parents,
+        state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable", // Cards in the deepest layer or those with no parents are available
+        isInBucket: false,
+        isInAdditionalSlot: false,
+      };
+      generatedCards.push(newCard);
+    }
 
     // Step 1: Create a pool of cards with shuffled types
     for (let i = 0; i <  totalCards / cardMatchingCount; i++) {
@@ -161,7 +266,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       allCards.push(type);
     }
 
-    //step 2: generate cards cound per layer
+    //step 2: generate cards count per layer
     for (let i = 0 ; i < deepLayer; i++) cardsPerLayer.push(totalCards / deepLayer);
     for (let i = 0 ; i < Math.floor(deepLayer / 2) ; i++) {
       const _rand_amount =  Math.min(Math.floor(Math.random() * Math.max(Math.min(totalCards / deepLayer, 10), 4)), cardsPerLayer[i] - 1);
@@ -171,14 +276,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
       if(maxCardsLayer < cardsPerLayer[deepLayer-i-1]) maxCardsLayer = cardsPerLayer[i];
     }
-    console.log("Cards Per Layer : ", cardsPerLayer);
 
-    // const arraySize = Math.floor(Math.sqrt(maxCardsLayer) + offset);
-    const arraySize = Math.floor(Math.sqrt(maxCardsLayer) + Math.min(4, offset));
-    const cardAreaSize = arraySize * cardSize;
-    const offset_size = Math.floor((cardBoardWidth - cardAreaSize) / 2);
-    console.log("card Area size : ", cardAreaSize);
-    console.log("Offset size : ", offset_size);
     // Step 3: Shuffle the cards to randomize their order
 
     shuffleCards(allCards);
@@ -186,144 +284,16 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
     // Step 4: Generate the cards layer by layer
     for (let layer = deepLayer - 1; layer >= 0; layer--) {
-      const n = arraySize * 2 - 1;
-      const numberizedArray = Array.from({ length: (n+1) }, () => Array(n+1).fill(0));
-
-      const setMarkArray = (t: number, b: number) => {
-        numberizedArray[t][b] = 1;
-        numberizedArray[t][b+1] = 1;
-        numberizedArray[t+1][b] = 1;
-        numberizedArray[t+1][b+1] = 1;
-      }
-
-      const checkArray = (s: number, l: number, es: number, el : number) : boolean => {
-        for(let i = s; i <= es; i++)
-          for(let j = l; j <= el; j++)
-            if(numberizedArray[i][j] == 1) return false
-        return true;
-      }
-
-      for (let i = 0; i < cardsPerLayer[layer]; i++) {
-        let top, left;
-        let isOverlappingWithExisting = false;
-        let parents: CardNode[] = [];
-        let retryCount = 0;
-
-        // Find a non-overlapping position
-        try {
-          do {
-            top = Math.floor(Math.random() * (n));
-            left = Math.floor(Math.random() * (n));
-            isOverlappingWithExisting = false;
-
-            if(top == 0 && left == 0) {
-              if(!checkArray(0,0,1,1)) isOverlappingWithExisting = true;
-              else setMarkArray(0,0);
-            }
-            else if(top == 0) {
-              if(!checkArray(0, left-1, 1, left + 1)) isOverlappingWithExisting = true;
-              else setMarkArray(0, left);
-            }
-            else if(left == 0) {
-              if(!checkArray(top-1, 0, top+1, 1)) isOverlappingWithExisting = true;
-              else setMarkArray(top,0);
-            }
-            else if(!checkArray(top-1, left-1, top+1, left+1)) isOverlappingWithExisting = true;
-            else setMarkArray(top, left);
-
-            retryCount++;
-            if (retryCount > 100) {
-              console.log("callback limit : ");
-              generateCards(round, offset + 1);
-              return;
-            }
-          } while (isOverlappingWithExisting);
-
-        } catch (error) {
-          console.error("Error while checking overlap:", error);
-          continue;
-        }
-
-        parents = [];
-
-        // Check for overlap with other cards in the same layer and higher layers
-        for (const card of generatedCards) {
-          if (isOverlapping(card.left, left * cardSize / 2 + offset_size, card.top, top * cardSize / 2 + offset_size) && (card.zIndex > layer)) {
-            parents.push(card);
-          }
-        }
-
-        // Create the card node
-        const newCard: CardNode = {
-          id: generatedCards.length,
-          type: allCards[generatedCards.length],
-          top: offset_size + top * cardSize / 2,
-          left: offset_size + left * cardSize / 2,
-          size: { width: cardSize, height: cardSize },
-          zIndex: layer,
-          parents,
-          state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable", // Cards in the deepest layer or those with no parents are available
-          isInBucket: false,
-          isInAdditionalSlot: false,
-        };
-        generatedCards.push(newCard);
-      }
+      const layerCards : position[] = genereateCardsByLayer(cardsPerLayer[layer], layer, 1);
+      layerCards.forEach((card)=> {
+        addToGeneratedCards(card.x, card.y, layer);
+      })
     }
-    console.log("cards : ", generatedCards);
-
-    // const result = sortGeneratedCards(generatedCards);
-    // console.log("cards sorded: ", result)
-    // Set the generated cards in state
+    console.log("cards per layer : ", cardsPerLayer);
+    console.log("cards : ",cards);
     setCards(generatedCards);
     setSlotAvailablity(true);
-  };
-
-  // const sortGeneratedCards = (_cards: CardNode[]) => {
-  //   const uniqueCards = Array.from(new Map(_cards.map(card => [card.id, card])).values());
-  //   const cardWidth = uniqueCards[0]?.size.width || 40; // Default card width
-  //   const cardHeight = uniqueCards[0]?.size.height || 40; // Default card height
-  
-  //   // Group cards by zIndex
-  //   const groupedByLayer = uniqueCards.reduce((acc: { [key: number]: CardNode[] }, card) => {
-  //     if (!acc[card.zIndex]) acc[card.zIndex] = [];
-  //     acc[card.zIndex].push(card);
-  //     return acc;
-  //   }, {});
-  
-  //   const updatedCards: CardNode[] = [];
-  
-  //   // Process each layer
-  //   Object.keys(groupedByLayer).forEach((layerKey) => {
-  //     const layer = groupedByLayer[Number(layerKey)];
-  //     const cardCount = layer.length;
-  
-  //     // Calculate grid size (closest square for the number of cards)
-  //     const columns = Math.ceil(Math.sqrt(cardCount));
-  //     const rows = Math.ceil(cardCount / columns);
-  
-  //     // Calculate starting positions for centering
-  //     const boardWidth = columns * cardWidth;
-  //     const boardHeight = rows * cardHeight;
-  //     const centerX = 500; // Assume board center X (adjustable based on actual board width)
-  //     const centerY = 500; // Assume board center Y (adjustable based on actual board height)
-  
-  //     const startX = centerX - boardWidth / 2;
-  //     const startY = centerY - boardHeight / 2;
-  
-  //     // Reposition cards into the grid
-  //     layer.forEach((card, index) => {
-  //       const row = Math.floor(index / columns);
-  //       const col = index % columns;
-  
-  //       card.top = startY + row * cardHeight;
-  //       card.left = startX + col * cardWidth;
-  
-  //       updatedCards.push(card);
-  //     });
-  //   });
-  
-  //   return updatedCards;
-  // };  
+  };  
 
   // Move first three cards to additional slots
   const moveToAdditionalSlots = () => {
