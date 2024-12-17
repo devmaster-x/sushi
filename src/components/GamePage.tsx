@@ -96,7 +96,7 @@ const GameBoard = () => {
 
   return (
     <div className="min-h-screen bg-[#1e1e2f] text-white flex flex-col justify-center items-center px-6 py-8">
-      <div className="mx-auto flex flex-col lg:hidden gap-4">
+      <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
         <GameInfo />
         <CardBoard />
         <Bucket />
@@ -113,11 +113,10 @@ const GameBoard = () => {
           <LeaderBoard />
           <ButtonsWeb />
         </div>
-
-        {showCongrats && (
-          <CongratesModal handleClick={handleNextRound}/>          
-        )}
       </div>
+      {showCongrats && (
+        <CongratesModal handleClick={handleNextRound}/>          
+      )}
     </div>
   );
 };
