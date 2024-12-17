@@ -20,7 +20,7 @@ const ButtonsMobile = () => {
   }
 
   return (
-    <div className="gap-4 flex lg:hidden justify-center">
+    <div className="gap-4 flex lg:hidden justify-end">
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-1 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={startNextRound}
@@ -28,6 +28,7 @@ const ButtonsMobile = () => {
       >
         Next
       </button>
+
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-1 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={() => {}}
@@ -35,13 +36,14 @@ const ButtonsMobile = () => {
       >
         Hint
       </button>
-      <button
+
+      {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-1 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={rollbackFromAdditionalSlots}
         disabled={!rollbackAvailable || rollbackPressed}
       >
         Rollback
-      </button>
+      </button> */}
       <button
         className={`px-6 py-3 rounded-md transition-colors duration-200 cursor-pointer ${
           !gameStarted

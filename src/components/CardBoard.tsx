@@ -20,8 +20,8 @@ const CardBoard = () => {
           key={index}
           className={`absolute rounded-md ${
             card.state === "available"
-              ? "bg-[#EEEEEE] border border-[#A569BD] shadow-md cursor-pointer"
-              : "bg-gray-600 border border-gray-800"
+              ? "bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
+              : "bg-gray-600"
           }`}
           style={{
             top: `${card.top}px`,

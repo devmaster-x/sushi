@@ -96,13 +96,18 @@ const GameBoard = () => {
 
   return (
     <div className="min-h-screen bg-[#1e1e2f] text-white flex flex-col justify-center items-center px-6 py-8">
-      <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row gap-12">
+      <div className="mx-auto flex flex-col lg:hidden gap-4">
+        <GameInfo />
+        <CardBoard />
+        <Bucket />
+        <ButtonsMobile />
+      </div>
+      <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-12">
         {/* Left Section: Game Info, Card Board */}
         <CardBoard />
 
         {/* Right Section: Stash, Bucket, Leaderboard */}
         <div className="flex flex-col gap-6 w-full lg:w-1/3 justify-around">
-          <ButtonsMobile />
           <GameInfo />
           <Bucket />
           <LeaderBoard />
