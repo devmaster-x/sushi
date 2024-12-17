@@ -231,13 +231,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
             else if(!checkArray(top-1, left-1, top+1, left+1)) isOverlappingWithExisting = true;
             else setMarkArray(top, left);
 
-            retryCount++; // Increment retry count
-            if (retryCount > 100) { // Maximum retries to avoid infinite loop
+            retryCount++;
+            if (retryCount > 100) {
               console.log("callback limit : ");
               generateCards(round, offset + 1);
               return;
             }
-          } while (isOverlappingWithExisting); // Retry if there was overlap
+          } while (isOverlappingWithExisting);
 
         } catch (error) {
           console.error("Error while checking overlap:", error);
@@ -269,11 +269,61 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         generatedCards.push(newCard);
       }
     }
+    console.log("cards : ", generatedCards);
 
+    // const result = sortGeneratedCards(generatedCards);
+    // console.log("cards sorded: ", result)
     // Set the generated cards in state
     setCards(generatedCards);
     setSlotAvailablity(true);
   };
+
+  // const sortGeneratedCards = (_cards: CardNode[]) => {
+  //   const uniqueCards = Array.from(new Map(_cards.map(card => [card.id, card])).values());
+  //   const cardWidth = uniqueCards[0]?.size.width || 40; // Default card width
+  //   const cardHeight = uniqueCards[0]?.size.height || 40; // Default card height
+  
+  //   // Group cards by zIndex
+  //   const groupedByLayer = uniqueCards.reduce((acc: { [key: number]: CardNode[] }, card) => {
+  //     if (!acc[card.zIndex]) acc[card.zIndex] = [];
+  //     acc[card.zIndex].push(card);
+  //     return acc;
+  //   }, {});
+  
+  //   const updatedCards: CardNode[] = [];
+  
+  //   // Process each layer
+  //   Object.keys(groupedByLayer).forEach((layerKey) => {
+  //     const layer = groupedByLayer[Number(layerKey)];
+  //     const cardCount = layer.length;
+  
+  //     // Calculate grid size (closest square for the number of cards)
+  //     const columns = Math.ceil(Math.sqrt(cardCount));
+  //     const rows = Math.ceil(cardCount / columns);
+  
+  //     // Calculate starting positions for centering
+  //     const boardWidth = columns * cardWidth;
+  //     const boardHeight = rows * cardHeight;
+  //     const centerX = 500; // Assume board center X (adjustable based on actual board width)
+  //     const centerY = 500; // Assume board center Y (adjustable based on actual board height)
+  
+  //     const startX = centerX - boardWidth / 2;
+  //     const startY = centerY - boardHeight / 2;
+  
+  //     // Reposition cards into the grid
+  //     layer.forEach((card, index) => {
+  //       const row = Math.floor(index / columns);
+  //       const col = index % columns;
+  
+  //       card.top = startY + row * cardHeight;
+  //       card.left = startX + col * cardWidth;
+  
+  //       updatedCards.push(card);
+  //     });
+  //   });
+  
+  //   return updatedCards;
+  // };  
 
   // Move first three cards to additional slots
   const moveToAdditionalSlots = () => {
