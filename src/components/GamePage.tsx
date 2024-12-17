@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { createAppKit, useAppKitAccount } from "@reown/appkit/react";
-import { EthersAdapter } from "@reown/appkit-adapter-ethers";
-import { mainnet, arbitrum } from "@reown/appkit/networks";
+// import { createAppKit, useAppKitAccount } from "@reown/appkit/react";
+// import { EthersAdapter } from "@reown/appkit-adapter-ethers";
+// import { mainnet, arbitrum } from "@reown/appkit/networks";
 import { useGameContext } from "src/context/gameContext";
 import { User } from "src/types/type";
 import ButtonsMobile from "./ButtonsMobile";
@@ -25,9 +25,9 @@ const GameBoard = () => {
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
-  const { address, isConnected } = useAppKitAccount();
-  const [_user, setUserName] = useState("");
-  const [activeID, setActiveID] = useState<NodeJS.Timeout>();
+  // const { address, isConnected } = useAppKitAccount();
+  // const [_user, setUserName] = useState("");
+  // const [activeID, setActiveID] = useState<NodeJS.Timeout>();
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,25 +42,25 @@ const GameBoard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
-    createAppKit({
-      adapters: [new EthersAdapter()],
-      networks: [mainnet, arbitrum],
-      projectId,
-      themeMode: "dark",
-    });
+  // useEffect(() => {
+  //   const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || "";
+  //   createAppKit({
+  //     adapters: [new EthersAdapter()],
+  //     networks: [mainnet, arbitrum],
+  //     projectId,
+  //     themeMode: "dark",
+  //   });
 
-    if (!isConnected) return;
+  //   if (!isConnected) return;
 
-    const id = setInterval(() => sendUserActive(), 10000);
-    setActiveID(id);
-    checkUserName();
+  //   const id = setInterval(() => sendUserActive(), 10000);
+  //   setActiveID(id);
+  //   checkUserName();
 
-    return () => {
-      if (activeID) clearInterval(activeID);
-    };
-  }, [isConnected, address]);
+  //   return () => {
+  //     if (activeID) clearInterval(activeID);
+  //   };
+  // }, [isConnected, address]);
 
   useEffect(() => {
     if (cards.length === 0 && gameStarted && bucket.length === 0 && additionalSlots.length === 0) {
@@ -68,26 +68,26 @@ const GameBoard = () => {
     }
   }, [cards, bucket, additionalSlots]);
 
-  const sendUserActive = () => {
-    axios.post("/api/useractive", { wallet: address });
-  };
+  // const sendUserActive = () => {
+  //   axios.post("/api/useractive", { wallet: address });
+  // };
 
-  const checkUserName = async () => {
-    try {
-      const response = await fetch(`/api/register?wallet=${address}`, { method: "GET" });
-      if (response.ok) {
-        const data: User = await response.json();
-        setUserName(data.username);
-        registerUser(data.username);
-      } else {
-        const defaultUsername = `user-${address!.slice(2, 6)}${address!.slice(-4)}`;
-        setUserName(defaultUsername);
-        registerUser();
-      }
-    } catch (error) {
-      console.error("Error fetching leaderboard:", error);
-    }
-  };
+  // const checkUserName = async () => {
+  //   try {
+  //     const response = await fetch(`/api/register?wallet=${address}`, { method: "GET" });
+  //     if (response.ok) {
+  //       const data: User = await response.json();
+  //       setUserName(data.username);
+  //       registerUser(data.username);
+  //     } else {
+  //       const defaultUsername = `user-${address!.slice(2, 6)}${address!.slice(-4)}`;
+  //       setUserName(defaultUsername);
+  //       registerUser();
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching leaderboard:", error);
+  //   }
+  // };
 
   const handleNextRound = () => {
     setShowCongrats(false);
