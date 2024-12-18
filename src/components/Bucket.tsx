@@ -12,12 +12,12 @@ const Bucket = () => {
         {bucket.map((card) => (
           <div
             key={card.id}
-            className="w-10 h-10 bg-green-600 rounded-md flex items-center justify-center bg-cover"
+            className="w-8 h-8 bg-blue-400 rounded-md flex items-center justify-center bg-cover"
             style={{ backgroundImage: `url(assets/sushi/${card.type + 1}.png)` }}
           />
         ))}
         {Array.from({ length: 7 - bucket.length }).map((_, idx) => (
-          <div key={`empty-${idx}`} className="w-10 h-10 bg-gray-500 rounded-md" />
+          <div key={`empty-${idx}`} className="w-8 h-8 bg-gray-500 rounded-md" />
         ))}
       </div>
     </div>
