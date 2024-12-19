@@ -31,6 +31,10 @@ type GameContextType = {
   rollbackAvailable : boolean;
   rollbackPressed: boolean;
   gameStarted: boolean;
+  topCards: CardNode[];
+  hintCards: CardNode[];
+  isHint: boolean;
+  handleHintSelected: () => void;
   setGameStarted: (f: boolean) => void;
   registerUser: (user?: string ) => Promise<void>;
   restartGame: () => void;
@@ -61,6 +65,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(1);
   const [cards, setCards] = useState<CardNode[]>([]);
+  const [topCards, setTopCards] = useState<CardNode[]>([]);
+  const [hintCards, setHintCards] = useState<CardNode[]>([]);
+  const [isHint, setIsHint] = useState(false);
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
   const loseLifeCalledRef = useRef(false);
@@ -225,6 +232,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     return markedArray;
   };
   
+  const handleHintSelected = () => {
+    setIsHint(!isHint);
+    const _topCards = cards.filter((card) => card.state === 'available');
+    setTopCards(_topCards);
+    setHintCards(cards.filter((card) => card.state === 'unavailable' && card.parents.every((parent) => _topCards.some((topCard) => topCard.id === parent.id)) ));
+  }
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer } = round;
@@ -537,6 +550,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       rollbackAvailable,
       rollbackPressed,
       gameStarted,
+      topCards,
+      hintCards,
+      isHint,
+      handleHintSelected,
       setGameStarted,
       registerUser,
       restartGame,
@@ -553,6 +570,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCardBoardWidth
     }),
     [
+      topCards,
+      hintCards,
+      isHint,
       gameStarted,
       currentRound,
       bucket,

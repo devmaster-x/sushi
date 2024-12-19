@@ -4,14 +4,11 @@ const ButtonsMobile = () => {
   const {
     bucket,
     slotAvailablity,
-    rollbackAvailable,
-    rollbackPressed,
     gameStarted,
     setGameStarted,
     startNextRound,
     restartGame,
-    moveToAdditionalSlots,
-    rollbackFromAdditionalSlots,
+    handleHintSelected
   } = useGameContext();
 
   const handlePlay = () => {
@@ -24,15 +21,13 @@ const ButtonsMobile = () => {
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={startNextRound}
-        // disabled={!slotAvailablity || bucket.length === 0}
       >
         Next
       </button>
 
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={() => {}}
-        disabled={!slotAvailablity || bucket.length === 0}
+        onClick={handleHintSelected}
       >
         Hint
       </button>
