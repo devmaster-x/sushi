@@ -12,6 +12,7 @@ import GameInfo from "./GameInfo";
 import Bucket from "./Bucket";
 import LeaderBoard from "./LeaderBoard";
 import CongratesModal from "./CongratesModal";
+import FailedModal from "./FailedModal";
 
 const GameBoard = () => {
   const {
@@ -19,7 +20,9 @@ const GameBoard = () => {
     gameStarted,
     additionalSlots,
     cards,
+    gameOver,
     registerUser,
+    restartGame,
     startNextRound,
     setCardBoardWidth,
   } = useGameContext();
@@ -64,6 +67,8 @@ const GameBoard = () => {
 
   useEffect(() => {
     if (cards.length === 0 && gameStarted && bucket.length === 0 && additionalSlots.length === 0) {
+      const audio = new Audio('/assets/audio/win.mp3'); // Path to your audio file
+      audio.play();
       setShowCongrats(true);
     }
   }, [cards, bucket, additionalSlots]);
@@ -118,6 +123,7 @@ const GameBoard = () => {
       {showCongrats && (
         <CongratesModal handleClick={handleNextRound}/>          
       )}
+      {gameOver && <FailedModal handleClick={restartGame}/>}
     </div>
   );
 };

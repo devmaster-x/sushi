@@ -34,6 +34,7 @@ type GameContextType = {
   topCards: CardNode[];
   hintCards: CardNode[];
   isHint: boolean;
+  gameOver: boolean;
   handleHintSelected: () => void;
   setGameStarted: (f: boolean) => void;
   registerUser: (user?: string ) => Promise<void>;
@@ -76,6 +77,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [rollbackAvailable, setRollbackAvailable] = useState(false); 
   const [rollbackPressed, setRollbackPressed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
   const cardSize = 40;
 
   useEffect(()=>{
@@ -420,13 +422,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   };
 
   const loseLife = () => {
+    const audio = new Audio('/assets/audio/lose.mp3');
+    audio.play();
+
     if (lives > 1) {
       setLives((prev) => prev - 1);
-      alert("You lost a life!");
       startCurrentRound();
     } else {
-      alert("Game Over!");
-      restartGame();
+      setGameOver(true);
+      // restartGame();
     }
   };
   
@@ -455,6 +459,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
   
   const restartGame = () => {
+    setGameOver(false);
+    setGameStarted(true);
     setBucket([]);
     setAdditionalSlots([]);
     setRollbackAvailable(false);
@@ -469,6 +475,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   // Handle card click
   const handleCardClick = (card: CardNode) => {
+    const audio = new Audio('/assets/audio/click.mp3'); // Path to your audio file
+    audio.play();
+
     if(card.state=="available") setRollbackAvailable(true && !rollbackPressed);
     if (card.isInAdditionalSlot) {
       setAdditionalSlots((prevSlots) => {
@@ -553,6 +562,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       topCards,
       hintCards,
       isHint,
+      gameOver,
       handleHintSelected,
       setGameStarted,
       registerUser,
@@ -570,6 +580,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCardBoardWidth
     }),
     [
+      gameOver,
       topCards,
       hintCards,
       isHint,

@@ -23,7 +23,7 @@ const CardBoard = () => {
       {topCards.map((card, index) => (
         <div
           key={index}
-          className={`absolute rounded-md bg-gray-600 shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
+          className={`absolute rounded-md bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
           }`}
           style={{
             top: `${card.top}px`,
@@ -37,7 +37,8 @@ const CardBoard = () => {
             className="absolute inset-0 bg-cover rounded-md"
             style={{
               backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
-              filter:' brightness(0.4)',
+              // filter:' brightness(0.4)',
+              opacity: 0.4
             }}
           />
         </div>

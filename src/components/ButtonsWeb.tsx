@@ -5,14 +5,12 @@ const ButtonsWeb = () => {
     bucket,
     slotAvailablity,
     gameStarted,
-    setGameStarted,
     startNextRound,
     restartGame,
     handleHintSelected
   } = useGameContext();
 
   const handlePlay = () => {
-    setGameStarted(true);
     restartGame();
   }
 
