@@ -399,7 +399,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         setTimeout(() => {
           loseLife();
           loseLifeCalledRef.current = false; // Reset after timeout
-        }, 500);
+        }, 1);
       }
   
       return updatedBucket;

@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head title="Sushi card matching">
+        <title>Sushi card matching</title>
       </Head>
       <body className="antialiased">
         <Main />
