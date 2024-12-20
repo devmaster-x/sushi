@@ -164,7 +164,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   };
   
   const genereateCardsByLayer = (cardsAmount: number, layer: number, offset: number = 1): position[] => {
-    const arraySize = Math.floor(Math.sqrt(cardsAmount) + Math.min(4, offset));
+    const arraySize = Math.max(Math.floor(Math.sqrt(cardsAmount) + Math.min(4, offset)), 8);
     const n = arraySize * 2 - 1;
     const numberizedArray = Array.from({ length: n+1 }, () => Array(n+1).fill(0));
     let markedArray: position[] = [];
