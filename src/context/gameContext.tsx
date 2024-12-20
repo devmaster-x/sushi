@@ -284,7 +284,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     //step 2: generate cards count per layer
     for (let i = 0 ; i < deepLayer; i++) cardsPerLayer.push(totalCards / deepLayer);
     for (let i = 0 ; i < Math.floor(deepLayer / 2) ; i++) {
-      const _rand_amount =  Math.min(Math.floor(Math.random() * Math.max(Math.min(totalCards / deepLayer, 10), 4)), cardsPerLayer[i] - 1);
+      const _rand_amount =  Math.min(Math.floor(Math.random() * Math.max(Math.min(totalCards / deepLayer, 10), 4)), 10);
       const  pul_or_min = (Math.random() * 100) > 50;
       cardsPerLayer[i] += (pul_or_min ? 1 : -1) * _rand_amount;
       cardsPerLayer[deepLayer-i-1] += (pul_or_min ? -1 : 1) * _rand_amount;
