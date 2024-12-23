@@ -35,6 +35,7 @@ type GameContextType = {
   isHint: boolean;
   gameOver: boolean;
   maxBucket: number;
+  resetHintCards: () => void;
   setMaxBucketCount: (n: number) => void;
   handleHintSelected: () => void;
   setGameStarted: (f: boolean) => void;
@@ -70,6 +71,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [cards, setCards] = useState<CardNode[]>([]);
   const [topCards, setTopCards] = useState<CardNode[]>([]);
   const [hintCards, setHintCards] = useState<CardNode[]>([]);
+  const [tempCards, setTempCards] = useState<CardNode[]>([]);
   const [isHint, setIsHint] = useState(false);
   const [leaderBoard, setLeaderBoard] = useState<LeaderBoard>([]);
   const [slotAvailablity, setSlotAvailablity] = useState(true);
@@ -236,12 +238,35 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     markedArray = markedArray.map((array) => ({ x: array.x * 20 + offsetSize, y: array.y * 20 + offsetSize }));
     return markedArray;
   };
+
+  const resetHintCards = () => {
+    setIsHint(false);
+    setTopCards([]);
+    setHintCards([]);
+    setTempCards([]);
+  }
   
   const handleHintSelected = () => {
-    setIsHint(!isHint);
+    setIsHint(true);
     const _topCards = cards.filter((card) => card.state === 'available');
     setTopCards(_topCards);
-    setHintCards(cards.filter((card) => card.state === 'unavailable' && card.parents.every((parent) => _topCards.some((topCard) => topCard.id === parent.id)) ));
+
+    let _tempCards: CardNode[];
+    if (tempCards.length === 0) {
+        _tempCards = cards.filter((card) => !_topCards.some((topCard) => topCard.id === card.id));
+        _tempCards = _tempCards.map((card) => ({
+          ...card,
+          parents: card.parents.filter((parent) => !_topCards.some((topCard) => topCard.id === parent.id))
+        }))
+    } else {
+      _tempCards = tempCards.filter((card) => !hintCards.some((hintCard) => hintCard.id === card.id));
+      _tempCards = _tempCards.map((card) => ({
+        ...card,
+        parents: card.parents.filter((parent) => !hintCards.some((hintCard) => hintCard.id === parent.id))
+      }))
+    }
+    setTempCards(_tempCards);
+    setHintCards(_tempCards.filter((card) => card.state === 'unavailable' && card.parents.length == 0));
   }
 
   const generateCards = (round: Round) => {
@@ -474,6 +499,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setSlotAvailablity(true);
     setLives(1);
     setScore(0);
+    setMaxBucketCount(7);
     setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
     generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
     sendScore(0);
@@ -570,6 +596,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       isHint,
       gameOver,
       maxBucket,
+      resetHintCards,
       setMaxBucketCount,
       handleHintSelected,
       setGameStarted,

@@ -7,7 +7,7 @@ const CardBoard = () => {
     hintCards,
     isHint,
     cardBoardWidth,
-    handleHintSelected,
+    resetHintCards,
     handleCardClick,
   } = useGameContext();
 
@@ -18,7 +18,7 @@ const CardBoard = () => {
         width: cardBoardWidth,
         height: cardBoardWidth,
       }}
-      onClick={ handleHintSelected }
+      onClick={ resetHintCards }
     >
       {topCards.map((card, index) => (
         <div
