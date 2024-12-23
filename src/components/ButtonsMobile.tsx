@@ -3,9 +3,16 @@ import { useGameContext } from "src/context/gameContext";
 const ButtonsMobile = () => {
   const {
     gameStarted,
+    setGameStarted,
+    restartGame,
     setShowConfirmModal,
     handleHintSelected
   } = useGameContext();
+
+  const handlePlay = () => {
+    setGameStarted(true);
+    restartGame();
+  }
 
   return (
     <div className="gap-4 flex lg:hidden justify-center">
@@ -36,7 +43,7 @@ const ButtonsMobile = () => {
             ? "bg-green-600 hover:bg-green-400"
             : "bg-[#2a2b3c] hover:bg-[#3a3b4c]"
         } text-white`}
-        onClick={ ()=>setShowConfirmModal(true) }
+        onClick={ ()=> gameStarted ? setShowConfirmModal(true) : handlePlay() }
       >
         {gameStarted ? "Restart" : "Play"}
       </button>
