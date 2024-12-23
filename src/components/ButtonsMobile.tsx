@@ -5,6 +5,7 @@ const ButtonsMobile = () => {
     gameStarted,
     setGameStarted,
     restartGame,
+    startNextRound,
     setShowConfirmModal,
     handleHintSelected
   } = useGameContext();
@@ -16,12 +17,12 @@ const ButtonsMobile = () => {
 
   return (
     <div className="gap-4 flex lg:hidden justify-center">
-      {/* <button
+      <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={startNextRound}
       >
         Next
-      </button> */}
+      </button>
 
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
