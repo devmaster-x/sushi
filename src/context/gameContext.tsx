@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { User, CardNode, Round } from "src/types/type";
-import { useMediaQuery } from 'react-responsive';
 
 interface position {
   x: number,
@@ -61,7 +60,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [currentRound, setCurrentRound] = useState<Round>({
     roundNumber: 1,
     cardTypeNumber: 6,
-    deepLayer: 5,
+    deepLayer: 3,
+    difficulty: false,
   });
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
@@ -307,8 +307,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         addToGeneratedCards(card.x, card.y, layer);
       })
     }
-    console.log("cards per layer : ", cardsPerLayer);
-    console.log("cards : ",cards);
     setCards(generatedCards);
     setSlotAvailablity(true);
   };  
@@ -372,10 +370,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setSlotAvailablity(true);
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
-      cardTypeNumber: currentRound.cardTypeNumber < 22 ? currentRound.cardTypeNumber + 4 : 22 , 
-      deepLayer: currentRound.deepLayer + 3  
+      cardTypeNumber: currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 4, 22), 
+      deepLayer: currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + 3,
+      difficulty: currentRound.difficulty === true ? false : currentRound.cardTypeNumber * currentRound.deepLayer > 120 ? true : false
     }
-    if(_round.roundNumber === 4) setMaxBucketCount(8);
+    if(_round.difficulty) setMaxBucketCount(8);
+    else setMaxBucketCount(7);
+
+    console.log("_round : ", _round);
     setCurrentRound(_round);
     generateCards(_round);
   };
@@ -472,8 +474,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setSlotAvailablity(true);
     setLives(1);
     setScore(0);
-    setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
-    generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3 });
+    setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
+    generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
     sendScore(0);
   };
 

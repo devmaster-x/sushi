@@ -15,6 +15,7 @@ export interface Round {
   roundNumber: number;
   cardTypeNumber: number; // Number of unique card types
   deepLayer: number; // Depth of complexity for the round
+  difficulty: boolean;
 }
 
 export interface GameState {
