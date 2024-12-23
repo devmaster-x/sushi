@@ -3,6 +3,7 @@ import { useGameContext } from "src/context/gameContext";
 const Bucket = () => {
   const {
     bucket,
+    maxBucket
   } = useGameContext();
 
   return (
@@ -16,7 +17,7 @@ const Bucket = () => {
             style={{ backgroundImage: `url(assets/sushi/${card.type + 1}.png)` }}
           />
         ))}
-        {Array.from({ length: 7 - bucket.length }).map((_, idx) => (
+        {Array.from({ length: maxBucket - bucket.length }).map((_, idx) => (
           <div key={`empty-${idx}`} className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-500 rounded-md" />
         ))}
       </div>

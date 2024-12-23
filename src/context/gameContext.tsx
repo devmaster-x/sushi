@@ -35,6 +35,8 @@ type GameContextType = {
   hintCards: CardNode[];
   isHint: boolean;
   gameOver: boolean;
+  maxBucket: number;
+  setMaxBucketCount: (n: number) => void;
   handleHintSelected: () => void;
   setGameStarted: (f: boolean) => void;
   registerUser: (user?: string ) => Promise<void>;
@@ -46,7 +48,7 @@ type GameContextType = {
   handleCardClick: (card: CardNode) => void;
   moveToAdditionalSlots: () => void;
   rollbackFromAdditionalSlots: () => void;
-  setCards: (cards: CardNode[]) => void;
+  setCards: (cards: CardNode[]) => void; 
   setSlotAvailablity: (flag: boolean) => void;
   handleAdditionalCardClick: (card: CardNode) => void;
   setCardBoardWidth: (width : number) => void
@@ -78,6 +80,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [rollbackPressed, setRollbackPressed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [maxBucket, setMaxBucketCount] = useState(7);
   const cardSize = 40;
 
   useEffect(()=>{
@@ -372,6 +375,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       cardTypeNumber: currentRound.cardTypeNumber < 22 ? currentRound.cardTypeNumber + 4 : 22 , 
       deepLayer: currentRound.deepLayer + 3  
     }
+    if(_round.roundNumber === 4) setMaxBucketCount(8);
     setCurrentRound(_round);
     generateCards(_round);
   };
@@ -409,7 +413,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       }
   
       // Check for bucket overflow (7 cards limit)
-      if (updatedBucket.length === 7 && !loseLifeCalledRef.current) {
+      if (updatedBucket.length === maxBucket && !loseLifeCalledRef.current) {
         loseLifeCalledRef.current = true; // Mark that loseLife is being called
         setTimeout(() => {
           loseLife();
@@ -563,6 +567,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       hintCards,
       isHint,
       gameOver,
+      maxBucket,
+      setMaxBucketCount,
       handleHintSelected,
       setGameStarted,
       registerUser,
@@ -580,6 +586,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCardBoardWidth
     }),
     [
+      maxBucket,
       gameOver,
       topCards,
       hintCards,
