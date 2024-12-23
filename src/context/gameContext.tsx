@@ -35,6 +35,8 @@ type GameContextType = {
   isHint: boolean;
   gameOver: boolean;
   maxBucket: number;
+  showConfirmModal: boolean;
+  setShowConfirmModal: (f: boolean) => void;
   resetHintCards: () => void;
   setMaxBucketCount: (n: number) => void;
   handleHintSelected: () => void;
@@ -82,6 +84,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [rollbackPressed, setRollbackPressed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
   const cardSize = 40;
 
@@ -596,6 +599,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       isHint,
       gameOver,
       maxBucket,
+      showConfirmModal,
+      setShowConfirmModal,
       resetHintCards,
       setMaxBucketCount,
       handleHintSelected,
@@ -617,6 +622,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     [
       maxBucket,
       gameOver,
+      showConfirmModal,
       topCards,
       hintCards,
       isHint,

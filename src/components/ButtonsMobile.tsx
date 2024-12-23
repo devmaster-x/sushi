@@ -2,28 +2,19 @@ import { useGameContext } from "src/context/gameContext";
 
 const ButtonsMobile = () => {
   const {
-    bucket,
-    slotAvailablity,
     gameStarted,
-    setGameStarted,
-    startNextRound,
-    restartGame,
+    setShowConfirmModal,
     handleHintSelected
   } = useGameContext();
 
-  const handlePlay = () => {
-    setGameStarted(true);
-    restartGame();
-  }
-
   return (
     <div className="gap-4 flex lg:hidden justify-center">
-      <button
+      {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={startNextRound}
       >
         Next
-      </button>
+      </button> */}
 
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
@@ -45,7 +36,7 @@ const ButtonsMobile = () => {
             ? "bg-green-600 hover:bg-green-400"
             : "bg-[#2a2b3c] hover:bg-[#3a3b4c]"
         } text-white`}
-        onClick={handlePlay}
+        onClick={ ()=>setShowConfirmModal(true) }
       >
         {gameStarted ? "Restart" : "Play"}
       </button>
