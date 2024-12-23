@@ -199,7 +199,7 @@ const GameBoard = () => {
             <div className="flex justify-between mt-4 text-gray-400">
               <p>Lives: {lives}</p>
               <p>Score: {score}</p>
-              <p>Round: {currentRound.roundNumber}</p>
+              <p>Stage: {currentRound.roundNumber}</p>
             </div>
           </div>
           {/* Stash */}
