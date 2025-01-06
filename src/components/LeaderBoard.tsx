@@ -6,8 +6,8 @@ const LeaderBoard = () => {
   const { address } = useAppKitAccount();
 
   return (
-    // <div className="bg-[#252635] p-6 rounded-md shadow-md mx-auto">
-    <div className="bg-transparent p-6 rounded-md shadow-md mx-auto">
+    <div className="bg-[#252635] p-6 rounded-md shadow-md w-full mx-auto">
+    {/* <div className="bg-transparent p-6 rounded-md shadow-md mx-auto"> */}
       <h2 className="text-lg font-bold text-white text-center">Leaderboard</h2>
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>

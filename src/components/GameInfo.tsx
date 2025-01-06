@@ -8,8 +8,8 @@ const GameInfo = () => {
   } = useGameContext();
 
   return (
-    // <div className="w-full bg-[#FFD54F] p-4 rounded-md shadow-md">
-    <div className="w-full bg-transparent px-4 rounded-md shadow-md">
+    <div className="w-full bg-[#252635] p-4 rounded-md shadow-md">
+    {/* <div className="w-full bg-transparent px-4 rounded-md shadow-md"> */}
       {/* <h2 className="text-lg font-bold text-center text-gray-200">Game Info</h2> */}
       <div className="flex justify-between lg:justify-around text-[37474F]">
         {/* <p>Lives: {lives}</p> */}
