@@ -56,7 +56,12 @@ const GameBoard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1e1e2f] text-white flex flex-col justify-center items-center px-6 py-8">
+    <div 
+      className="min-h-screen bg-cover text-white flex flex-col justify-center items-center px-6 py-8"
+      style={{
+        backgroundImage: `url(assets/sushi/background.png)`,
+      }}
+    >
       <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
         <GameInfo />
         <CardBoard />
