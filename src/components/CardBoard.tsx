@@ -27,8 +27,8 @@ const CardBoard = () => {
           className={`absolute rounded-md bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
           }`}
           style={{
-            top: `${card.top}px`,
-            left: `${card.left}px`,
+            top: `${card.top + card.offset}px`,
+            left: `${card.left + card.offset}px`,
             width: `39px`,
             height: `39px`,
             zIndex: 1,
@@ -50,8 +50,8 @@ const CardBoard = () => {
           className={`absolute rounded-md bg-green-300 shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
           }`}
           style={{
-            top: `${card.top}px`,
-            left: `${card.left}px`,
+            top: `${card.top + card.offset}px`,
+            left: `${card.left + card.offset}px`,
             width: `39px`,
             height: `39px`,
             zIndex: 2,
@@ -85,8 +85,8 @@ const CardBoard = () => {
                 : "bg-gray-600"
             }`}
             style={{
-              top: `${card.top}px`,
-              left: `${card.left}px`,
+              top: `${card.top + card.offset}px`,
+              left: `${card.left + card.offset}px`,
               width: `39px`,
               height: `39px`,
               zIndex: card.zIndex,

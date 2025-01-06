@@ -15,6 +15,12 @@ interface position {
   y: number
 }
 
+interface layerCards {
+  array: position[],
+  offset: number,
+  array_size: number //cardboard array size for this layer
+}
+
 type LeaderBoard = User[];
 
 type GameContextType = {
@@ -92,6 +98,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     sendScore(score);
   },[score])
 
+  useEffect(()=>{
+    console.log("cardBoardWidth changed : ", cardBoardWidth);
+    if(cards.length > 0) rearrangeCards();
+  },[cardBoardWidth])
 
   const fetchLeaderboard = async () => {
     try {
@@ -171,7 +181,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
   };
   
-  const genereateCardsByLayer = (cardsAmount: number, layer: number, offset: number = 1): position[] => {
+  const genereateCardsByLayer = (cardsAmount: number, layer: number, offset: number = 1): layerCards => {
     const arraySize = Math.min(Math.floor(Math.sqrt(cardsAmount) + Math.min(4, offset)), 7);
     const n = arraySize * 2 - 1;
     const numberizedArray = Array.from({ length: n+1 }, () => Array(n+1).fill(0));
@@ -238,8 +248,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       markedArray.push({ x: newPosition.x, y: newPosition.y });
     }
     const offsetSize = (cardBoardWidth - arraySize * 40) / 2;
-    markedArray = markedArray.map((array) => ({ x: array.x * 20 + offsetSize, y: array.y * 20 + offsetSize }));
-    return markedArray;
+    markedArray = markedArray.map((array) => ({ x: array.x * 20, y: array.y * 20}));
+    return {array: markedArray, offset: offsetSize, array_size: arraySize};
   };
 
   const resetHintCards = () => {
@@ -281,11 +291,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     // const totalCards: number = Math.floor(0.6 * cardTypeNumber) * lcd(cardMatchingCount, deepLayer);
     const totalCards: number = cardTypeNumber * deepLayer;
 
-    const addToGeneratedCards = (t: number, l: number ,layer: number) => {
+    const addToGeneratedCards = (t: number, l: number , offset: number, layer: number, layer_array_size: number) => {
       let parents = [];
       // Check for overlap with other cards in the same layer and higher layers
       for (const card of generatedCards) {
-        if (isOverlapping(card.left, t, card.top, l) && (card.zIndex > layer)) {
+        if (isOverlapping(card.left + card.offset, t + offset, card.top + card.offset, l + offset) && (card.zIndex > layer)) {
           parents.push(card);
         }
       }
@@ -294,10 +304,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         type: allCards[generatedCards.length],
         top: l,
         left:  t,
+        offset: offset,
         size: { width: cardSize, height: cardSize },
         zIndex: layer,
         parents,
         state: layer === deepLayer || parents.length === 0 ? "available" : "unavailable", // Cards in the deepest layer or those with no parents are available
+        array_size: layer_array_size,
         isInBucket: false,
         isInAdditionalSlot: false,
       };
@@ -330,14 +342,25 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
     // Step 4: Generate the cards layer by layer
     for (let layer = deepLayer - 1; layer >= 0; layer--) {
-      const layerCards : position[] = genereateCardsByLayer(cardsPerLayer[layer], layer, 1);
-      layerCards.forEach((card)=> {
-        addToGeneratedCards(card.x, card.y, layer);
+      const layerCards : layerCards = genereateCardsByLayer(cardsPerLayer[layer], layer, 1);
+      layerCards.array.forEach((card)=> {
+        addToGeneratedCards(card.x, card.y, layerCards.offset, layer, layerCards.array_size);
       })
     }
     setCards(generatedCards);
     setSlotAvailablity(true);
-  };  
+  };
+  
+  const rearrangeCards = () => {
+    setCards((prevCards) => {
+      return prevCards.map((card) => {
+        return ({
+          ...card,
+          offset: (cardBoardWidth - card.array_size * 40) / 2
+        })
+      })
+    });
+  }
 
   // Move first three cards to additional slots
   const moveToAdditionalSlots = () => {

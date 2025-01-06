@@ -3,6 +3,8 @@ export interface CardNode {
   type: number; // Type ID for determining the image or behavior
   top: number; // Position on Y-axis
   left: number; // Position on X-axis
+  offset: number; //Offset position
+  array_size: number; // To rearrange cards when layout changes
   size: { width: number; height: number }; // Fixed size
   zIndex: number; // Layering order
   parents: Array<CardNode>; // Parent nodes for layered cards
