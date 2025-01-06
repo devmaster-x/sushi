@@ -13,8 +13,9 @@ const CardBoard = () => {
 
   if(isHint) return (
     <div
-      className="relative bg-[#B2E0FF] rounded-lg shadow-md overflow-hidden mx-auto"
+      className="relative rounded-lg bg-cover shadow-md overflow-hidden mx-auto"
       style={{
+        backgroundImage: `url(assets/sushi/background.png)`,
         width: cardBoardWidth,
         height: cardBoardWidth,
       }}
@@ -68,8 +69,9 @@ const CardBoard = () => {
   )
   return (
       <div
-        className="relative bg-[#B2E0FF] rounded-lg shadow-md overflow-hidden mx-auto"
+        className="relative bg-cover rounded-lg shadow-md overflow-hidden mx-auto"
         style={{
+          backgroundImage: `url(assets/sushi/background.png)`,
           width: cardBoardWidth,
           height: cardBoardWidth,
         }}
