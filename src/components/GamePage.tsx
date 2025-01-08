@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useGameContext } from "src/context/gameContext";
+import { useSession, signIn, signOut } from "next-auth/react"
+import axios from "axios";
 import { User } from "src/types/type";
 import {
   ButtonsMobile,
@@ -21,12 +23,15 @@ const GameBoard = () => {
     cards,
     gameOver,
     showConfirmModal,
+    registerUser,
     restartGame,
     startNextRound,
     setCardBoardWidth,
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
+  const [activeID, setActiveID] = useState<NodeJS.Timeout>();     //Interval ID
+  const { data: session } = useSession()
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,6 +54,38 @@ const GameBoard = () => {
       setShowCongrats(true);
     }
   }, [cards, bucket, additionalSlots]);
+
+  useEffect(() => {
+    if(session) {
+      const id = setInterval(() => sendUserActive(), 10000);
+      setActiveID(id);
+
+      checkUserRegistered();
+    }
+  },[signIn, session])
+
+  useEffect(() => {
+    if(!activeID) clearInterval(activeID);
+  },[signOut])
+
+  const sendUserActive = () => {
+    axios.post("/api/useractive", { email: session?.user?.email });
+  };
+
+  const checkUserRegistered = async () => {
+    try {
+      const response = await fetch(`/api/register?email=${session?.user?.email}`, { method: "GET" });
+      console.log("register fetch response : ", response);
+      console.log("current user : ", session?.user?.name);
+      // if (response.ok) {
+        registerUser(session?.user?.email!, session?.user?.name!)
+      // } else {
+      //   window.location.href = "https://www.sushifarm.io";
+      // }
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+    }
+  };
 
   const handleNextRound = () => {
     setShowCongrats(false);

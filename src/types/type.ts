@@ -31,6 +31,7 @@ export interface GameState {
 
 export interface User {
   wallet: string;
+  email: string;
   username: string; // Added username for identification
   current_score: number;
   top_score: number; // Top score user has achieved

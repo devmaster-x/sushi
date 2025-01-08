@@ -1,4 +1,5 @@
 import { useGameContext } from "src/context/gameContext";
+import SignInButton from './SignInButton';
 
 const ButtonsMobile = () => {
   const {
@@ -7,7 +8,8 @@ const ButtonsMobile = () => {
     restartGame,
     startNextRound,
     setShowConfirmModal,
-    handleHintSelected
+    handleHintSelected,
+    currentUser
   } = useGameContext();
 
   const handlePlay = () => {
@@ -15,7 +17,10 @@ const ButtonsMobile = () => {
     restartGame();
   }
 
-  return (
+  if(!currentUser) return <div className="gap-4 flex lg:hidden justify-end">
+    <SignInButton />
+  </div>
+  else return (
     <div className="gap-4 flex lg:hidden justify-center">
       {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"

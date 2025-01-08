@@ -5,6 +5,7 @@ export { default as ButtonsWeb } from './ButtonsWeb'
 export { default as CardBoard } from './CardBoard'
 export { default as GameInfo } from './GameInfo'
 export { default as LeaderBoard } from './LeaderBoard'
+export { default as SingInButton } from './SignInButton'
 export { 
   CongratesModal,
   ConfirmModal,

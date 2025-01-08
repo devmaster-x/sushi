@@ -22,21 +22,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === "POST") {
     try {
-      const { wallet, score } = req.body;
+      const { email, score } = req.body;
 
-      if (!wallet || typeof score !== "number") {
-        return res.status(400).json({ error: "Wallet and score are required." });
+      if (!email || typeof score !== "number") {
+        return res.status(400).json({ error: "email and score are required." });
       }
 
-      const user = await db.collection("users").findOne({ wallet });
+      const user = await db.collection("users").findOne({ email });
 
       if (!user) {
         return res.status(404).json({ error: "User not found." });
       }
 
+      console.log("score : ", score);
       const updatedScore = Math.max(user.top_score || 0, score);
       await db.collection("users").updateOne(
-        { wallet },
+        { email },
         { $set: { current_score: score, top_score: updatedScore } }
       );
 

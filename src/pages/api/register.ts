@@ -7,16 +7,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   if (req.method === "GET") {
     try {
-      // Get the wallet address from query parameters (use req.query for GET requests)
-      const { wallet } = req.query;
+      // Get the email address from query parameters (use req.query for GET requests)
+      const { email } = req.query;
       
-      // Check if wallet is provided
-      if (!wallet || typeof wallet !== 'string') {
-        return res.status(400).json({ error: "Wallet address is required." });
+      // Check if email is provided
+      if (!email || typeof email !== 'string') {
+        return res.status(400).json({ error: "email address is required." });
       }
 
-      // Find the user based on the wallet address
-      const existingUser = await db.collection("users").findOne({ wallet });
+      // Find the user based on the email address
+      const existingUser = await db.collection("users").findOne({ email });
 
       if (existingUser) {
         // If the user exists, return the user data
@@ -32,18 +32,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   else if (req.method === "POST") {
     try {
-      const { wallet, username } = req.body;
+      const { email, username, wallet } = req.body;
 
-      if (!wallet || !username) {
-        return res.status(400).json({ error: "Wallet and username are required." });
+      if (!email || !username) {
+        return res.status(400).json({ error: "email and username are required." });
       }
 
-      const existingUser = await db.collection("users").findOne({ wallet });
+      const existingUser = await db.collection("users").findOne({ email });
       const oneMinuteAgo = new Date(Date.now() - 10 * 1000);
 
       if (!existingUser) {
         const newUser = {
           wallet,
+          email,
           username,
           isVIP : false,
           top_score: 0,
@@ -55,10 +56,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const newUser = {
           ...existingUser,
           username: username,
-          current_score: existingUser.active > oneMinuteAgo ? existingUser.currnt_score : 0
+          current_score: existingUser.active > oneMinuteAgo ? existingUser.current_score : 0
         };
         await db.collection("users").updateOne(
-          { wallet },
+          { email },
           { $set: newUser }
         );
         return res.status(201).json({ message: "User updated successfully." });

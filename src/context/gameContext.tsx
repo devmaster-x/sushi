@@ -42,12 +42,13 @@ type GameContextType = {
   gameOver: boolean;
   maxBucket: number;
   showConfirmModal: boolean;
+  currentUser: User | null;
   setShowConfirmModal: (f: boolean) => void;
   resetHintCards: () => void;
   setMaxBucketCount: (n: number) => void;
   handleHintSelected: () => void;
   setGameStarted: (f: boolean) => void;
-  registerUser: (user?: string ) => Promise<void>;
+  registerUser: (email: string, user: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
   startNextRound: () => void;
@@ -94,6 +95,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [maxBucket, setMaxBucketCount] = useState(7);
   const cardSize = 40;
 
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
   useEffect(()=>{
     sendScore(score);
   },[score])
@@ -104,10 +107,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cardBoardWidth])
 
   const fetchLeaderboard = async () => {
+    console.log("fetchLeaderBoard called : ");
     try {
       const response = await fetch("/api/leaderboard");
       if (response.ok) {
         const data: LeaderBoard = await response.json();
+        console.log("result of fetch leaderboard : ", data);
         setLeaderBoard(data);
       } else {
         console.error("Failed to fetch leaderboard");
@@ -117,21 +122,28 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const registerUser = async (userName : string = '') => {
-    if (!address) return;
-    if(userName == '') userName = `user-${address!.slice(2, 6)}${address!.slice(-4)}`;
-
+  const registerUser = async (email : string, userName : string) => {
     try {
       const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          wallet: address,
+          wallet: '',
+          email: email,
           username: userName,
+          current_score: 0
         }),
       });
   
       if (response.ok) {
+        setCurrentUser({
+          wallet: '',
+          email: email,
+          username: userName,
+          current_score: 0,
+          top_score: 0,
+          isVIP: false
+        })
         fetchLeaderboard();
       } else {
         console.error("Failed to register user.");
@@ -492,14 +504,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   };
   
   const sendScore = async (newScore: number) => {
-    if (!address) return;
+    // if (!address) return;
   
     try {
       const response = await fetch("/api/leaderboard", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          wallet: address,
+          email: currentUser?.email,
           score: newScore,
         }),
       });
@@ -623,6 +635,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       gameOver,
       maxBucket,
       showConfirmModal,
+      currentUser,
       setShowConfirmModal,
       resetHintCards,
       setMaxBucketCount,
@@ -643,6 +656,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCardBoardWidth
     }),
     [
+      currentUser,
       maxBucket,
       gameOver,
       showConfirmModal,

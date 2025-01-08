@@ -7,12 +7,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   if (req.method === "POST") {
     try {
-      const { wallet } = req.body;
+      const { email } = req.body;
 
-      if (!wallet) return res.status(400).json({ error: "Wallet is required." });
+      if (!email) return res.status(400).json({ error: "email is required." });
 
       await db.collection("users").findOneAndUpdate(
-        { wallet },
+        { email },
         {
           $set: {
             active: new Date()

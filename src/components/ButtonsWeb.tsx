@@ -1,4 +1,5 @@
 import { useGameContext } from "src/context/gameContext";
+import SignInButton from './SignInButton'
 
 const ButtonsWeb = () => {
   const {
@@ -6,13 +7,18 @@ const ButtonsWeb = () => {
     setGameStarted,
     restartGame,
     setShowConfirmModal,
-    handleHintSelected
+    handleHintSelected,
+    currentUser
   } = useGameContext();
   
   const handlePlay = () => {
     setGameStarted(true);
     restartGame();
   }
+
+  if(!currentUser) return <div className="gap-4 hidden lg:flex justify-end">
+    <SignInButton />
+  </div>
 
   return (
     <div className="gap-4 hidden lg:flex justify-around">
@@ -22,7 +28,7 @@ const ButtonsWeb = () => {
       >
         Next
       </button> */}
-
+      
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={handleHintSelected}
