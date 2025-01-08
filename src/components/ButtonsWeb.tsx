@@ -16,10 +16,6 @@ const ButtonsWeb = () => {
     restartGame();
   }
 
-  if(!currentUser) return <div className="gap-4 hidden lg:flex justify-end">
-    <SignInButton />
-  </div>
-
   return (
     <div className="gap-4 hidden lg:flex justify-around">
       {/* <button
@@ -28,8 +24,7 @@ const ButtonsWeb = () => {
       >
         Next
       </button> */}
-      <SignInButton />
-      
+         
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={handleHintSelected}

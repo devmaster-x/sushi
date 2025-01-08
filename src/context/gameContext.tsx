@@ -7,6 +7,7 @@ import React, {
   useEffect,
   useRef
 } from "react";
+import axios from 'axios'
 import { useAppKitAccount } from "@reown/appkit/react";
 import { User, CardNode, Round } from "src/types/type";
 
@@ -43,12 +44,15 @@ type GameContextType = {
   maxBucket: number;
   showConfirmModal: boolean;
   currentUser: User | null;
+  showEditModal : boolean;
+  setShowEditModal : (f: boolean) => void;
   setShowConfirmModal: (f: boolean) => void;
   resetHintCards: () => void;
   setMaxBucketCount: (n: number) => void;
   handleHintSelected: () => void;
   setGameStarted: (f: boolean) => void;
   registerUser: (email: string, user: string ) => Promise<void>;
+  changeUserName: (email: string, user: string ) => Promise<void>;
   restartGame: () => void;
   generateCards: (round: Round) => void;
   startNextRound: () => void;
@@ -93,6 +97,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
   const cardSize = 40;
 
@@ -122,22 +127,55 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const registerUser = async (email : string, userName : string) => {
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          wallet: '',
-          email: email,
-          username: userName,
-          current_score: 0
-        }),
-      });
-  
-      if (response.ok) {
+      // const response = await fetch("/api/register", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     wallet: '',
+      //     email: email,
+      //     username: userName,
+      //     current_score: 0
+      //   }),
+      // });
+      const response = await axios.post("/api/register", {
+        wallet: '',
+        email: email,
+        username: userName,
+        current_score: 0
+      })
+ 
+      if (response.status === 201) {
         setCurrentUser({
           wallet: '',
           email: email,
-          username: userName,
+          username: response.data.username,
+          current_score: 0,
+          top_score: 0,
+          isVIP: false
+        })
+        fetchLeaderboard();
+      } else {
+        console.error("Failed to register user.");
+      }
+    } catch (error) {
+      console.error("Error in user registration:", error);
+    }
+  };
+
+  const changeUserName = async (email : string, userName : string) => {
+    try {
+      const response = await axios.post("/api/updateusername", {
+        wallet: '',
+        email: email,
+        username: userName,
+        current_score: 0
+      })
+ 
+      if (response.status === 201) {
+        setCurrentUser({
+          wallet: '',
+          email: email,
+          username: response.data.username,
           current_score: 0,
           top_score: 0,
           isVIP: false
@@ -633,12 +671,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       maxBucket,
       showConfirmModal,
       currentUser,
+      showEditModal,
+      setShowEditModal,
       setShowConfirmModal,
       resetHintCards,
       setMaxBucketCount,
       handleHintSelected,
       setGameStarted,
       registerUser,
+      changeUserName,
       restartGame,
       generateCards,
       startNextRound,
@@ -658,6 +699,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       maxBucket,
       gameOver,
       showConfirmModal,
+      showEditModal,
       topCards,
       hintCards,
       isHint,

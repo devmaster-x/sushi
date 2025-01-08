@@ -1,0 +1,84 @@
+import { useState, useEffect, useRef } from 'react';
+import { FaUserCircle } from "react-icons/fa";
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useGameContext } from "src/context/gameContext";
+import { SingInButton } from '.';
+
+const Header = () => {
+  const {
+    currentUser,
+    setShowEditModal
+  } = useGameContext();
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  },[])
+
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev);
+  };
+
+  const handleEdit = () => {
+    setShowEditModal(true);
+    setDropdownOpen(false);
+  };
+  
+  if(!currentUser) return (
+    <div className="gap-4 flex justify-end">
+      <SingInButton />
+    </div>
+  )
+  else return (
+    <div className="w-full bg-[#252635] p-4 rounded-md shadow-md">
+      <div className="flex justify-between text-[37474F] items-center">
+        <p>{currentUser.username}</p>
+          <div
+            ref = { dropdownRef }
+            className='relative'
+          >
+            <button
+              onClick={toggleDropdown}
+              className="flex items-center"
+            >
+              <FaUserCircle size={28} className="text-gray-100 bg-gray-600 rounded-full" />
+            </button>
+            {isDropdownOpen && (
+              // <div className="absolute -right-2 mt-2 w-48 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">
+              <div className="absolute -right-2 mt-2 w-28 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">
+                {/* <div className="flex justify-between items-center"> */}
+                  {/* <p className="text-gray-100 overflow-clip">{currentUser ? currentUser.username : "Loading..."}</p> */}
+                  <button
+                    onClick={handleEdit}
+                    // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
+                    className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer"
+                  >
+                    Edit
+                  </button>
+                {/* </div> */}
+                <button 
+                  className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Sign out
+                </button>
+              </div>
+            )}
+          </div>
+      </div>
+    </div>
+  )
+}
+
+export default Header;
