@@ -8,6 +8,7 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
+  secret: "SUSHI",
   callbacks: {
     async session({ session }) {
       return session;

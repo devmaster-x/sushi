@@ -15,7 +15,7 @@ const FailedModal = (props: FailedModalProps) => {
       > */}
       <div className = "flex flex-col justify-center gap-8 text-center bg-black mx-auto rounded-lg p-4">
         <p> You need to signup from sushifarm.io site first.</p>
-        <a href="www.sushifarm.io" className="text-blue-400"> Go to sushifarm.io</a>
+        <a href="https://www.sushifarm.io" className="text-blue-400"> Go to sushifarm.io</a>
         <div className="flex justify-center w-full">
           {/* <img
             src="assets/modal/gameover/game_over_button.png"
