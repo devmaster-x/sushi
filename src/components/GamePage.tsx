@@ -38,7 +38,6 @@ const GameBoard = () => {
   useEffect(() => {
     const handleResize = () => {
       const minSize = Math.min(window.innerWidth, window.innerHeight);
-      console.log("handle Resize : ", window.innerWidth, window.innerHeight);
       minSize <= 750
         ? setCardBoardWidth(minSize - 50)
         : setCardBoardWidth(700);
@@ -81,7 +80,7 @@ const GameBoard = () => {
         setShowGuideModal(true);
       }
     } catch (error) {
-      console.error("Error fetching leaderboard:", error);
+      console.error("Error checking user registered :", error);
     }
   };
 

@@ -34,7 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ error: "User not found." });
       }
 
-      console.log("score : ", score);
       const updatedScore = Math.max(user.top_score || 0, score);
       await db.collection("users").updateOne(
         { email },

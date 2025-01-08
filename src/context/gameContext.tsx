@@ -60,7 +60,8 @@ type GameContextType = {
   setCards: (cards: CardNode[]) => void; 
   setSlotAvailablity: (flag: boolean) => void;
   handleAdditionalCardClick: (card: CardNode) => void;
-  setCardBoardWidth: (width : number) => void
+  setCardBoardWidth: (width : number) => void;
+  fetchLeaderboard: () => Promise<void>
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -98,21 +99,18 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(()=>{
-    sendScore(score);
+    if(currentUser) sendScore(score);
   },[score])
 
   useEffect(()=>{
-    console.log("cardBoardWidth changed : ", cardBoardWidth);
     if(cards.length > 0) rearrangeCards();
   },[cardBoardWidth])
 
   const fetchLeaderboard = async () => {
-    console.log("fetchLeaderBoard called : ");
     try {
       const response = await fetch("/api/leaderboard");
       if (response.ok) {
         const data: LeaderBoard = await response.json();
-        console.log("result of fetch leaderboard : ", data);
         setLeaderBoard(data);
       } else {
         console.error("Failed to fetch leaderboard");
@@ -440,7 +438,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     if(_round.difficulty) setMaxBucketCount(8);
     else setMaxBucketCount(7);
 
-    console.log("_round : ", _round);
     setCurrentRound(_round);
     generateCards(_round);
   };
@@ -653,7 +650,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCards,
       setSlotAvailablity,
       handleAdditionalCardClick,
-      setCardBoardWidth
+      setCardBoardWidth,
+      fetchLeaderboard
     }),
     [
       currentUser,
