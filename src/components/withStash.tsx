@@ -89,12 +89,12 @@ const GameBoard = () => {
         const data: User = await response.json();
         setUserName(data.username);
         setCurrentUser(data.username);
-        registerUser(data.username);
+        // registerUser(data.username);
       } else {
         const defaultUsername = `user-${address!.slice(2, 6)}${address!.slice(-4)}`;
         setUserName(defaultUsername);
         setCurrentUser(defaultUsername);
-        registerUser();
+        // registerUser();
       }
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
@@ -113,7 +113,7 @@ const GameBoard = () => {
   const changeUserName = async () => {
     if (!_user.trim()) return;
     setModalOpen(false);
-    registerUser(_user);
+    // registerUser(_user);
     setCurrentUser(_user);
   };
 
