@@ -1,3 +1,4 @@
 export { default as FailedModal } from './FailedModal'
 export { default as CongratesModal } from './CongratesModal'
 export { default as ConfirmModal } from './ConfirmModal'
+export { default as GuideModal } from './GuideModal'

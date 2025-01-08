@@ -28,6 +28,7 @@ const ButtonsMobile = () => {
       >
         Next
       </button> */}
+      <SignInButton />
 
       <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"

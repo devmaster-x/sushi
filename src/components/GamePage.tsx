@@ -14,6 +14,7 @@ import {
   FailedModal,
   ConfirmModal
 } from './index'
+import { GuideModal } from "./modals";
 
 const GameBoard = () => {
   const {
@@ -30,6 +31,7 @@ const GameBoard = () => {
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(false);
   const [activeID, setActiveID] = useState<NodeJS.Timeout>();     //Interval ID
   const { data: session } = useSession()
 
@@ -56,12 +58,7 @@ const GameBoard = () => {
   }, [cards, bucket, additionalSlots]);
 
   useEffect(() => {
-    if(session) {
-      const id = setInterval(() => sendUserActive(), 10000);
-      setActiveID(id);
-
-      checkUserRegistered();
-    }
+    if(session) checkUserRegistered();
   },[signIn, session])
 
   useEffect(() => {
@@ -74,14 +71,15 @@ const GameBoard = () => {
 
   const checkUserRegistered = async () => {
     try {
-      const response = await fetch(`/api/register?email=${session?.user?.email}`, { method: "GET" });
-      console.log("register fetch response : ", response);
-      console.log("current user : ", session?.user?.name);
-      // if (response.ok) {
+      const response = await axios.post("https://devapi.sushifarm.io/users/exist",{ mail : session?.user?.email})
+      console.log("register fetch response : ", response.data);
+      if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
-      // } else {
-      //   window.location.href = "https://www.sushifarm.io";
-      // }
+        const id = setInterval(() => sendUserActive(), 10000);
+        setActiveID(id);  
+      } else {
+        setShowGuideModal(true);
+      }
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     }
@@ -91,6 +89,11 @@ const GameBoard = () => {
     setShowCongrats(false);
     startNextRound();
   };
+
+  const redirectToSushiFarm = () => {
+    window.location.href = "https://www.sushifarm.io";
+    setShowGuideModal(false);
+  }
 
   return (
     <div 
@@ -123,6 +126,7 @@ const GameBoard = () => {
       )}
       {gameOver && <FailedModal handleClick={restartGame}/>}
       {showConfirmModal && gameStarted && <ConfirmModal /> }
+      {showGuideModal && <GuideModal handleClick={redirectToSushiFarm}/> }
     </div>
   );
 };
