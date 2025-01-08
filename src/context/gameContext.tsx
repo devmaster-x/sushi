@@ -470,7 +470,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
       cardTypeNumber: currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 4, 22), 
-      deepLayer: currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + 3,
+      deepLayer: currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + currentRound.roundNumber % 2 * 3,
       difficulty: currentRound.difficulty === true ? false : currentRound.cardTypeNumber * currentRound.deepLayer > 120 ? true : false
     }
     if(_round.difficulty) setMaxBucketCount(8);

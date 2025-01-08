@@ -31,6 +31,7 @@ const GameBoard = () => {
     restartGame,
     startNextRound,
     setCardBoardWidth,
+    fetchLeaderboard
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
@@ -69,6 +70,7 @@ const GameBoard = () => {
 
   const sendUserActive = () => {
     axios.post("/api/useractive", { email: session?.user?.email });
+    fetchLeaderboard();
   };
 
   const checkUserRegistered = async () => {
