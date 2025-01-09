@@ -580,7 +580,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   // Handle card click
   const handleCardClick = (card: CardNode) => {
-    const audio = new Audio('/assets/audio/click.mp3'); // Path to your audio file
+    const audio = new Audio('/assets/audio/drop.mp3'); // Path to your audio file
     audio.play();
 
     if(card.state=="available") setRollbackAvailable(true && !rollbackPressed);
