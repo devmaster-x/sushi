@@ -77,13 +77,13 @@ const GameBoard = () => {
     try {
       const response = await axios.post("https://devapi.sushifarm.io/users/exist",{ mail : session?.user?.email})
       console.log("register fetch response : ", response.data);
-      // if (response.status === 200 && response.data.data === true) {
+      if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
         const id = setInterval(() => sendUserActive(), 10000);
         setActiveID(id);  
-      // } else {
-      //   setShowGuideModal(true);
-      // }
+      } else {
+        setShowGuideModal(true);
+      }
     } catch (error) {
       console.error("Error checking user registered :", error);
     }
