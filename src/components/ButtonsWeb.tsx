@@ -26,7 +26,7 @@ const ButtonsWeb = () => {
       </button> */}
          
       <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
+        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={handleHintSelected}
       >
         Hint
@@ -40,7 +40,7 @@ const ButtonsWeb = () => {
         Rollback
       </button> */}
       <button
-        className={`px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer ${
+        className={`px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer ${
           !gameStarted
             ? "bg-green-600 hover:bg-green-400"
             : "bg-[#2a2b3c] hover:bg-[#3a3b4c]"

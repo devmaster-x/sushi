@@ -10,7 +10,13 @@ const ChangeNameModal = () => {
   } = useGameContext();
   const [username, setUsername] = useState(currentUser?.username!);
   const [checkingName, setCheckingName] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [invalid, setInvalid] = useState(false);
+
+  const validateCheck = (username: string) : boolean => {
+    const regex = /^[a-zA-Z0-9 ]+$/;
+    return regex.test(username);
+  }
 
   const isValidUserName = async (username : string) : Promise<boolean> => {
     setCheckingName(true);
@@ -35,12 +41,22 @@ const ChangeNameModal = () => {
   }
 
   const _changeUserName = async () => {
-    const isValidName = await isValidUserName(username);
-    if(!isValidName) setInvalid(true);
-    else {
-      setInvalid(false);
-      setShowEditModal(false);
-      changeUserName(currentUser?.email!, username);
+    if(!validateCheck(username)) {
+      setErrorMsg("Username contains alphabets and numbers only.");
+      setInvalid(true); 
+    }
+    else {  
+      setErrorMsg("");
+      const isValidName = await isValidUserName(username);
+      if(!isValidName) {
+        setErrorMsg("Same name is already exist.")
+        setInvalid(true);
+      }
+      else {
+        setInvalid(false);
+        setShowEditModal(false);
+        changeUserName(currentUser?.email!, username);
+      }
     }
   }
 
@@ -60,7 +76,7 @@ const ChangeNameModal = () => {
           className="border p-2 w-full mb-4 rounded text-gray-600"
           placeholder="Enter new username"
         />
-        { invalid && <p className='text-red-500'>Username is invalid</p> }
+        { invalid && <p className='text-red-500'>{errorMsg}</p> }
         <div className="flex justify-end space-x-4">
           <button
             onClick={_changeUserName}
