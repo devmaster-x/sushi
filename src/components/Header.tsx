@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaUserCircle } from "react-icons/fa";
+import { FaCaretDown } from "react-icons/fa";
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useGameContext } from "src/context/gameContext";
 import { SingInButton } from '.';
@@ -42,8 +42,18 @@ const Header = () => {
   )
   else return (
     <div className="w-full bg-[#252635] p-4 rounded-md shadow-md">
-      <div className="flex justify-between text-[37474F] items-center">
-        <p>{currentUser.username}</p>
+      <div className="flex justify-between text-[37474F]">
+        <div className='flex items-center'>
+          <div
+            className="rounded-full bg-cover text-gray-100 mr-4"
+            style={{ 
+              backgroundImage: `url(assets/sushi/22.png)`,
+              width: "24px",
+              height: "24px"
+            }}
+          />
+          <p>{currentUser.username}</p>
+        </div>
           <div
             ref = { dropdownRef }
             className='relative'
@@ -52,7 +62,7 @@ const Header = () => {
               onClick={toggleDropdown}
               className="flex items-center"
             >
-              <FaUserCircle size={28} className="text-gray-100 bg-gray-600 rounded-full" />
+              <FaCaretDown size={28} className=" rounded-full" />
             </button>
             {isDropdownOpen && (
               // <div className="absolute -right-2 mt-2 w-48 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">

@@ -23,8 +23,7 @@ const LeaderBoard = () => {
               //     : "text-gray-300"
               // }`}
             >
-              <span>{index + 1}.</span>
-              <span>{user.username}</span>
+              <span>{index + 1}. {user.username}</span>
               <span>{user.current_score} pts</span>
             </li>
           ))}
