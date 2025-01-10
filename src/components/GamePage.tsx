@@ -115,12 +115,12 @@ const GameBoard = () => {
 
         {/* Right Section: Stash, Bucket, Leaderboard */}
         <div className="flex flex-col gap-6 w-full lg:w-1/3 justify-between">
-          <div className="flex flex-col gap-6 w-full justify-start">
+          {/* <div className="flex flex-col gap-6 w-full justify-start"> */}
             <Header />
             <GameInfo />
             <Bucket />
             <LeaderBoard />
-          </div>
+          {/* </div> */}
           { currentUser && <ButtonsWeb /> }
         </div>
       </div>
