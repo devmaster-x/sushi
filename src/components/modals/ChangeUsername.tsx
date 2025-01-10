@@ -54,6 +54,7 @@ const ChangeNameModal = () => {
         <h2 className="text-xl font-semibold mb-4 text-black text-center">Edit Username</h2>
         <input
           type="text"
+          maxLength={16}
           value={username}
           onChange={handleUsernameChange}
           className="border p-2 w-full mb-4 rounded text-gray-600"
