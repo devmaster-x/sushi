@@ -61,7 +61,7 @@ const ChangeNameModal = () => {
   }
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+    if(validateCheck(event.target.value)) setUsername(event.target.value);
   };
 
   return (
