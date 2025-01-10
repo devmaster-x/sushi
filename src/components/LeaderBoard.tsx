@@ -16,7 +16,7 @@ const LeaderBoard = () => {
           {leaderBoard.map((user, index) => (
             <li
               key={user.wallet}
-              className={`flex justify-between p-2 rounded-md`}
+              className={`flex justify-between px-2 rounded-md`}
               // className={`flex justify-between p-2 rounded-md ${
               //   user.wallet === address
               //     ? "bg-[#8fde8b] text-black"
