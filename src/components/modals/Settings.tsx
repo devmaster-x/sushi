@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
+import { GiSoundOff, GiSoundOn } from 'react-icons/gi';
 import { useGameContext } from 'src/context/gameContext';
 import { User } from 'src/types/type';
 
-const ChangeNameModal = () => {
+const Settings = () => {
   const {
     currentUser,
+    soundOff,
+    setSoundOff,
     setShowEditModal,
     changeUserName
   } = useGameContext();
@@ -64,20 +67,50 @@ const ChangeNameModal = () => {
     if(validateCheck(event.target.value)) setUsername(event.target.value);
   };
 
+  const handleCancel = () => {
+    setShowEditModal(false);
+  }
+
+  const handleSound = () => {
+    setSoundOff(!soundOff);
+  }
+
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-semibold mb-4 text-black text-center">Edit Username</h2>
-        <input
-          type="text"
-          maxLength={16}
-          value={username}
-          onChange={handleUsernameChange}
-          className="border p-2 w-full mb-4 rounded text-gray-600"
-          placeholder="Enter new username"
-        />
-        { invalid && <p className='text-red-500'>{errorMsg}</p> }
-        <div className="flex justify-end space-x-4">
+        <h2 className="text-xl font-semibold mb-4 text-black text-center">Settings</h2>
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex gap-2 items-center">
+            <p className="text-black">User Name : </p>
+            <input
+              type="text"
+              maxLength={16}
+              value={username}
+              onChange={handleUsernameChange}
+              className="border p-2 w-3/5 rounded text-gray-600"
+              placeholder="Enter new username"
+            />
+          </div>
+          { invalid && <p className='text-red-500'>{errorMsg}</p> }
+          <div className="flex gap-2 items-center">
+            <p className="text-black">Sound : </p>
+            <div className='flex w-3/5 justify-center'>
+              {soundOff ? 
+                <GiSoundOff className="cursor-pointer" color="black" size={28} onClick={handleSound}/> :
+                <GiSoundOn className="cursor-pointer" color='black' size={28} onClick={handleSound}/> 
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-between space-x-4">
+          <button
+            onClick={handleCancel}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            disabled={ username === ''}
+          >
+            Cancel
+          </button>
+
           <button
             onClick={_changeUserName}
             className="px-4 py-2 bg-blue-500 text-white rounded"
@@ -91,4 +124,4 @@ const ChangeNameModal = () => {
   )
 }
 
-export default ChangeNameModal;
+export default Settings;

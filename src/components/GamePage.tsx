@@ -15,7 +15,7 @@ import {
   FailedModal,
   ConfirmModal
 } from './index'
-import { ChangeNameModal, GuideModal } from "./modals";
+import { Settings, GuideModal } from "./modals";
 
 const GameBoard = () => {
   const {
@@ -27,6 +27,7 @@ const GameBoard = () => {
     showConfirmModal,
     currentUser,
     showEditModal,
+    soundOff,
     registerUser,
     restartGame,
     startNextRound,
@@ -55,7 +56,7 @@ const GameBoard = () => {
   useEffect(() => {
     if (cards.length === 0 && gameStarted && bucket.length === 0 && additionalSlots.length === 0) {
       const audio = new Audio('/assets/audio/win.mp3'); // Path to your audio file
-      audio.play();
+      !soundOff && audio.play();
       setShowCongrats(true);
     }
   }, [cards, bucket, additionalSlots]);
@@ -128,7 +129,7 @@ const GameBoard = () => {
       {gameOver && <FailedModal handleClick={restartGame}/>}
       {showConfirmModal && gameStarted && <ConfirmModal /> }
       {showGuideModal && <GuideModal /> }
-      {showEditModal && <ChangeNameModal /> }
+      {showEditModal && <Settings /> }
     </div>
   );
 };

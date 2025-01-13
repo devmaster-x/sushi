@@ -45,6 +45,8 @@ type GameContextType = {
   showConfirmModal: boolean;
   currentUser: User | null;
   showEditModal : boolean;
+  soundOff: boolean;
+  setSoundOff: (f: boolean) => void;
   setShowEditModal : (f: boolean) => void;
   setShowConfirmModal: (f: boolean) => void;
   resetHintCards: () => void;
@@ -98,6 +100,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [gameOver, setGameOver] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [soundOff, setSoundOff] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
   const cardSize = 40;
 
@@ -527,7 +530,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const loseLife = () => {
     const audio = new Audio('/assets/audio/lose.mp3');
-    audio.play();
+    !soundOff && audio.play();
 
     if (lives > 1) {
       setLives((prev) => prev - 1);
@@ -581,7 +584,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Handle card click
   const handleCardClick = (card: CardNode) => {
     const audio = new Audio('/assets/audio/drop.mp3'); // Path to your audio file
-    audio.play();
+    !soundOff && audio.play();
 
     if(card.state=="available") setRollbackAvailable(true && !rollbackPressed);
     if (card.isInAdditionalSlot) {
@@ -672,6 +675,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       showConfirmModal,
       currentUser,
       showEditModal,
+      soundOff,
+      setSoundOff,
       setShowEditModal,
       setShowConfirmModal,
       resetHintCards,
@@ -700,6 +705,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       gameOver,
       showConfirmModal,
       showEditModal,
+      soundOff,
       topCards,
       hintCards,
       isHint,
