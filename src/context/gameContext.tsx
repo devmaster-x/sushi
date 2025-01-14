@@ -372,7 +372,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer } = round;
-    const difficulty = cardTypeNumber * deepLayer > 20 ? true : false;
+    const difficulty = true;
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
@@ -624,7 +624,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const removeJokerPair = (_type : number) => {
     setBucket((prevCards) => {
-      return prevCards.filter((card) => { card.type !== _type && card.type !== -1});
+      setScore((prevScore) => {
+        const newScore = prevScore + 10; // Award points for triplets
+        return newScore;
+      });
+      setRollbackAvailable(false);
+
+      // Remove 3 matching cards from the bucket
+      const removedCards = prevCards.filter((card) => card.type === _type || card.type === -1);
+      return prevCards.filter((card) => !removedCards.includes(card));
     })
     setHighlighted(false);
   }
@@ -683,6 +691,17 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     // Remove the card from the board (cards state)
     setCards((prevCards) => {
       const updatedCards = prevCards.filter((c) => c.id !== card.id);
+
+      if(updatedCards.length === 1) {
+        const newCards : CardNode[] = []; 
+        console.log("only one card remained.");
+        const lastcard = updatedCards[0];
+        lastcard.state = "available";
+        newCards.push(lastcard);
+        newCards.push({...lastcard, zIndex: lastcard.zIndex + 1, state: "unavailable"})
+        newCards.push({...lastcard, zIndex: lastcard.zIndex + 2, state: "unavailable"})
+        return newCards;
+      }
   
       // Update the parents of the remaining cards
       return updatedCards.map((c) => {
