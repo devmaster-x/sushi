@@ -11,6 +11,7 @@ export interface CardNode {
   state: 'available' | 'unavailable'; // Clickability
   isInBucket: boolean; // Track if card is currently in the bucket
   isInAdditionalSlot: boolean; // Track if card is in additional slot
+  highlight: boolean; //highlight the card in the bucket.
 }
 
 export interface Round {

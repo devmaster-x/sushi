@@ -11,11 +11,11 @@ const Bucket = () => {
     {/* <div className="bg-transparent px-2 py-4 rounded-md shadow-md w-fit mx-auto"> */}
       {/* <h2 className="text-lg font-bold text-gray-200 text-center mb-2">Bucket</h2> */}
       <div className="flex flex-wrap gap-2 justify-start">
-        {bucket.map((card) => (
+        {bucket.map((card, index) => (
           <div
-            key={card.id}
-            className="w-8 h-8 lg:w-10 lg:h-10 bg-[#43A047] rounded-md flex items-center justify-center bg-cover"
-            style={{ backgroundImage: `url(assets/sushi/${card.type + 1}.png)` }}
+            key={`b+${index}`}
+            className={`w-8 h-8 lg:w-10 lg:h-10 bg-[#43A047] rounded-md flex items-center justify-center bg-cover ${card.highlight ? 'border-2 border-white' : ''}`}
+            style={{ backgroundImage: `url(assets/sushi/${card.type == -1 ? 'Joker' : card.type + 1}.png)` }}
           />
         ))}
         {Array.from({ length: maxBucket - bucket.length }).map((_, idx) => (

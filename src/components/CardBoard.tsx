@@ -22,7 +22,7 @@ const CardBoard = () => {
     >
       {topCards.map((card, index) => (
         <div
-          key={index}
+          key={`t+${index}`}
           className={`absolute rounded-md bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
           }`}
           style={{
@@ -36,7 +36,7 @@ const CardBoard = () => {
           <div
             className="absolute inset-0 bg-cover rounded-md"
             style={{
-              backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
+              backgroundImage: `url(assets/sushi/${card.type == -1 ? 'Joker' : card.type + 1}.png)`,
               // filter:' brightness(0.4)',
               opacity: 0.4
             }}
@@ -45,7 +45,7 @@ const CardBoard = () => {
       ))}
       {hintCards.map((card, index) => (
         <div
-          key={index}
+          key={`h+${index}`}
           className={`absolute rounded-md bg-green-300 shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
           }`}
           style={{
@@ -59,7 +59,7 @@ const CardBoard = () => {
           <div
             className="absolute inset-0 bg-cover rounded-md"
             style={{
-              backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
+              backgroundImage: `url(assets/sushi/${card.type == -1 ? 'Joker' : card.type + 1}.png)`,
             }}
           />
         </div>
@@ -76,7 +76,7 @@ const CardBoard = () => {
       >
         {cards.map((card, index) => (
           <div
-            key={index}
+            key={`c+${index}`}
             className={`absolute rounded-md ${
               card.state === "available"
                 ? "bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
@@ -94,7 +94,7 @@ const CardBoard = () => {
             <div
               className="absolute inset-0 bg-cover rounded-md"
               style={{
-                backgroundImage: `url(assets/sushi/${card.type + 1}.png)`,
+                backgroundImage: `url(assets/sushi/${card.type == -1 ? 'Joker' : card.type + 1}.png)`,
                 filter: card.state === "available" ? "brightness(1)" : "brightness(0.4)",
               }}
             />

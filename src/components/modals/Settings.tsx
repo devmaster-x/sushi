@@ -7,6 +7,8 @@ const Settings = () => {
   const {
     currentUser,
     soundOff,
+    musicOff,
+    setMusicOff,
     setSoundOff,
     setShowEditModal,
     changeUserName
@@ -75,6 +77,10 @@ const Settings = () => {
     setSoundOff(!soundOff);
   }
 
+  const handleMusic = () => {
+    setMusicOff(!musicOff);
+  }
+
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -92,6 +98,17 @@ const Settings = () => {
             />
           </div>
           { invalid && <p className='text-red-500'>{errorMsg}</p> }
+          <div className="flex gap-2 items-center">
+            <p className="text-black">Music : </p>
+            <div className='flex w-3/5 justify-center'>
+              {musicOff ? 
+                <GiSoundOff className="cursor-pointer" color="black" size={28} onClick={handleMusic}/> :
+                <GiSoundOn className="cursor-pointer" color='black' size={28} onClick={handleMusic}/> 
+              }
+            </div>
+          </div>
+
+
           <div className="flex gap-2 items-center">
             <p className="text-black">Sound : </p>
             <div className='flex w-3/5 justify-center'>

@@ -66,19 +66,19 @@ const Header = () => {
             </button>
             {isDropdownOpen && (
               // <div className="absolute -right-2 mt-2 w-48 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">
-              <div className="absolute -right-2 mt-2 w-28 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">
+              <div className="absolute -right-2 mt-2 w-28 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col">
                 {/* <div className="flex justify-between items-center"> */}
                   {/* <p className="text-gray-100 overflow-clip">{currentUser ? currentUser.username : "Loading..."}</p> */}
                   <button
                     onClick={handleEdit}
                     // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
-                    className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer"
+                    className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2"
                   >
                     Options
                   </button>
                 {/* </div> */}
                 <button 
-                  className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer"
+                  className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2"
                   onClick={() => signOut()}
                 >
                   Sign out

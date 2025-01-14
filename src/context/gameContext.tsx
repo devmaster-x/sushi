@@ -46,6 +46,10 @@ type GameContextType = {
   currentUser: User | null;
   showEditModal : boolean;
   soundOff: boolean;
+  musicOff: boolean;
+  jokerClaimed: boolean;
+  setJokerClaimed: (f: boolean) => void;
+  setMusicOff: (f: boolean) => void;
   setSoundOff: (f: boolean) => void;
   setShowEditModal : (f: boolean) => void;
   setShowConfirmModal: (f: boolean) => void;
@@ -98,19 +102,51 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [rollbackPressed, setRollbackPressed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [jokerClaimed, setJokerClaimed] = useState(false);
+  const [highlighted, setHighlighted] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [soundOff, setSoundOff] = useState(false);
+  const [musicOff, setMusicOff] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
+  const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
   const cardSize = 40;
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  useEffect(()=>{
+  useEffect(() => {
+    if(backgroundMusic == null && currentUser) {
+      console.log("currentUser : ", currentUser);
+      const audio =  new Audio('/assets/audio/music.mp3');
+      console.log("audio inited");
+      setBackgroundMusic(audio);
+    }
+    else if(backgroundMusic) {
+      backgroundMusic.onended = () => {
+        console.log("Audio is ended, restart.");
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.play();
+      }
+    } 
+  },[backgroundMusic, currentUser]);
+
+  useEffect(() => {
+    if(backgroundMusic == null) return;
+    if(musicOff) {
+      console.log("music off, background music paused.");
+      backgroundMusic.pause();
+    }
+    else {
+      console.log("music on, background music is played.");
+      backgroundMusic.play();
+    }
+  },[musicOff])
+
+  useEffect(() => {
     if(currentUser) sendScore(score);
   },[score])
 
-  useEffect(()=>{
+  useEffect(() => {
     if(cards.length > 0) rearrangeCards();
   },[cardBoardWidth])
 
@@ -335,12 +371,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer } = round;
+    const difficulty = cardTypeNumber * deepLayer > 20 ? true : false;
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
     let maxCardsLayer: number = 0;
     // const totalCards: number = Math.floor(0.6 * cardTypeNumber) * lcd(cardMatchingCount, deepLayer);
     const totalCards: number = cardTypeNumber * deepLayer;
+
+    console.log("difficulty : ", difficulty);
 
     const addToGeneratedCards = (t: number, l: number , offset: number, layer: number, layer_array_size: number) => {
       let parents = [];
@@ -363,6 +402,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         array_size: layer_array_size,
         isInBucket: false,
         isInAdditionalSlot: false,
+        highlight: false
       };
       generatedCards.push(newCard);
     }
@@ -376,7 +416,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
 
     //step 2: generate cards count per layer
-    for (let i = 0 ; i < deepLayer; i++) cardsPerLayer.push(totalCards / deepLayer);
+    for (let i = 0 ; i < deepLayer - 1; i++) cardsPerLayer.push(totalCards / deepLayer);
+    difficulty ? cardsPerLayer.push(totalCards/deepLayer + 1) : cardsPerLayer.push(totalCards/deepLayer); // for Joker Card
     for (let i = 0 ; i < Math.floor(deepLayer / 2) ; i++) {
       const _rand_amount =  Math.min(Math.floor(Math.random() * Math.max(Math.min(totalCards / deepLayer, 10), 4)), 10);
       const  pul_or_min = (Math.random() * 100) > 50;
@@ -390,6 +431,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
     shuffleCards(allCards);
     shuffleCards(allCards);
+
+    if(difficulty) allCards.splice(totalCards / 2, 0 , -1);    //Joker Card
 
     // Step 4: Generate the cards layer by layer
     for (let layer = deepLayer - 1; layer >= 0; layer--) {
@@ -470,11 +513,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setRollbackAvailable(false);
     setRollbackPressed(false);
     setSlotAvailablity(true);
+    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 4, 22);
+    const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + currentRound.roundNumber % 2 * 3;
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
-      cardTypeNumber: currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 4, 22), 
-      deepLayer: currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + currentRound.roundNumber % 2 * 3,
-      difficulty: currentRound.difficulty === true ? false : currentRound.cardTypeNumber * currentRound.deepLayer > 120 ? true : false
+      cardTypeNumber: _cardTypeNumber, 
+      deepLayer: _deepLayer,
+      difficulty: currentRound.difficulty === true ? false : _cardTypeNumber * _deepLayer > 120 ? true : false
     }
     if(_round.difficulty) setMaxBucketCount(8);
     else setMaxBucketCount(7);
@@ -493,10 +538,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const addToBucket = (card: CardNode) => {
     setBucket((prevBucket) => {
       const updatedBucket = [...prevBucket, card];
+      let jokerCardthere = false;
   
       // Check for triplets in the bucket
       const typeCounts = updatedBucket.reduce((acc, curr) => {
         acc[curr.type] = (acc[curr.type] || 0) + 1;
+        if(curr.type == -1) {
+          jokerCardthere = true;
+          setJokerClaimed(true);
+        }
         return acc;
       }, {} as Record<number, number>);
   
@@ -512,6 +562,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           // Remove 3 matching cards from the bucket
           const removedCards = updatedBucket.filter((card) => card.type === parseInt(typeId));
           return updatedBucket.filter((card) => !removedCards.includes(card));
+        }
+        else if(jokerCardthere && count == cardMatchingCount - 1) {
+          setHighlighted(true);
+          setBucket(bucket.map((card) => {
+            if(card.type === parseInt(typeId)) return { ...card, highlight: true}
+            else return card;
+          }))
         }
       }
   
@@ -566,6 +623,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
   
   const restartGame = () => {
+    if(!backgroundMusic?.played) backgroundMusic?.play();
     setGameOver(false);
     setGameStarted(true);
     setBucket([]);
@@ -583,10 +641,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   // Handle card click
   const handleCardClick = (card: CardNode) => {
+    if(highlighted) return;
     const audio = new Audio('/assets/audio/drop.mp3'); // Path to your audio file
     !soundOff && audio.play();
 
-    if(card.state=="available") setRollbackAvailable(true && !rollbackPressed);
+    if (card.state=="available") setRollbackAvailable(true && !rollbackPressed);
     if (card.isInAdditionalSlot) {
       setAdditionalSlots((prevSlots) => {
         // Remove the clicked card from the additional slots
@@ -676,6 +735,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       currentUser,
       showEditModal,
       soundOff,
+      musicOff,
+      jokerClaimed,
+      setJokerClaimed,
+      setMusicOff,
       setSoundOff,
       setShowEditModal,
       setShowConfirmModal,
@@ -700,6 +763,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       fetchLeaderboard
     }),
     [
+      musicOff,
+      jokerClaimed,
       currentUser,
       maxBucket,
       gameOver,

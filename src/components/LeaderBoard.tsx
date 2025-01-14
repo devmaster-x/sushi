@@ -15,7 +15,7 @@ const LeaderBoard = () => {
         <ul className="space-y-2">
           {leaderBoard.map((user, index) => (
             <li
-              key={user.wallet}
+              key={index}
               className={`flex justify-between px-2 rounded-md`}
               // className={`flex justify-between p-2 rounded-md ${
               //   user.wallet === address
