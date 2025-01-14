@@ -388,8 +388,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   }
 
   const generateCards = (round: Round) => {
-    const { cardTypeNumber, deepLayer } = round;
-    const difficulty = true;
+    const { cardTypeNumber, deepLayer, difficulty } = round;
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
@@ -572,12 +571,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       for (const [typeId, count] of Object.entries(typeCounts)) {
         if (count >= cardMatchingCount) {
           // Update the score for triplets
-          setScore((prevScore) => prevScore + 10); // Award points for triplets
+          if(parseInt(typeId) === -1) setScore((prevScore) => prevScore + 50);
+          else setScore((prevScore) => prevScore + 10); // Award points for triplets
           setRollbackAvailable(false);
       
           // Remove 3 matching cards from the bucket
           updatedBucket = updatedBucket.filter((card) => card.type !== parseInt(typeId));
-        } else if (jokerCardthere && count === cardMatchingCount - 1) {
+        } else if (jokerCardthere && (count === cardMatchingCount - 1) && (parseInt(typeId) !== -1)) {
           // Highlight cards when jokerCardthere condition is met
           setHighlighted(true);
           updatedBucket = updatedBucket.map((card) => {
