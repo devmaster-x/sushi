@@ -109,6 +109,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [soundOff, setSoundOff] = useState(false);
   const [musicOff, setMusicOff] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
   const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
   const cardSize = 40;
@@ -116,20 +117,36 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if(backgroundMusic == null && currentUser) {
-      console.log("currentUser : ", currentUser);
-      const audio =  new Audio('/assets/audio/music.mp3');
-      console.log("audio inited");
-      setBackgroundMusic(audio);
+    const allCards: CardNode[] = [...cards, ...bucket];
+    if(allCards.length === 1) {
+      const newCards : CardNode[] = []; 
+      console.log("only one card remained.");
+      let lastcard = allCards[0];
+      let secondCard : CardNode = {...lastcard, id:lastcard.id + 1, zIndex: lastcard.zIndex + 2, state: "unavailable", parents: [lastcard]}
+      if(lastcard.isInBucket) {
+        secondCard.state = "available";
+        secondCard.parents = [];
+      }
+      else newCards.push({...lastcard, zIndex: lastcard.zIndex + 3});
+      newCards.push(secondCard)
+      newCards.push({...lastcard, id: lastcard.id + 2, zIndex: lastcard.zIndex + 1, state: "unavailable", parents: [secondCard]})
+      setCards(newCards);
     }
-    else if(backgroundMusic) {
+  },[cards])
+
+  useEffect(() => {
+    const audio =  new Audio('/assets/audio/music.mp3');
+    setBackgroundMusic(audio);
+  },[])
+
+  useEffect(() => {
+    if(backgroundMusic) {
       backgroundMusic.onended = () => {
-        console.log("Audio is ended, restart.");
         backgroundMusic.currentTime = 0;
         backgroundMusic.play();
       }
     } 
-  },[backgroundMusic, currentUser]);
+  },[backgroundMusic]);
 
   useEffect(() => {
     if(backgroundMusic == null) return;
@@ -538,7 +555,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Add card to the bucket
   const addToBucket = (card: CardNode) => {
     setBucket((prevBucket) => {
-      const updatedBucket = [...prevBucket, card];
+      let updatedBucket : CardNode[]= [...prevBucket, {...card, isInBucket: true}];
       let jokerCardthere = false;
   
       // Check for triplets in the bucket
@@ -554,22 +571,19 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       // If there is a triplet (three cards of the same type), remove them and add points
       for (const [typeId, count] of Object.entries(typeCounts)) {
         if (count >= cardMatchingCount) {
-          setScore((prevScore) => {
-            const newScore = prevScore + 10; // Award points for triplets
-            return newScore;
-          });
+          // Update the score for triplets
+          setScore((prevScore) => prevScore + 10); // Award points for triplets
           setRollbackAvailable(false);
-
+      
           // Remove 3 matching cards from the bucket
-          const removedCards = updatedBucket.filter((card) => card.type === parseInt(typeId));
-          return updatedBucket.filter((card) => !removedCards.includes(card));
-        }
-        else if(jokerCardthere && count == cardMatchingCount - 1) {
+          updatedBucket = updatedBucket.filter((card) => card.type !== parseInt(typeId));
+        } else if (jokerCardthere && count === cardMatchingCount - 1) {
+          // Highlight cards when jokerCardthere condition is met
           setHighlighted(true);
-          setBucket(updatedBucket.map((card) => {
-            if(card.type === parseInt(typeId)) return { ...card, highlight: true}
-            else return card;
-          }))
+          updatedBucket = updatedBucket.map((card) => {
+            if (card.type === parseInt(typeId)) return { ...card, highlight: true };
+            return card;
+          });
         }
       }
   
@@ -631,16 +645,24 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setRollbackAvailable(false);
 
       // Remove 3 matching cards from the bucket
-      const removedCards = prevCards.filter((card) => card.type === _type || card.type === -1);
-      return prevCards.filter((card) => !removedCards.includes(card));
+      const removedCards = prevCards.filter((card) => card.type !== _type && card.type !== -1);
+      console.log("removedCards : ", removedCards);
+      return removedCards.map((card) => ({ ...card, highlight: false }));
     })
     setHighlighted(false);
   }
   
   const restartGame = () => {
-    if(!backgroundMusic?.played) {
-      console.log("audio played. ");
-      backgroundMusic?.play();
+    if (backgroundMusic && !isPlaying) {
+      backgroundMusic
+        .play()
+        .then(() => {
+          console.log('Audio is playing.');
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.error('Failed to play audio:', err);
+        });
     }
     setHighlighted(false);
     setGameOver(false);
@@ -692,17 +714,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setCards((prevCards) => {
       const updatedCards = prevCards.filter((c) => c.id !== card.id);
 
-      if(updatedCards.length === 1) {
-        const newCards : CardNode[] = []; 
-        console.log("only one card remained.");
-        const lastcard = updatedCards[0];
-        lastcard.state = "available";
-        newCards.push(lastcard);
-        newCards.push({...lastcard, zIndex: lastcard.zIndex + 1, state: "unavailable"})
-        newCards.push({...lastcard, zIndex: lastcard.zIndex + 2, state: "unavailable"})
-        return newCards;
-      }
-  
       // Update the parents of the remaining cards
       return updatedCards.map((c) => {
         if (c.parents.some((parent) => parent.id === card.id)) {

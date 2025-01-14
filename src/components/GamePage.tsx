@@ -54,6 +54,7 @@ const GameBoard = () => {
   }, []);
 
   useEffect(() => {
+    console.log("current Cards and buckets in gamePage.", cards, bucket);
     if (cards.length === 0 && gameStarted && bucket.length === 0 && additionalSlots.length === 0) {
       const audio = new Audio('/assets/audio/win.mp3'); // Path to your audio file
       !soundOff && audio.play();
@@ -80,8 +81,10 @@ const GameBoard = () => {
       console.log("register fetch response : ", response.data);
       if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
-        const id = setInterval(() => sendUserActive(), 10000);
-        setActiveID(id);  
+        if(activeID == undefined) {
+          const id = setInterval(() => sendUserActive(), 10000);
+          setActiveID(id);  
+        }
       } else {
         setShowGuideModal(true);
       }
