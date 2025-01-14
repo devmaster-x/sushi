@@ -48,6 +48,7 @@ type GameContextType = {
   soundOff: boolean;
   musicOff: boolean;
   jokerClaimed: boolean;
+  removeJokerPair: (n: number) => void;
   setJokerClaimed: (f: boolean) => void;
   setMusicOff: (f: boolean) => void;
   setSoundOff: (f: boolean) => void;
@@ -565,7 +566,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         }
         else if(jokerCardthere && count == cardMatchingCount - 1) {
           setHighlighted(true);
-          setBucket(bucket.map((card) => {
+          setBucket(updatedBucket.map((card) => {
             if(card.type === parseInt(typeId)) return { ...card, highlight: true}
             else return card;
           }))
@@ -620,10 +621,20 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       console.error("Error updating leaderboard:", error);
     }
   };
-  
+
+  const removeJokerPair = (_type : number) => {
+    setBucket((prevCards) => {
+      return prevCards.filter((card) => { card.type !== _type && card.type !== -1});
+    })
+    setHighlighted(false);
+  }
   
   const restartGame = () => {
-    if(!backgroundMusic?.played) backgroundMusic?.play();
+    if(!backgroundMusic?.played) {
+      console.log("audio played. ");
+      backgroundMusic?.play();
+    }
+    setHighlighted(false);
     setGameOver(false);
     setGameStarted(true);
     setBucket([]);
@@ -760,7 +771,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setSlotAvailablity,
       handleAdditionalCardClick,
       setCardBoardWidth,
-      fetchLeaderboard
+      fetchLeaderboard,
+      removeJokerPair
     }),
     [
       musicOff,

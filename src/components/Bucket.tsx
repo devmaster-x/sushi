@@ -3,7 +3,8 @@ import { useGameContext } from "src/context/gameContext";
 const Bucket = () => {
   const {
     bucket,
-    maxBucket
+    maxBucket,
+    removeJokerPair
   } = useGameContext();
 
   return (
@@ -14,8 +15,9 @@ const Bucket = () => {
         {bucket.map((card, index) => (
           <div
             key={`b+${index}`}
-            className={`w-8 h-8 lg:w-10 lg:h-10 bg-[#43A047] rounded-md flex items-center justify-center bg-cover ${card.highlight ? 'border-2 border-white' : ''}`}
+            className={`w-8 h-8 lg:w-10 lg:h-10 bg-[#43A047] rounded-md flex items-center justify-center bg-cover ${card.highlight ? 'border-2 border-white cursor-pointer' : ''}`}
             style={{ backgroundImage: `url(assets/sushi/${card.type == -1 ? 'Joker' : card.type + 1}.png)` }}
+            onClick={() => { removeJokerPair(card.type) }}
           />
         ))}
         {Array.from({ length: maxBucket - bucket.length }).map((_, idx) => (
