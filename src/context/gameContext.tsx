@@ -123,7 +123,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const allCards: CardNode[] = [...cards, ...bucket];
     if(allCards.length === 1) {
       const newCards : CardNode[] = []; 
-      console.log("only one card remained.");
       let lastcard = allCards[0];
       let secondCard : CardNode = {...lastcard, id:lastcard.id + 1, zIndex: lastcard.zIndex + 2, state: "unavailable", parents: [lastcard]}
       if(lastcard.isInBucket) {
@@ -154,11 +153,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if(backgroundMusic == null) return;
     if(musicOff) {
-      console.log("music off, background music paused.");
       backgroundMusic.pause();
     }
     else {
-      console.log("music on, background music is played.");
       backgroundMusic.play();
     }
   },[musicOff])
@@ -398,8 +395,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     let maxCardsLayer: number = 0;
     // const totalCards: number = Math.floor(0.6 * cardTypeNumber) * lcd(cardMatchingCount, deepLayer);
     const totalCards: number = cardTypeNumber * deepLayer;
-
-    console.log("difficulty : ", difficulty);
 
     const addToGeneratedCards = (t: number, l: number , offset: number, layer: number, layer_array_size: number) => {
       let parents = [];
@@ -649,7 +644,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
       // Remove 3 matching cards from the bucket
       const removedCards = prevCards.filter((card) => card.type !== _type && card.type !== -1);
-      console.log("removedCards : ", removedCards);
       return removedCards.map((card) => ({ ...card, highlight: false }));
     })
     setHighlighted(false);
@@ -660,7 +654,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       backgroundMusic
         .play()
         .then(() => {
-          console.log('Audio is playing.');
           setIsPlaying(true);
         })
         .catch((err) => {
