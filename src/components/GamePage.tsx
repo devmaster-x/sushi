@@ -15,7 +15,7 @@ import {
   FailedModal,
   ConfirmModal
 } from './index'
-import { Settings, GuideModal } from "./modals";
+import { ChangeName, GuideModal, Settings } from "./modals";
 
 const GameBoard = () => {
   const {
@@ -28,6 +28,8 @@ const GameBoard = () => {
     currentUser,
     showEditModal,
     soundOff,
+    showSettingsModal,
+    setShowSettingsModal,
     registerUser,
     restartGame,
     startNextRound,
@@ -115,7 +117,15 @@ const GameBoard = () => {
       </div>
       <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-12">
         {/* Left Section: Game Info, Card Board */}
-        <CardBoard />
+        <div className="relative">
+          <CardBoard />
+          <img 
+            src="assets/modal/setting/settings_icon.png" 
+            className="absolute bottom-2 -left-10 w-8 h-8"
+            onClick={() => setShowSettingsModal(true)}
+          />
+        </div>
+
 
         {/* Right Section: Stash, Bucket, Leaderboard */}
         <div className="flex flex-col gap-6 w-full lg:w-1/3 justify-start">
@@ -126,13 +136,14 @@ const GameBoard = () => {
           <LeaderBoard />
         </div>
       </div>
-      {showCongrats && (
+      { showCongrats && (
         <CongratesModal handleClick={handleNextRound}/>          
       )}
-      {gameOver && <FailedModal handleClick={restartGame}/>}
-      {showConfirmModal && gameStarted && <ConfirmModal /> }
-      {showGuideModal && <GuideModal /> }
-      {showEditModal && <Settings /> }
+      { gameOver && <FailedModal handleClick={restartGame}/>}
+      { showConfirmModal && gameStarted && <ConfirmModal /> }
+      { showGuideModal && <GuideModal /> }
+      { showEditModal && <ChangeName /> }
+      { showSettingsModal && <Settings /> }
     </div>
   );
 };

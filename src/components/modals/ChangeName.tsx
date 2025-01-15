@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
-import { FaTimes } from 'react-icons/fa'
 import { useGameContext } from 'src/context/gameContext';
 import { User } from 'src/types/type';
 
-const Settings = () => {
+const ChangeName = () => {
   const {
     currentUser,
     soundOff,
     musicOff,
     setMusicOff,
     setSoundOff,
-    setShowSettingsModal,
+    setShowEditModal,
     changeUserName
   } = useGameContext();
   const [username, setUsername] = useState(currentUser?.username!);
@@ -59,7 +58,7 @@ const Settings = () => {
       }
       else {
         setInvalid(false);
-        setShowSettingsModal(false);
+        setShowEditModal(false);
         changeUserName(currentUser?.email!, username);
       }
     }
@@ -70,51 +69,47 @@ const Settings = () => {
   };
 
   const handleCancel = () => {
-    setShowSettingsModal(false);
-  }
-
-  const handleSound = () => {
-    setSoundOff(!soundOff);
-  }
-
-  const handleMusic = () => {
-    setMusicOff(!musicOff);
+    setShowEditModal(false);
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div
-        className="relative bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[275px] h-[175px] flex items-end align-bottom p-8"
-        style={{
-          backgroundImage: `url(assets/modal/setting/setting.png)`,
-        }}
-      >
-        <FaTimes 
-          onClick={() => setShowSettingsModal(false)}
-          className="absolute text-gray-500 hover:text-gray-800 cursor-pointer hover:opacity-80 top-4 right-4 w-4 h-4"
-        />
-        <img 
-          src={`assets/modal/setting/${musicOff ? 'off.png' : 'on.png'}`}
-          className='absolute cursor-pointer w-6 h-4'
-          style={{
-            top: '88px',
-            left: '155px'
-          }}
-          onClick={()=>setMusicOff(!musicOff)}
-        />
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-xl font-semibold mb-4 text-black text-center">Change Username</h2>
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex gap-2 items-center">
+            <p className="text-black">User Name : </p>
+            <input
+              type="text"
+              maxLength={16}
+              value={username}
+              onChange={handleUsernameChange}
+              className="border p-2 w-3/5 rounded text-gray-600"
+              placeholder="Enter new username"
+            />
+          </div>
+          { invalid && <p className='text-red-500'>{errorMsg}</p> }
+        </div>
+        <div className="flex justify-between space-x-4">
+          <button
+            onClick={handleCancel}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            disabled={ username === ''}
+          >
+            Cancel
+          </button>
 
-        <img 
-          src={`assets/modal/setting/${soundOff ? 'off.png' : 'on.png'}`}
-          className='absolute cursor-pointer w-6 h-4'
-          style={{
-            top: '120px',
-            left: '155px'
-          }}
-          onClick={()=>setSoundOff(!soundOff)}
-        />
+          <button
+            onClick={_changeUserName}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            disabled={ username === ''}
+          >
+            {checkingName ? 'Saving...' : 'Save'}
+          </button>
+        </div>
       </div>
     </div>
   )
 }
 
-export default Settings;
+export default ChangeName;

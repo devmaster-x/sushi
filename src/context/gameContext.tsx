@@ -48,6 +48,8 @@ type GameContextType = {
   soundOff: boolean;
   musicOff: boolean;
   jokerClaimed: boolean;
+  showSettingsModal: boolean;
+  setShowSettingsModal: (f: boolean) => void;
   removeJokerPair: (n: number) => void;
   setJokerClaimed: (f: boolean) => void;
   setMusicOff: (f: boolean) => void;
@@ -107,6 +109,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [highlighted, setHighlighted] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [soundOff, setSoundOff] = useState(false);
   const [musicOff, setMusicOff] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -135,7 +138,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/music.mp3');
+    const audio =  new Audio('/assets/audio/BGmusic.ogg');
     setBackgroundMusic(audio);
   },[])
 
@@ -778,6 +781,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       soundOff,
       musicOff,
       jokerClaimed,
+      showSettingsModal,
+      setShowSettingsModal,
       setJokerClaimed,
       setMusicOff,
       setSoundOff,
@@ -805,6 +810,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       removeJokerPair
     }),
     [
+      showSettingsModal,
       musicOff,
       jokerClaimed,
       currentUser,
