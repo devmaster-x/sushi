@@ -137,18 +137,27 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/BGmusic.ogg');
+    const audio =  new Audio('/assets/audio/BG5.wav');
     setBackgroundMusic(audio);
   },[])
 
   useEffect(() => {
-    if(backgroundMusic) {
-      backgroundMusic.onended = () => {
-        backgroundMusic.currentTime = 0;
-        backgroundMusic.play();
-      }
-    } 
-  },[backgroundMusic]);
+    if (backgroundMusic) {
+      const handleLoop = () => {
+        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.1) {
+          backgroundMusic.currentTime = 0;
+          backgroundMusic.play();
+        }
+      };
+  
+      backgroundMusic.addEventListener('timeupdate', handleLoop);
+  
+      // Cleanup on unmount
+      return () => {
+        backgroundMusic.removeEventListener('timeupdate', handleLoop);
+      };
+    }
+  }, [backgroundMusic]);
 
   useEffect(() => {
     if(backgroundMusic == null) return;

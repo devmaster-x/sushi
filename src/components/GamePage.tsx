@@ -120,7 +120,7 @@ const GameBoard = () => {
           <CardBoard />
           <img 
             src="assets/modal/setting/settings_icon.png" 
-            className="absolute bottom-2 -left-10 w-8 h-8"
+            className="absolute bottom-2 -left-12 w-10 h-10 cursor-pointer"
             onClick={() => setShowSettingsModal(true)}
           />
         </div>
