@@ -7,7 +7,8 @@ import { SingInButton } from '.';
 const Header = () => {
   const {
     currentUser,
-    setShowEditModal
+    setShowEditModal,
+    setShowSettingsModal
   } = useGameContext();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -34,6 +35,11 @@ const Header = () => {
     setShowEditModal(true);
     setDropdownOpen(false);
   };
+
+  const handleSettings = () => {
+    setShowSettingsModal(true);
+    setDropdownOpen(false);
+  }
   
   if(!currentUser) return (
     <div className="gap-4 flex justify-end">
@@ -69,6 +75,14 @@ const Header = () => {
               <div className="absolute -right-2 mt-2 w-28 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col">
                 {/* <div className="flex justify-between items-center"> */}
                   {/* <p className="text-gray-100 overflow-clip">{currentUser ? currentUser.username : "Loading..."}</p> */}
+                  <button
+                    onClick={handleSettings}
+                    // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
+                    className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 lg:hidden"
+                  >
+                    Settings
+                  </button>
+
                   <button
                     onClick={handleEdit}
                     // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"

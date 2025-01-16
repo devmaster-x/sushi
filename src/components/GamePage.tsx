@@ -28,6 +28,7 @@ const GameBoard = () => {
     currentUser,
     showEditModal,
     soundOff,
+    musicOff,
     showSettingsModal,
     setShowSettingsModal,
     registerUser,
@@ -79,7 +80,6 @@ const GameBoard = () => {
   const checkUserRegistered = async () => {
     try {
       const response = await axios.post("https://devapi.sushifarm.io/users/exist",{ mail : session?.user?.email})
-      console.log("register fetch response : ", response.data);
       if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
         if(activeID == undefined) {
@@ -106,6 +106,9 @@ const GameBoard = () => {
         backgroundImage: `url(assets/sushi/background.png)`,
       }}
     >
+      <audio controls loop autoPlay muted={musicOff} hidden>
+        <source src="/assets/audio/BG5.wav"/>
+      </audio>
       <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
         <Header />
         <CardBoard />

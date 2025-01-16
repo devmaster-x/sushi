@@ -112,9 +112,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [soundOff, setSoundOff] = useState(false);
   const [musicOff, setMusicOff] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
-  const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
+  // const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
   const cardSize = 40;
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -136,38 +136,38 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   },[cards])
 
-  useEffect(() => {
-    const audio =  new Audio('/assets/audio/BG5.wav');
-    setBackgroundMusic(audio);
-  },[])
+  // useEffect(() => {
+  //   const audio =  new Audio('/assets/audio/BG5.wav');
+  //   setBackgroundMusic(audio);
+  // },[])
 
-  useEffect(() => {
-    if (backgroundMusic) {
-      const handleLoop = () => {
-        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.1) {
-          backgroundMusic.currentTime = 0;
-          backgroundMusic.play();
-        }
-      };
+  // useEffect(() => {
+  //   if (backgroundMusic) {
+  //     const handleLoop = () => {
+  //       if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.1) {
+  //         backgroundMusic.currentTime = 0;
+  //         backgroundMusic.play();
+  //       }
+  //     };
   
-      backgroundMusic.addEventListener('timeupdate', handleLoop);
+  //     backgroundMusic.addEventListener('timeupdate', handleLoop);
   
-      // Cleanup on unmount
-      return () => {
-        backgroundMusic.removeEventListener('timeupdate', handleLoop);
-      };
-    }
-  }, [backgroundMusic]);
+  //     // Cleanup on unmount
+  //     return () => {
+  //       backgroundMusic.removeEventListener('timeupdate', handleLoop);
+  //     };
+  //   }
+  // }, [backgroundMusic]);
 
-  useEffect(() => {
-    if(backgroundMusic == null) return;
-    if(musicOff) {
-      backgroundMusic.pause();
-    }
-    else {
-      backgroundMusic.play();
-    }
-  },[musicOff])
+  // useEffect(() => {
+  //   if(backgroundMusic == null) return;
+  //   if(musicOff) {
+  //     backgroundMusic.pause();
+  //   }
+  //   else {
+  //     backgroundMusic.play();
+  //   }
+  // },[musicOff])
 
   useEffect(() => {
     if(currentUser) sendScore(score);
@@ -563,6 +563,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setBucket((prevBucket) => {
       let updatedBucket : CardNode[]= [...prevBucket, {...card, isInBucket: true}];
       let jokerCardthere = false;
+      let _highlighted = false;
   
       // Check for triplets in the bucket
       const typeCounts = updatedBucket.reduce((acc, curr) => {
@@ -587,6 +588,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         } else if (jokerCardthere && (count === cardMatchingCount - 1) && (parseInt(typeId) !== -1)) {
           // Highlight cards when jokerCardthere condition is met
           setHighlighted(true);
+          _highlighted = true;
           updatedBucket = updatedBucket.map((card) => {
             if (card.type === parseInt(typeId)) return { ...card, highlight: true };
             return card;
@@ -595,7 +597,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       }
   
       // Check for bucket overflow (7 cards limit)
-      if (updatedBucket.length === maxBucket && !loseLifeCalledRef.current) {
+      if (updatedBucket.length === maxBucket && !loseLifeCalledRef.current && !_highlighted) {
         loseLifeCalledRef.current = true; // Mark that loseLife is being called
         setTimeout(() => {
           loseLife();
@@ -659,16 +661,16 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   }
   
   const restartGame = () => {
-    if (backgroundMusic && !isPlaying) {
-      backgroundMusic
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch((err) => {
-          console.error('Failed to play audio:', err);
-        });
-    }
+    // if (backgroundMusic && !isPlaying) {
+    //   backgroundMusic
+    //     .play()
+    //     .then(() => {
+    //       setIsPlaying(true);
+    //     })
+    //     .catch((err) => {
+    //       console.error('Failed to play audio:', err);
+    //     });
+    // }
     setHighlighted(false);
     setGameOver(false);
     setGameStarted(true);
