@@ -138,7 +138,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/BG5.wav');
+    const audio =  new Audio('/assets/audio/BG7.ogg');
     setBackgroundMusic(audio);
   },[])
 
@@ -146,7 +146,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     if (backgroundMusic) {
       backgroundMusic.loop = true;
       const handleLoop = () => {
-        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.5) {
+        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.3) {
           backgroundMusic.currentTime = 0;
         }
       };
@@ -584,8 +584,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       for (const [typeId, count] of Object.entries(typeCounts)) {
         if (count >= cardMatchingCount) {
           // Update the score for triplets
-          if(parseInt(typeId) === -1) setScore((prevScore) => prevScore + 50);
-          else setScore((prevScore) => prevScore + 10); // Award points for triplets
+          if(parseInt(typeId) === -1) setScore((prevScore) => prevScore + 50 + (currentRound.roundNumber - 1)  * 10);
+          else setScore((prevScore) => prevScore + 10 + (currentRound.roundNumber - 1)  * 5); // Award points for triplets
           setRollbackAvailable(false);
       
           // Remove 3 matching cards from the bucket

@@ -3,7 +3,7 @@ import clientPromise from "src/lib/mongodb";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const client = await clientPromise;
-  const db = client.db("raulminibattle");
+  const db = client.db("sushipop");
   
   if (req.method === "POST") {
     try {
