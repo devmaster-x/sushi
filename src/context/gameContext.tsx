@@ -584,8 +584,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       for (const [typeId, count] of Object.entries(typeCounts)) {
         if (count >= cardMatchingCount) {
           // Update the score for triplets
-          if(parseInt(typeId) === -1) setScore((prevScore) => prevScore + 50 + (currentRound.roundNumber - 1)  * 10);
-          else setScore((prevScore) => prevScore + 10 + (currentRound.roundNumber - 1)  * 5); // Award points for triplets
+          if(parseInt(typeId) === -1) setScore((prevScore) => prevScore + 50);
+          else setScore((prevScore) => prevScore + 10); // Award points for triplets
           setRollbackAvailable(false);
       
           // Remove 3 matching cards from the bucket
