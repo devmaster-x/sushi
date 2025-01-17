@@ -246,16 +246,16 @@ const GameBoard = () => {
               <ul className="space-y-2">
                 {leaderBoard.map((user, index) => (
                   <li
-                    key={user.wallet}
+                    key={index}
                     className={`flex justify-between p-2 rounded-md ${
-                      user.wallet === address
+                      user.email === ''
                         ? "bg-[#8fde8b] text-black"
                         : "text-gray-300"
                     }`}
                   >
                     <span>{index + 1}.</span>
                     <span>{user.username}</span>
-                    <span>{user.current_score} pts</span>
+                    <span>{user.score} pts</span>
                   </li>
                 ))}
               </ul>
