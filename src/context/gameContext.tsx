@@ -588,11 +588,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         if (count >= cardMatchingCount) {
           // Update the score for triplets
           if(parseInt(typeId) === -1) {
-            setScore((prevScore) => prevScore + 25);
+            setScore((prevScore) => prevScore + 50);
             sendScore(50);
           }
           else {
-            setScore((prevScore) => prevScore + 5); // Award points for triplets
+            setScore((prevScore) => prevScore + 10); // Award points for triplets
             sendScore(10);
           } 
           setRollbackAvailable(false);
