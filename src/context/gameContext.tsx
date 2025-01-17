@@ -144,8 +144,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (backgroundMusic) {
+      backgroundMusic.loop = true;
       const handleLoop = () => {
-        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.1) {
+        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.5) {
           backgroundMusic.currentTime = 0;
         }
       };
