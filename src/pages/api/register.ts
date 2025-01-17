@@ -4,6 +4,9 @@ import clientPromise from "src/lib/mongodb";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const client = await clientPromise;
   const db = client.db("sushipop");
+  const currentDate = new Date();
+  const currentWeekStart = new Date();
+  currentWeekStart.setDate(currentDate.getDate() - currentDate.getDay());
   
   if (req.method === "GET") {
     try {
@@ -50,7 +53,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           top_score: 0,
           current_score: 0,
         };
+        const leaderboardUser = {
+          email,
+          username,
+          score: 0
+        }
         await db.collection("users").insertOne(newUser);
+        await db.collection("day").insertOne({ ...leaderboardUser, date: currentDate.toISOString().split('T')[0]});
+        await db.collection("week").insertOne({
+          ...leaderboardUser,
+          startDate: currentWeekStart.toISOString().split('T')[0], // Start of the week
+          endDate: new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // End of the week (Saturday)
+        });
+        await db.collection("entire").insertOne(leaderboardUser);
         return res.status(201).json({ message: "User registered successfully." });
       } else {
         const newUser = {

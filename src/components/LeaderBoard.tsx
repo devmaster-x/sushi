@@ -27,7 +27,7 @@ const LeaderBoard = () => {
               // }`}
             >
               <span>{index + 1}. {user.username}</span>
-              <span>{user.current_score} pts</span>
+              <span>{user.score} pts</span>
             </li>
           ))}
         </ul>

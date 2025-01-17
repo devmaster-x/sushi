@@ -8,7 +8,9 @@ const App = () => {
   return (
     <SessionProvider>
       <GameProvider>
-        <GamePage />
+        <React.StrictMode>
+          <GamePage />
+        </React.StrictMode>
       </GameProvider>
     </SessionProvider>
   );

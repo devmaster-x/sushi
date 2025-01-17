@@ -116,6 +116,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
   const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
+  const [limit, setLimit] = useState(5);
   const cardSize = 40;
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -170,9 +171,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   },[musicOff])
 
-  useEffect(() => {
-    if(currentUser) sendScore(score);
-  },[score])
+  // useEffect(() => {
+  //   if(currentUser) sendScore(score);
+  // },[score])
 
   useEffect(() => {
     if(cards.length > 0) rearrangeCards();
@@ -180,7 +181,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await fetch("/api/leaderboard");
+      const response = await fetch(`/api/leaderboard?limit=${limit}`);
       if (response.ok) {
         const data: LeaderBoard = await response.json();
         setLeaderBoard(data);
@@ -217,12 +218,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
  
       if (response.status === 201) {
         setCurrentUser({
-          wallet: '',
+          // wallet: '',
           email: email,
           username: response.data.username,
-          current_score: 0,
-          top_score: 0,
-          isVIP: false
+          score: 0
+          // current_score: 0,
+          // top_score: 0,
+          // isVIP: false
         })
         fetchLeaderboard();
       } else {
@@ -244,12 +246,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
  
       if (response.status === 201) {
         setCurrentUser({
-          wallet: '',
+          // wallet: '',
           email: email,
           username: response.data.username,
-          current_score: 0,
-          top_score: 0,
-          isVIP: false
+          score: 0
+          // current_score: 0,
+          // top_score: 0,
+          // isVIP: false
         })
         fetchLeaderboard();
       } else {
@@ -584,8 +587,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       for (const [typeId, count] of Object.entries(typeCounts)) {
         if (count >= cardMatchingCount) {
           // Update the score for triplets
-          if(parseInt(typeId) === -1) setScore((prevScore) => prevScore + 50);
-          else setScore((prevScore) => prevScore + 10); // Award points for triplets
+          if(parseInt(typeId) === -1) {
+            setScore((prevScore) => prevScore + 25);
+            sendScore(50);
+          }
+          else {
+            setScore((prevScore) => prevScore + 5); // Award points for triplets
+            sendScore(10);
+          } 
           setRollbackAvailable(false);
       
           // Remove 3 matching cards from the bucket
@@ -629,14 +638,20 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
   const sendScore = async (newScore: number) => {
     // if (!address) return;
-  
+    const currentDate = new Date();
+    const currentWeekStart = new Date();
+    currentWeekStart.setDate(currentDate.getDate() - currentDate.getDay()); // Start of the week (Sunday)
+
     try {
-      const response = await fetch("/api/leaderboard", {
+      const response = await fetch("/api/updateScore", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: currentUser?.email,
-          score: newScore,
+          newScore: newScore,
+          date: new Date().toISOString().split('T')[0],
+          startDate: currentWeekStart.toISOString().split('T')[0],
+          endDate: new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         }),
       });
   
@@ -652,6 +667,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const removeJokerPair = (_type : number) => {
     setBucket((prevCards) => {
+      sendScore(10);
       setScore((prevScore) => {
         const newScore = prevScore + 10; // Award points for triplets
         return newScore;

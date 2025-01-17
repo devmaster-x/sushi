@@ -31,10 +31,11 @@ export interface GameState {
 }
 
 export interface User {
-  wallet: string;
+  // wallet: string;
   email: string;
   username: string; // Added username for identification
-  current_score: number;
-  top_score: number; // Top score user has achieved
-  isVIP: boolean;
+  score: number;
+  // current_score: number;
+  // top_score: number; // Top score user has achieved
+  // isVIP: boolean;
 }

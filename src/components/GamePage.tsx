@@ -28,7 +28,6 @@ const GameBoard = () => {
     currentUser,
     showEditModal,
     soundOff,
-    musicOff,
     showSettingsModal,
     setShowSettingsModal,
     registerUser,
@@ -76,10 +75,10 @@ const GameBoard = () => {
     if(!activeID) clearInterval(activeID);
   },[signOut])
 
-  const sendUserActive = () => {
-    axios.post("/api/useractive", { email: session?.user?.email });
-    fetchLeaderboard();
-  };
+  // const sendUserActive = () => {
+  //   axios.post("/api/useractive", { email: session?.user?.email });
+  //   fetchLeaderboard();
+  // };
 
   const checkUserRegistered = async () => {
     try {
@@ -87,7 +86,8 @@ const GameBoard = () => {
       if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
         if(activeID == undefined) {
-          const id = setInterval(() => sendUserActive(), 10000);
+          // const id = setInterval(() => sendUserActive(), 10000);
+          const id = setInterval(() => fetchLeaderboard(), 10000);
           setActiveID(id);  
         }
       } else {
