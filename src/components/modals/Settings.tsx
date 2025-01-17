@@ -45,46 +45,10 @@ const Settings = () => {
     }
   }
 
-  const _changeUserName = async () => {
-    if(!validateCheck(username)) {
-      setErrorMsg("Username contains alphabets and numbers only.");
-      setInvalid(true); 
-    }
-    else {  
-      setErrorMsg("");
-      const isValidName = await isValidUserName(username);
-      if(!isValidName) {
-        setErrorMsg("Same name is already exist.")
-        setInvalid(true);
-      }
-      else {
-        setInvalid(false);
-        setShowSettingsModal(false);
-        changeUserName(currentUser?.email!, username);
-      }
-    }
-  }
-
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(validateCheck(event.target.value)) setUsername(event.target.value);
-  };
-
-  const handleCancel = () => {
-    setShowSettingsModal(false);
-  }
-
-  const handleSound = () => {
-    setSoundOff(!soundOff);
-  }
-
-  const handleMusic = () => {
-    setMusicOff(!musicOff);
-  }
-
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
-        className="relative bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[275px] h-[175px] flex items-end align-bottom p-8"
+        className="relative bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[330px] h-[210px] flex items-end align-bottom p-8"
         style={{
           backgroundImage: `url(assets/modal/setting/setting.png)`,
         }}
@@ -95,20 +59,20 @@ const Settings = () => {
         />
         <img 
           src={`assets/modal/setting/${musicOff ? 'off.png' : 'on.png'}`}
-          className='absolute cursor-pointer w-6 h-4'
+          className='absolute cursor-pointer w-10 h-6'
           style={{
-            top: '88px',
-            left: '155px'
+            top: '102px',
+            left: '185px'
           }}
           onClick={()=>setMusicOff(!musicOff)}
         />
 
         <img 
           src={`assets/modal/setting/${soundOff ? 'off.png' : 'on.png'}`}
-          className='absolute cursor-pointer w-6 h-4'
+          className='absolute cursor-pointer w-10 h-6'
           style={{
-            top: '120px',
-            left: '155px'
+            top: '140px',
+            left: '185px'
           }}
           onClick={()=>setSoundOff(!soundOff)}
         />

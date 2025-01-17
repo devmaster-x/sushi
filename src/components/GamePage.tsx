@@ -106,9 +106,7 @@ const GameBoard = () => {
         backgroundImage: `url(assets/sushi/background.png)`,
       }}
     >
-      <audio controls loop autoPlay muted={musicOff} hidden>
-        <source src="/assets/audio/BG5.wav"/>
-      </audio>
+      <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav"/>
       <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
         <Header />
         <CardBoard />
