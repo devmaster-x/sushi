@@ -116,8 +116,8 @@ const GameBoard = () => {
         <CardBoard />
         <GameInfo />
         <Bucket />
-        {/* { currentUser && <ButtonsMobile /> } */}
-        <ButtonsMobile />
+        { currentUser && <ButtonsMobile /> }
+        {/* <ButtonsMobile /> */}
         <LeaderBoard />
       </div>
       <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-12">
@@ -137,8 +137,8 @@ const GameBoard = () => {
           <Header />
           <GameInfo />
           <Bucket />
-          {/* { currentUser && <ButtonsWeb /> } */}
-          <ButtonsWeb />
+          { currentUser && <ButtonsWeb /> }
+          {/* <ButtonsWeb /> */}
           <LeaderBoard />
         </div>
       </div>

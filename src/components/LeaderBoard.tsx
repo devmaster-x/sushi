@@ -19,12 +19,12 @@ const LeaderBoard = () => {
           {leaderBoard.map((user, index) => (
             <li
               key={index}
-              // className={`flex justify-between px-2 rounded-md`}
-              className={`flex justify-between p-2 rounded-md ${
-                user.email === currentUser?.email
-                  ? "bg-[#8fde8b] text-black"
-                  : "text-gray-300"
-              }`}
+              className={`flex justify-between px-2 rounded-md`}
+              // className={`flex justify-between p-2 rounded-md ${
+              //   user.email === currentUser?.email
+              //     ? "bg-[#8fde8b] text-black"
+              //     : "text-gray-300"
+              // }`}
             >
               <span>{index + 1}. {user.username}</span>
               <span>{user.current_score} pts</span>
