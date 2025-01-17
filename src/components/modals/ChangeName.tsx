@@ -45,6 +45,12 @@ const ChangeName = () => {
   }
 
   const _changeUserName = async () => {
+    console.log("username : ", username);
+    if(username.length < 3 || username.length > 16) {
+      setErrorMsg("Username should contain 3 to 16 characters.");
+      setInvalid(true); 
+    }
+
     if(!validateCheck(username)) {
       setErrorMsg("Username contains alphabets and numbers only.");
       setInvalid(true); 
@@ -73,42 +79,51 @@ const ChangeName = () => {
   }
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-semibold mb-4 text-black text-center">Change Username</h2>
-        <div className="flex flex-col gap-4 mb-4">
-          <div className="flex gap-2 items-center">
-            <p className="text-black">User Name : </p>
-            <input
-              type="text"
-              maxLength={16}
-              value={username}
-              onChange={handleUsernameChange}
-              className="border p-2 w-3/5 rounded text-gray-600"
-              placeholder="Enter new username"
-            />
-          </div>
+    <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div
+        className="relative bg-contain bg-no-repeat rounded-lg shadow-lg overflow-hidden mx-auto w-[330px] h-[215px] flex items-end align-bottom p-8"
+        style={{
+          backgroundImage: `url(assets/modal/changename/change_nickname.png)`,
+        }}
+      >
+        <div 
+          className='absolute'
+          style={{
+            top: "78px",
+            left: "80px"
+          }}
+        >
+          <input
+            type="text"
+            maxLength={16}
+            minLength={3}
+            value={username}
+            onChange={handleUsernameChange}
+            className="p-2 w-full rounded text-gray-600 bg-transparent border-transparent outline-none"
+            placeholder="Enter New Nickname"
+          />
           { invalid && <p className='text-red-500'>{errorMsg}</p> }
         </div>
-        <div className="flex justify-between space-x-4">
-          <button
-            onClick={handleCancel}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            disabled={ username === ''}
-          >
-            Cancel
-          </button>
 
-          <button
+        <div className="flex justify-around w-full">
+          <img
+            src="assets/modal/changename/cancel.png"
+            alt="Cancel"
+            onClick={handleCancel}
+            className="cursor-pointer hover:opacity-80 w-24"
+          />
+
+          <img
+            src="assets/modal/changename/save.png"
+            alt="OK"
             onClick={_changeUserName}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            disabled={ username === ''}
-          >
-            {checkingName ? 'Saving...' : 'Save'}
-          </button>
+            className="cursor-pointer hover:opacity-80 w-24"
+            aria-disabled={ username === ''}
+          />
         </div>
       </div>
     </div>
+
   )
 }
 

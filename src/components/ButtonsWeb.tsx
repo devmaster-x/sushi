@@ -8,6 +8,7 @@ const ButtonsWeb = () => {
     restartGame,
     setShowConfirmModal,
     handleHintSelected,
+    setBGMusicTime,
     currentUser
   } = useGameContext();
   
@@ -48,6 +49,13 @@ const ButtonsWeb = () => {
         onClick={ ()=> gameStarted ? setShowConfirmModal(true) : handlePlay() }
       >
         {gameStarted ? "Restart" : "Play"}
+      </button>
+
+      <button 
+        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
+        onClick={setBGMusicTime}
+      >
+        Set
       </button>
 
     {/* <button

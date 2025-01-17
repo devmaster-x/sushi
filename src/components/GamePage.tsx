@@ -53,6 +53,10 @@ const GameBoard = () => {
     handleResize();
     window.addEventListener("resize", handleResize);
 
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -106,7 +110,7 @@ const GameBoard = () => {
         backgroundImage: `url(assets/sushi/background.png)`,
       }}
     >
-      <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/>
+      {/* <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/> */}
       <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
         <Header />
         <CardBoard />
