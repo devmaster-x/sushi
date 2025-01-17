@@ -610,7 +610,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   };
 
   const loseLife = () => {
-    const audio = new Audio('/assets/audio/lose.mp3');
+    const audio = new Audio('/assets/audio/lose.wav');
     !soundOff && audio.play();
 
     if (lives > 1) {
@@ -690,7 +690,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Handle card click
   const handleCardClick = (card: CardNode) => {
     if(highlighted) return;
-    const audio = new Audio('/assets/audio/drop.mp3'); // Path to your audio file
+    const audio = new Audio('/assets/audio/drop.wav'); // Path to your audio file
     !soundOff && audio.play();
 
     if (card.state=="available") setRollbackAvailable(true && !rollbackPressed);

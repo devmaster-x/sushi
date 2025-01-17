@@ -48,7 +48,7 @@ const Settings = () => {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
-        className="relative bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[330px] h-[210px] flex items-end align-bottom p-8"
+        className="relative bg-contain bg-no-repeat rounded-lg shadow-lg overflow-hidden mx-auto w-[330px] h-[178px] flex items-end align-bottom p-8"
         style={{
           backgroundImage: `url(assets/modal/setting/setting.png)`,
         }}
@@ -61,7 +61,7 @@ const Settings = () => {
           src={`assets/modal/setting/${musicOff ? 'off.png' : 'on.png'}`}
           className='absolute cursor-pointer w-10 h-6'
           style={{
-            top: '102px',
+            top: '80px',
             left: '185px'
           }}
           onClick={()=>setMusicOff(!musicOff)}
@@ -71,7 +71,7 @@ const Settings = () => {
           src={`assets/modal/setting/${soundOff ? 'off.png' : 'on.png'}`}
           className='absolute cursor-pointer w-10 h-6'
           style={{
-            top: '140px',
+            top: '113px',
             left: '185px'
           }}
           onClick={()=>setSoundOff(!soundOff)}

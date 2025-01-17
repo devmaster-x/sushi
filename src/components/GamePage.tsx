@@ -58,7 +58,7 @@ const GameBoard = () => {
 
   useEffect(() => {
     if (cards.length === 0 && gameStarted && bucket.length === 0 && additionalSlots.length === 0) {
-      const audio = new Audio('/assets/audio/win.mp3'); // Path to your audio file
+      const audio = new Audio('/assets/audio/win.wav'); // Path to your audio file
       !soundOff && audio.play();
       setShowCongrats(true);
     }
@@ -106,7 +106,7 @@ const GameBoard = () => {
         backgroundImage: `url(assets/sushi/background.png)`,
       }}
     >
-      <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav"/>
+      <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/>
       <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
         <Header />
         <CardBoard />
@@ -121,7 +121,7 @@ const GameBoard = () => {
           <CardBoard />
           <img 
             src="assets/modal/setting/settings_icon.png" 
-            className="absolute bottom-2 -left-12 w-10 h-10 cursor-pointer"
+            className="absolute bottom-2 -left-14 w-12 h-12 cursor-pointer"
             onClick={() => setShowSettingsModal(true)}
           />
         </div>
