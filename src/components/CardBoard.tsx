@@ -13,7 +13,7 @@ const CardBoard = () => {
 
   if(isHint) return (
     <div
-      className="bg-[#d5fbff] rounded-2xl shadow-md overflow-hidden mx-auto border-[#b1dedd] border-2"
+      className="bg-[#d5fbff] rounded-2xl shadow-md overflow-hidden mx-auto border-[#b1dedd] border-4"
       style={{
         width: cardBoardWidth,
         height: cardBoardWidth,
