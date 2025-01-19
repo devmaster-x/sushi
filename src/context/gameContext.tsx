@@ -174,9 +174,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
   },[musicOff])
 
-  // useEffect(() => {
-  //   if(currentUser) sendScore(score);
-  // },[score])
+  useEffect(() => {
+    if(currentUser && stackedScore > 50) {
+      sendScore(stackedScore);
+      setStackedScore(0);
+    }
+  },[stackedScore])
 
   useEffect(() => {
     if(cards.length > 0) rearrangeCards();
@@ -704,7 +707,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setMaxBucketCount(7);
     setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
     generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
-    sendScore(0);
   };
 
   // Handle card click
