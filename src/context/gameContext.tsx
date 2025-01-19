@@ -139,7 +139,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/BG7.ogg');
+    const audio =  new Audio('/assets/audio/BG10.wma');
     setBackgroundMusic(audio);
   },[])
 
@@ -216,7 +216,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         current_score: 0
       })
  
-      if (response.status === 201) {
+      if (response.status === 200) {
         setCurrentUser({
           // wallet: '',
           email: email,
@@ -244,7 +244,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         current_score: 0
       })
  
-      if (response.status === 201) {
+      if (response.status === 200) {
         setCurrentUser({
           // wallet: '',
           email: email,
@@ -545,8 +545,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setRollbackAvailable(false);
     setRollbackPressed(false);
     setSlotAvailablity(true);
-    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 4, 22);
-    const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + currentRound.roundNumber % 2 * 3;
+    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 2, 22);
+    const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + 3;
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
       cardTypeNumber: _cardTypeNumber, 

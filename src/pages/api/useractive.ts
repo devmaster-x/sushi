@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           } 
         }
       );
-      return res.status(201).json({ message: "User updated successfully." });
+      return res.status(200).json({ message: "User updated successfully." });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error." });

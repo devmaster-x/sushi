@@ -88,7 +88,7 @@ const Header = () => {
                     // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
                     className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 lg:hidden"
                   >
-                    Settings
+                    Sound / Music
                   </button>
 
                 {/* </div> */}

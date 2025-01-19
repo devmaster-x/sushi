@@ -18,6 +18,7 @@ const ChangeName = () => {
   const [invalid, setInvalid] = useState(false);
 
   const validateCheck = (username: string) : boolean => {
+    if(username=='') return true;
     const regex = /^[a-zA-Z0-9 ]+$/;
     return regex.test(username);
   }
@@ -45,13 +46,12 @@ const ChangeName = () => {
   }
 
   const _changeUserName = async () => {
-    console.log("username : ", username);
     if(username.length < 3 || username.length > 16) {
       setErrorMsg("Username should contain 3 to 16 characters.");
       setInvalid(true); 
     }
 
-    if(!validateCheck(username)) {
+    else if(!validateCheck(username)) {
       setErrorMsg("Username contains alphabets and numbers only.");
       setInvalid(true); 
     }
@@ -81,16 +81,16 @@ const ChangeName = () => {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
-        className="relative bg-contain bg-no-repeat rounded-lg shadow-lg overflow-hidden mx-auto w-[330px] h-[215px] flex items-end align-bottom p-8"
+        className="relative bg-contain bg-no-repeat rounded-lg shadow-lg overflow-hidden mx-auto w-[330px] h-[250px] flex items-end align-bottom p-8"
         style={{
-          backgroundImage: `url(assets/modal/changename/change_nickname.png)`,
+          backgroundImage: `url(assets/modal/changename/confirmation_screen.png)`,
         }}
       >
         <div 
           className='absolute'
           style={{
-            top: "78px",
-            left: "80px"
+            top: "85px",
+            left: "60px"
           }}
         >
           <input
@@ -102,7 +102,7 @@ const ChangeName = () => {
             className="p-2 w-full rounded text-gray-600 bg-transparent border-transparent outline-none"
             placeholder="Enter New Nickname"
           />
-          { invalid && <p className='text-red-500'>{errorMsg}</p> }
+          { invalid && <p className='text-red-500 mt-6'>{errorMsg}</p> }
         </div>
 
         <div className="flex justify-around w-full">
