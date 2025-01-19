@@ -255,7 +255,7 @@ const GameBoard = () => {
                   >
                     <span>{index + 1}.</span>
                     <span>{user.username}</span>
-                    <span>{user.score} pts</span>
+                    <span>{user.top_score} pts</span>
                   </li>
                 ))}
               </ul>
