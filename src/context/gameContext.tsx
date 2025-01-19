@@ -253,7 +253,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         setCurrentUser((_prevUser) => { return {
           ..._prevUser!,
           email: email,
-          username: response.data.username,
+          username: userName,
         }})
         fetchLeaderboard();
       } else {
