@@ -47,12 +47,12 @@ const ChangeName = () => {
 
   const _changeUserName = async () => {
     if(username.length < 3 || username.length > 16) {
-      setErrorMsg("Username should contain 3 to 16 characters.");
+      setErrorMsg("Should be 3 to 16 characters.");
       setInvalid(true); 
     }
 
     else if(!validateCheck(username)) {
-      setErrorMsg("Username contains alphabets and numbers only.");
+      setErrorMsg("Should be alphabets and numbers only.");
       setInvalid(true); 
     }
     else {  
