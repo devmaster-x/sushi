@@ -19,28 +19,27 @@ const ButtonsWeb = () => {
 
   return (
     <div className="gap-4 hidden lg:flex justify-around">
+      <img
+        src="assets/modal/buttons/Hint.png"
+        alt="Hint"
+        onClick={handleHintSelected}
+        className="cursor-pointer hover:opacity-80 w-24"
+      />
+
+      <img
+        src={gameStarted ? 'assets/modal/buttons/restart.png' : 'assets/modal/buttons/restart.png' }
+        alt="Restart"
+        onClick={handleHintSelected}
+        className="cursor-pointer hover:opacity-80 w-24"
+      />
+
       {/* <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={startNextRound}
-      >
-        Next
-      </button> */}
-         
-      <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={handleHintSelected}
       >
         Hint
-      </button>
-      
-      {/* <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={rollbackFromAdditionalSlots}
-        disabled={!rollbackAvailable || rollbackPressed}
-      >
-        Rollback
       </button> */}
-      <button
+      {/* <button
         className={`px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer ${
           !gameStarted
             ? "bg-green-600 hover:bg-green-400"
@@ -49,25 +48,7 @@ const ButtonsWeb = () => {
         onClick={ ()=> gameStarted ? setShowConfirmModal(true) : handlePlay() }
       >
         {gameStarted ? "Restart" : "Play"}
-      </button>
-
-    {/* <button
-          className="bg-[#FFD600] hover:opacity-80 text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
-          onClick={handleHintSelected}
-        >
-          Hint
-        </button>
-        
-        <button
-          className={`px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer ${
-            !gameStarted
-              ? "bg-[#43A047]"
-              : "bg-[#1E88E5]"
-          } text-white hover:opacity-80`}
-          onClick={ ()=> gameStarted ? setShowConfirmModal(true) : handlePlay() }
-        >
-          {gameStarted ? "Restart" : "Play"}
-        </button> */}
+      </button> */}
     </div>
   )
 }

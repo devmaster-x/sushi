@@ -111,7 +111,7 @@ const GameBoard = () => {
       }}
     >
       {/* <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/> */}
-      <div className="w-full mx-auto flex flex-col lg:hidden gap-4">
+      <div className="w-full mx-auto flex flex-col lg:hidden gap-4 h-full">
         <Header />
         <CardBoard />
         <GameInfo />
@@ -120,7 +120,7 @@ const GameBoard = () => {
         {/* <ButtonsMobile /> */}
         <LeaderBoard />
       </div>
-      <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-12">
+      <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-12 h-full">
         {/* Left Section: Game Info, Card Board */}
         <div className="relative">
           <CardBoard />
@@ -133,12 +133,14 @@ const GameBoard = () => {
 
 
         {/* Right Section: Stash, Bucket, Leaderboard */}
-        <div className="flex flex-col gap-2 w-full lg:w-1/3 justify-start">
-          <Header />
-          <GameInfo />
-          <Bucket />
-          { currentUser && <ButtonsWeb /> }
-          {/* <ButtonsWeb /> */}
+        <div className="flex flex-col gap-2 w-full lg:w-1/3 justify-between">
+          <div className="flex flex-col gap-4 justify-start">
+            <Header />
+            <GameInfo />
+            <Bucket />
+            { currentUser && <ButtonsWeb /> }
+            {/* <ButtonsWeb /> */}
+          </div>
           <LeaderBoard />
         </div>
       </div>

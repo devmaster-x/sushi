@@ -19,54 +19,19 @@ const ButtonsMobile = () => {
 
   return (
     <div className="gap-4 flex lg:hidden justify-between">
-      {/* <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={startNextRound}
-      >
-        Next
-      </button> */}
-
-      <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
+      <img
+        src="assets/modal/buttons/Hint.png"
+        alt="Hint"
         onClick={handleHintSelected}
-      >
-        Hint
-      </button>
+        className="cursor-pointer hover:opacity-80 w-24"
+      />
 
-      {/* <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-3 py-1 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={rollbackFromAdditionalSlots}
-        disabled={!rollbackAvailable || rollbackPressed}
-      >
-        Rollback
-      </button> */}
-      <button
-        className={`px-6 py-2 rounded-md transition-colors duration-200 cursor-pointer ${
-          !gameStarted
-            ? "bg-green-600 hover:bg-green-400"
-            : "bg-[#2a2b3c] hover:bg-[#3a3b4c]"
-        } text-white`}
-        onClick={ ()=> gameStarted ? setShowConfirmModal(true) : handlePlay() }
-      >
-        {gameStarted ? "Restart" : "Play"}
-      </button>
-
-    {/* <button
-          className="bg-[#FFD600] hover:opacity-80 text-white px-3 py-2 rounded-md transition-colors duration-200 cursor-pointer"
-          onClick={handleHintSelected}
-        >
-          Hint
-        </button>
-        <button
-          className={`px-6 py-2 rounded-md transition-colors duration-200 cursor-pointer ${
-            !gameStarted
-              ? "bg-[#43A047]"
-              : "bg-[#1E88E5]"
-          } text-white hover:opacity-80`}
-          onClick={ ()=> gameStarted ? setShowConfirmModal(true) : handlePlay() }
-        >
-          {gameStarted ? "Restart" : "Play"}
-        </button> */}
+      <img
+        src={gameStarted ? 'assets/modal/buttons/restart.png' : 'assets/modal/buttons/restart.png' }
+        alt="Restart"
+        onClick={handleHintSelected}
+        className="cursor-pointer hover:opacity-80 w-24"
+      />
     </div>
   
   )

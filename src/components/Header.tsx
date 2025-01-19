@@ -47,7 +47,7 @@ const Header = () => {
     </div>
   )
   else return (
-    <div className="w-full bg-[#252635] p-4 rounded-md shadow-md">
+    <div className="w-full bg-[#704337] px-4 py-2 rounded-xl shadow-md">
       <div className="flex justify-between text-[37474F]">
         <div className='flex items-center'>
           <div

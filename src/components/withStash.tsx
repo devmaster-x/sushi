@@ -194,7 +194,7 @@ const GameBoard = () => {
           </div>
 
           {/* Game Info */}
-          <div className="w-full bg-[#252635] p-4 rounded-md shadow-md">
+          <div className="w-full bg-[#704337] p-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold text-center text-gray-200">Game Info</h2>
             <div className="flex justify-between mt-4 text-gray-400">
               <p>Lives: {lives}</p>
@@ -203,7 +203,7 @@ const GameBoard = () => {
             </div>
           </div>
           {/* Stash */}
-          <div className="bg-[#252635] p-2 py-4 rounded-md shadow-md">
+          <div className="bg-[#704337] p-2 py-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold text-gray-200 text-center mb-2">Stash</h2>
             <div className="flex gap-2 justify-center">
               {additionalSlots.map((card) => (
@@ -221,7 +221,7 @@ const GameBoard = () => {
           </div>
 
           {/* Bucket */}
-          <div className="bg-[#252635] p-2 py-4 rounded-md shadow-md">
+          <div className="bg-[#704337] p-2 py-4 rounded-md shadow-md">
             <h2 className="text-lg font-bold text-gray-200 text-center mb-2">Bucket</h2>
             <div className="flex flex-wrap gap-2 justify-center">
               {bucket.map((card) => (
@@ -238,7 +238,7 @@ const GameBoard = () => {
           </div>
 
           {/* Leaderboard */}
-          <div className="bg-[#252635] p-6 rounded-md shadow-md">
+          <div className="bg-[#704337] p-6 rounded-md shadow-md">
             <h2 className="text-lg font-bold text-gray-200 text-center mb-4">Leaderboard</h2>
             {leaderBoard.length === 0 ? (
               <p className="text-gray-400 text-center">No leaderboard data available.</p>

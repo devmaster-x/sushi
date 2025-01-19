@@ -9,10 +9,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { limit = 5 } = req.query;  // Default top 5 players
 
     // Fetch the leaderboard based on the highest scores in the 'entire' collection
-    const leaderboard = await db.collection("entire")
+    // const leaderboard = await db.collection("entire")
+    //   .find({})
+    //   .sort({ score: -1 }) // Sort by score in descending order
+    //   .limit(Number(limit))  // Limit number of players returned
+    //   .toArray();
+
+    const leaderboard = await db.collection("users")
       .find({})
-      .sort({ score: -1 }) // Sort by score in descending order
-      .limit(Number(limit))  // Limit number of players returned
+      .sort({ top_score: -1})
+      .limit(Number(limit))
       .toArray();
 
     res.status(200).json(leaderboard);

@@ -8,7 +8,7 @@ const Bucket = () => {
   } = useGameContext();
 
   return (
-    <div className="bg-[#252635] p-4 rounded-md shadow-md w-full mx-auto">
+    <div className="bg-[#55413a] p-4 rounded-xl shadow-md w-full mx-auto">
     {/* <div className="bg-transparent px-2 py-4 rounded-md shadow-md w-fit mx-auto"> */}
       {/* <h2 className="text-lg font-bold text-gray-200 text-center mb-2">Bucket</h2> */}
       <div className="flex flex-wrap gap-2 justify-start">
@@ -21,7 +21,7 @@ const Bucket = () => {
           />
         ))}
         {Array.from({ length: maxBucket - bucket.length }).map((_, idx) => (
-          <div key={`empty-${idx}`} className="w-8 h-8 lg:w-10 lg:h-10 bg-[#B0BEC5] rounded-md" />
+          <div key={`empty-${idx}`} className="w-8 h-8 lg:w-10 lg:h-10 bg-[#EDDEBC] rounded-md" />
         ))}
       </div>
     </div>
