@@ -9,62 +9,37 @@ const LeaderBoard = () => {
   // const { address } = useAppKitAccount();
 
   return (
-    <div
-      className="bg-contain bg-no-repeat rounded-lg px-6 py-2 shadow-lg w-full mx-auto relative h-[300px]"
-      style={{
-        backgroundImage: `url(assets/modal/leaderboard/All-Time-High.png)`,
-      }}
-    >
-    {/* <div className="bg-transparent p-6 rounded-md shadow-md mx-auto"> */}
-      <h2 className="text-lg font-bold text-white text-center pb-4 lg:pb-5">Leaderboard</h2>
+    <div className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative h-[300px] pt-6">
+      <h2 className="absolute left-1/2 transform -translate-x-1/2 -top-6 text-lg font-bold text-white text-center bg-[#704337] rounded-full px-4 py-2">All-Time High</h2>
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-2 p-4 bg-[#92745a] rounded-xl">
           {leaderBoard.map((user, index) => (
             <li
               key={index}
-              className={`flex justify-between rounded-md text-black py-1 lg:py-2`}
-              // className={`flex justify-between p-2 rounded-md ${
-              //   user.email === currentUser?.email
-              //     ? "bg-[#8fde8b] text-black"
-              //     : "text-gray-300"
-              // }`}
+              className={`flex justify-between items-center rounded-lg text-black bg-[#f5e4d8] py-2 px-4 shadow-md ${
+                index === 0
+                  ? "bg-[#d4af37]" // First Place Style
+                  : index === 1
+                  ? "bg-[#c0c0c0]" // Second Place Style
+                  : index === 2
+                  ? "bg-[#cd7f32]" // Third Place Style
+                  : ""
+              }`}
             >
-              <div>
-                <span className="pr-4">{index + 1}.</span>
-                <span>{user.username}</span>
+              {/* Rank and Username */}
+              <div className="flex items-center">
+                <span className="font-bold pr-4">{index + 1}.</span>
+                <span className="truncate">{user.username}</span>
               </div>
-              <span>{user.score} pts</span>
+              {/* Points */}
+              <span className="font-semibold">{user.top_score} pts</span>
             </li>
           ))}
         </ul>
       )}
     </div>
-    // <div className="bg-[#704337] px-6 py-2 rounded-md shadow-md w-full mx-auto">
-    // {/* <div className="bg-transparent p-6 rounded-md shadow-md mx-auto"> */}
-    //   <h2 className="text-lg font-bold text-white text-center pb-4">Leaderboard</h2>
-    //   {leaderBoard.length === 0 ? (
-    //     <p className="text-gray-400 text-center">No leaderboard data available.</p>
-    //   ) : (
-    //     <ul className="space-y-2">
-    //       {leaderBoard.map((user, index) => (
-    //         <li
-    //           key={index}
-    //           className={`flex justify-between px-2 rounded-md`}
-    //           // className={`flex justify-between p-2 rounded-md ${
-    //           //   user.email === currentUser?.email
-    //           //     ? "bg-[#8fde8b] text-black"
-    //           //     : "text-gray-300"
-    //           // }`}
-    //         >
-    //           <span>{index + 1}. {user.username}</span>
-    //           <span>{user.score} pts</span>
-    //         </li>
-    //       ))}
-    //     </ul>
-    //   )}
-    // </div>
   )
 }
 

@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import axios from 'axios'
 import { useAppKitAccount } from "@reown/appkit/react";
-import { User, CardNode, Round } from "src/types/type";
+import { User, CardNode, Round, LeaderboardUser } from "src/types/type";
 
 interface position {
   x: number,
@@ -22,7 +22,7 @@ interface layerCards {
   array_size: number //cardboard array size for this layer
 }
 
-type LeaderBoard = User[];
+type LeaderBoard = LeaderboardUser[];
 
 type GameContextType = {
   currentRound: Round;

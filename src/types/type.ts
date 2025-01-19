@@ -39,3 +39,12 @@ export interface User {
   // top_score: number; // Top score user has achieved
   // isVIP: boolean;
 }
+
+export interface LeaderboardUser {
+  current_score : number;
+  email: string;
+  isVIP: boolean;
+  top_score: number;
+  username: string;
+  wallet: string;
+}

@@ -27,7 +27,7 @@ const ButtonsWeb = () => {
       />
 
       <img
-        src={gameStarted ? 'assets/modal/buttons/restart.png' : 'assets/modal/buttons/restart.png' }
+        src={gameStarted ? 'assets/modal/buttons/restart.png' : 'assets/modal/buttons/start.png' }
         alt="Restart"
         onClick={handlePlay}
         className="cursor-pointer hover:opacity-80 w-24"
