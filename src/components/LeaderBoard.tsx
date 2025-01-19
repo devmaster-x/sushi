@@ -9,7 +9,7 @@ const LeaderBoard = () => {
   // const { address } = useAppKitAccount();
 
   return (
-    <div className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative h-[300px] pt-6">
+    <div className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative h-[300px] pt-6 mt-10">
       <h2 className="absolute left-1/2 transform -translate-x-1/2 -top-6 text-lg font-bold text-white text-center bg-[#704337] rounded-full px-4 py-2">All-Time High</h2>
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>

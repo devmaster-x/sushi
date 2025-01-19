@@ -138,10 +138,12 @@ const GameBoard = () => {
             <Header />
             <GameInfo />
             <Bucket />
-            { currentUser && <ButtonsWeb /> }
             {/* <ButtonsWeb /> */}
           </div>
-          <LeaderBoard />
+          <div>
+            { currentUser && <ButtonsWeb /> }
+            <LeaderBoard />
+          </div>
         </div>
       </div>
       { showCongrats && (
