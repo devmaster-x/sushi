@@ -9,12 +9,19 @@ const LeaderBoard = () => {
   // const { address } = useAppKitAccount();
 
   return (
-    <div className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative h-[300px] pt-6 mt-10">
-      <h2 className="absolute left-1/2 transform -translate-x-1/2 -top-6 text-lg font-bold text-white text-center bg-[#704337] rounded-full px-4 py-2">All-Time High</h2>
+    <div className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-10">
+      <h2 
+        className="absolute left-1/2 transform -translate-x-1/2 -top-6 text-lg font-bold text-white text-center bg-[#704337] rounded-full px-4 py-2"
+        style={{
+          fontFamily: "Poppins, sans-serif"
+        }}
+      >
+        All-Time High
+      </h2>
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>
       ) : (
-        <ul className="space-y-2 p-4 bg-[#92745a] rounded-xl">
+        <ul className="space-y-1 p-3 bg-[#663333] rounded-xl">
           {leaderBoard.map((user, index) => (
             <li
               key={index}

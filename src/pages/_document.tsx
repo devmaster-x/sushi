@@ -5,6 +5,10 @@ export default function Document() {
     <Html lang="en">
       <Head title="Sushi card matching">
         <title>Sushi Pop</title>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       <body className="antialiased">
         <Main />
