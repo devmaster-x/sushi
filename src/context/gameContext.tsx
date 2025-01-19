@@ -49,6 +49,8 @@ type GameContextType = {
   musicOff: boolean;
   jokerClaimed: boolean;
   showSettingsModal: boolean;
+  stackedScore : number;
+  setStackedScore : (n: number) => void;
   setBGMusicTime: () => void;
   setShowSettingsModal: (f: boolean) => void;
   removeJokerPair: (n: number) => void;
@@ -117,6 +119,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [maxBucket, setMaxBucketCount] = useState(7);
   const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
   const [limit, setLimit] = useState(5);
+  const [stackedScore, setStackedScore] = useState(0);
   const cardSize = 40;
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -139,7 +142,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/BG10.wma');
+    const audio =  new Audio('/assets/audio/BG11.wav');
     setBackgroundMusic(audio);
   },[])
 
@@ -245,15 +248,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       })
  
       if (response.status === 200) {
-        setCurrentUser({
-          // wallet: '',
+        setCurrentUser((_prevUser) => { return {
+          ..._prevUser!,
           email: email,
           username: response.data.username,
-          score: 0
-          // current_score: 0,
-          // top_score: 0,
-          // isVIP: false
-        })
+        }})
         fetchLeaderboard();
       } else {
         console.error("Failed to register user.");
@@ -589,11 +588,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           // Update the score for triplets
           if(parseInt(typeId) === -1) {
             setScore((prevScore) => prevScore + 50);
-            sendScore(50);
+            setStackedScore((prevScore) => prevScore + 50);
           }
           else {
             setScore((prevScore) => prevScore + 10); // Award points for triplets
-            sendScore(10);
+            setStackedScore((prevScore) => prevScore + 10);
           } 
           setRollbackAvailable(false);
       
@@ -656,7 +655,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       });
   
       if (response.ok) {
-        fetchLeaderboard();
       } else {
         console.error("Failed to update leaderboard.");
       }
@@ -667,11 +665,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const removeJokerPair = (_type : number) => {
     setBucket((prevCards) => {
-      sendScore(10);
       setScore((prevScore) => {
         const newScore = prevScore + 10; // Award points for triplets
         return newScore;
       });
+      setStackedScore((prevScore) => prevScore + 10);
+
       setRollbackAvailable(false);
 
       // Remove 3 matching cards from the bucket
@@ -807,6 +806,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       musicOff,
       jokerClaimed,
       showSettingsModal,
+      stackedScore,
+      setStackedScore,
       setBGMusicTime,
       setShowSettingsModal,
       setJokerClaimed,
@@ -836,6 +837,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       removeJokerPair
     }),
     [
+      stackedScore,
       showSettingsModal,
       musicOff,
       jokerClaimed,

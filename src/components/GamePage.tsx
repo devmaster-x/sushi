@@ -34,7 +34,10 @@ const GameBoard = () => {
     restartGame,
     startNextRound,
     setCardBoardWidth,
-    fetchLeaderboard
+    fetchLeaderboard,
+    sendScore,
+    stackedScore,
+    setStackedScore
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
@@ -87,7 +90,11 @@ const GameBoard = () => {
         registerUser(session?.user?.email!, session?.user?.name!)
         if(activeID == undefined) {
           // const id = setInterval(() => sendUserActive(), 10000);
-          const id = setInterval(() => fetchLeaderboard(), 10000);
+          const id = setInterval(() => {
+            sendScore(stackedScore);
+            setStackedScore(0);
+            fetchLeaderboard()
+          }, 10000);
           setActiveID(id);  
         }
       } else {
