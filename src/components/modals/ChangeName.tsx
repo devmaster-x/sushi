@@ -83,7 +83,7 @@ const ChangeName = () => {
       <div
         className="relative bg-contain bg-no-repeat rounded-lg shadow-lg overflow-hidden mx-auto w-[330px] h-[250px] flex items-end align-bottom p-8"
         style={{
-          backgroundImage: `url(assets/modal/changename/confirmation_screen.png)`,
+          backgroundImage: `url(assets/modal/changename/change_nickname.png)`,
         }}
       >
         <div 

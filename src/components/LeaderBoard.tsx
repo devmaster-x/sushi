@@ -9,7 +9,7 @@ const LeaderBoard = () => {
   // const { address } = useAppKitAccount();
 
   return (
-    <div className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-10">
+    <div className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-14">
       <h2 
         className="absolute left-1/2 transform -translate-x-1/2 -top-6 text-lg font-bold text-white text-center bg-[#704337] rounded-full px-4 py-2"
         style={{

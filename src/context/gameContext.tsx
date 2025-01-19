@@ -142,7 +142,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/BG11.wav');
+    const audio =  new Audio('/assets/audio/BG13.wav');
     setBackgroundMusic(audio);
   },[])
 
@@ -177,7 +177,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if(currentUser && stackedScore > 50) {
       sendScore(stackedScore);
-      setStackedScore(0);
     }
   },[stackedScore])
 
@@ -658,6 +657,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       });
   
       if (response.ok) {
+        setStackedScore(0);
       } else {
         console.error("Failed to update leaderboard.");
       }
