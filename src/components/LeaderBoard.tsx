@@ -11,7 +11,7 @@ const LeaderBoard = () => {
   return (
     <div className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-14">
       <h2 
-        className="absolute left-1/2 transform -translate-x-1/2 -top-7 text-lg font-bold text-white text-center bg-[#704337] w-fit rounded-full px-4 py-2"
+        className="absolute left-1/2 transform -translate-x-1/2 -top-7 text-md font-bold text-white text-center bg-[#704337] w-fit rounded-full px-4 py-2"
         style={{
           width: "max-content",
           fontFamily: "Poppins, sans-serif"
