@@ -9,7 +9,12 @@ const LeaderBoard = () => {
   // const { address } = useAppKitAccount();
 
   return (
-    <div className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-14">
+    <div 
+      className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-14"
+      style={{
+        width: "max-content",
+      }}
+    >
       <h2 
         className="absolute left-1/2 transform -translate-x-1/2 -top-7 text-md font-bold text-white text-center bg-[#704337] w-fit rounded-full px-4 py-2"
         style={{
@@ -22,12 +27,7 @@ const LeaderBoard = () => {
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>
       ) : (
-        <ul 
-          className="space-y-1 p-3 bg-[#663333] rounded-xl"
-          style={{
-          width: "max-content",
-          }}
-        >
+        <ul className="space-y-1 p-3 bg-[#663333] rounded-xl">
           {leaderBoard.map((user, index) => (
             <li
               key={index}
