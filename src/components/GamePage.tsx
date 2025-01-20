@@ -139,7 +139,7 @@ const GameBoard = () => {
 
 
         {/* Right Section: Stash, Bucket, Leaderboard */}
-        <div className="flex flex-col gap-2 w-full lg:w-1/3 justify-between">
+        <div className="flex flex-col gap-2 lg:min-w-1/3 justify-between">
           <div className="flex flex-col gap-4 justify-start">
             <Header />
             <GameInfo />

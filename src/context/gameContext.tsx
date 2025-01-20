@@ -118,6 +118,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [maxBucket, setMaxBucketCount] = useState(7);
   const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
+  const [dropMusic, setDropMusic] = useState<HTMLAudioElement | null>(null);
+  const [winMusic, setWinMusic] = useState<HTMLAudioElement | null>(null);
+  const [loseMusic, setLoseMusic] = useState<HTMLAudioElement | null>(null);
   const [limit, setLimit] = useState(5);
   const [stackedScore, setStackedScore] = useState(0);
   const cardSize = 40;
@@ -142,8 +145,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[cards])
 
   useEffect(() => {
-    const audio =  new Audio('/assets/audio/BG13.wav');
-    setBackgroundMusic(audio);
+    const bg_audio =  new Audio('/assets/audio/BG13.wav');
+    const winAudio = new Audio('/assets/audio/win.wav');
+    const dropAudio = new Audio('/assets/audio/drop.wav');
+    const loseAudio = new Audio('/assets/audio/lose.wav');
+    setBackgroundMusic(bg_audio);
+    setWinMusic(winAudio);
+    setDropMusic(dropAudio);
+    setLoseMusic(loseAudio);
   },[])
 
   useEffect(() => {
