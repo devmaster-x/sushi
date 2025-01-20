@@ -26,14 +26,14 @@ const LeaderBoard = () => {
           {leaderBoard.map((user, index) => (
             <li
               key={index}
-              className={`flex justify-between items-center rounded-lg text-black py-2 px-3 shadow-md ${
+              className={`flex justify-between items-center rounded-lg text-black py-2 px-3 shadow-md bg-[#f5e4d8] ${
                 index === 0
                   ? "bg-[#d4af37]" // First Place Style
                   : index === 1
                   ? "bg-[#c0c0c0]" // Second Place Style
                   : index === 2
                   ? "bg-[#cd7f32]" // Third Place Style
-                  : "bg-[#f5e4d8]"
+                  : ""
               }`}
             >
               {/* Rank and Username */}

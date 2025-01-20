@@ -176,6 +176,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if(currentUser && stackedScore > 50) {
+      setStackedScore(0);
       sendScore(stackedScore);
     }
   },[stackedScore])
@@ -657,8 +658,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       });
   
       if (response.ok) {
-        setStackedScore(0);
       } else {
+        setStackedScore((prevScore) => prevScore + newScore);
         console.error("Failed to update leaderboard.");
       }
     } catch (error) {
