@@ -22,7 +22,7 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins';
   background: linear-gradient(135deg, #ff7e5f, #feb47b);
   min-height: 100vh;
 }
