@@ -22,7 +22,12 @@ const LeaderBoard = () => {
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>
       ) : (
-        <ul className="space-y-1 p-3 bg-[#663333] rounded-xl">
+        <ul 
+          className="space-y-1 p-3 bg-[#663333] rounded-xl"
+          style={{
+          width: "max-content",
+          }}
+        >
           {leaderBoard.map((user, index) => (
             <li
               key={index}
