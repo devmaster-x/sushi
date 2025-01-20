@@ -32,12 +32,12 @@ const ButtonsWeb = () => {
         onClick={handlePlay}
         className="cursor-pointer hover:opacity-80 w-24"
       />
-      <button
+      {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={setBGMusicTime}
       >
         Set
-      </button>
+      </button> */}
       {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={handleHintSelected}
