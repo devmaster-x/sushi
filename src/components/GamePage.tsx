@@ -120,7 +120,7 @@ const GameBoard = () => {
         {/* <ButtonsMobile /> */}
         <LeaderBoard />
       </div>
-      <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-12 h-full">
+      <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-4 h-full">
         {/* Left Section: Game Info, Card Board */}
         <div className="relative">
           <CardBoard />

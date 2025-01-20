@@ -10,7 +10,7 @@ const LeaderBoard = () => {
 
   return (
     <div 
-      className="bg-[#704337] rounded-lg p-2 shadow-lg w-full mx-auto relative pt-6 mt-14"
+      className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative pt-6 mt-14"
       style={{
         width: "max-content",
       }}
@@ -27,7 +27,7 @@ const LeaderBoard = () => {
       {leaderBoard.length === 0 ? (
         <p className="text-gray-400 text-center">No leaderboard data available.</p>
       ) : (
-        <ul className="space-y-1 p-3 bg-[#663333] rounded-xl">
+        <ul className="space-y-2">
           {leaderBoard.map((user, index) => (
             <li
               key={index}
