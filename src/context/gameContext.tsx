@@ -708,6 +708,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setMaxBucketCount(7);
     setCurrentRound({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
     generateCards({ roundNumber: 1, cardTypeNumber: 6, deepLayer: 3, difficulty: false });
+    registerUser(currentUser?.email!, currentUser?.username!);
   };
 
   // Handle card click
