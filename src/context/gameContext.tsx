@@ -150,7 +150,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     if (backgroundMusic) {
       backgroundMusic.loop = true;
       const handleLoop = () => {
-        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.3) {
+        if (backgroundMusic.currentTime >= backgroundMusic.duration - 0.36) {
           backgroundMusic.currentTime = 0;
         }
       };
@@ -200,7 +200,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   };
 
   const setBGMusicTime = () => {
-    if(backgroundMusic) backgroundMusic.currentTime = 53;
+    if(backgroundMusic) backgroundMusic.currentTime = 59;
   }
 
   const registerUser = async (email : string, userName : string) => {
