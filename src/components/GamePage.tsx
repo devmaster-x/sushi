@@ -35,6 +35,7 @@ const GameBoard = () => {
     startNextRound,
     setCardBoardWidth,
     fetchLeaderboard,
+    cardBoardWidth
   } = useGameContext();
 
   const [showCongrats, setShowCongrats] = useState(false);
@@ -111,7 +112,12 @@ const GameBoard = () => {
       }}
     >
       {/* <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/> */}
-      <div className="w-full mx-auto flex flex-col lg:hidden gap-4 h-full">
+      <div 
+        className="w-full mx-auto flex flex-col lg:hidden gap-4 h-full"
+        style={{
+          width: cardBoardWidth
+        }}
+      >
         <Header />
         <CardBoard />
         <GameInfo />

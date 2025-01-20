@@ -18,7 +18,7 @@ const LeaderBoard = () => {
       <h2 
         className="absolute left-1/2 transform -translate-x-1/2 -top-7 text-md font-bold text-white text-center bg-[#704337] w-fit rounded-full px-4 py-2"
         style={{
-          width: "max-content",
+          // width: "max-content",
           fontFamily: "Poppins, sans-serif"
         }}
       >
@@ -44,7 +44,7 @@ const LeaderBoard = () => {
               {/* Rank and Username */}
               <div className="flex items-center">
                 <span className="font-bold pr-4">{index + 1}.</span>
-                <span className="truncate pr-6">{user.username}</span>
+                <span className="truncate pr-6 max-w-[150px]">{user.username}</span>
               </div>
               {/* Points */}
               <span className="font-semibold">{user.top_score} pts</span>
