@@ -16,9 +16,9 @@ const LeaderBoard = () => {
       }}
     >
       <h2 
-        className="absolute left-1/2 transform -translate-x-1/2 -top-7 text-md font-bold text-white text-center bg-[#704337] w-fit rounded-full px-4 py-2"
+        className="absolute left-1/2 transform -translate-x-1/2 -top-7 text-md font-bold text-white text-center bg-[#704337] w-fit rounded-full px-5 py-3"
         style={{
-          // width: "max-content",
+          width: "max-content",
           fontFamily: "Poppins, sans-serif"
         }}
       >
