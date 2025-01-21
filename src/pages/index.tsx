@@ -1,9 +1,9 @@
 import React from "react";
-import { HomePage } from "src/components";
+import { GamePage } from "src/components";
 
 const MusicPage: React.FC = () => {
   return (
-    <HomePage />
+    <GamePage />
   );
 };
 
