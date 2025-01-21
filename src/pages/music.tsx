@@ -25,7 +25,7 @@ const MusicPage: React.FC = () => {
         />
       </button>
       <audio ref={audioRef} loop>
-        <source src="/assets/audio/BG12.wav" type="audio/wav" />
+        <source src="/assets/audio/BG14.wav" type="audio/wav" />
         Your browser does not support the audio element.
       </audio>
     </div>
