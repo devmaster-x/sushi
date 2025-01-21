@@ -25,7 +25,7 @@ const SushiFarmTemplate = () => {
           </p>
           <div className="flex gap-4">
             <a
-              href="/game"
+              href="/"
               className="bg-supernova text-dark-slate-blue px-6 py-3 rounded-lg text-lg font-semibold hover:bg-dark-slate-blue hover:text-supernova"
             >
               Play Now
