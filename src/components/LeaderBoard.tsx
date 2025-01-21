@@ -44,7 +44,7 @@ const LeaderBoard = () => {
               {/* Rank and Username */}
               <div className="flex items-center">
                 <span className="font-bold pr-4">{index + 1}.</span>
-                <span className="truncate pr-6 max-w-[150px]">{user.username}</span>
+                <span className="truncate pr-6 max-w-[200px]">{user.username}</span>
               </div>
               {/* Points */}
               <span className="font-semibold">{user.top_score} pts</span>

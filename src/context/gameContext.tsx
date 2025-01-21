@@ -160,8 +160,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       backgroundMusic.loop = true;
       const handleLoop = () => {
         if (backgroundMusic.currentTime > backgroundMusic.duration - 0.7) {
-          console.log("current Time : ", backgroundMusic.currentTime);
-          console.log("duration : ", backgroundMusic.duration);
           backgroundMusic.currentTime = 0;
         }
       };
