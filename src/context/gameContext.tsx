@@ -697,7 +697,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   }
   
   const restartGame = () => {
-    if (backgroundMusic && !isPlaying) {
+    if (backgroundMusic && !isPlaying && !musicOff) {
       backgroundMusic
         .play()
         .then(() => {
