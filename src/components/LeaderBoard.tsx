@@ -10,7 +10,7 @@ const LeaderBoard = () => {
 
   return (
     <div 
-      className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative pt-6 mt-18"
+      className="bg-[#704337] rounded-lg p-4 shadow-lg w-full mx-auto relative pt-6 mt-16"
       style={{
         width: "max-content",
       }}
