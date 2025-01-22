@@ -121,6 +121,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [dropMusic, setDropMusic] = useState<HTMLAudioElement | null>(null);
   const [winMusic, setWinMusic] = useState<HTMLAudioElement | null>(null);
   const [loseMusic, setLoseMusic] = useState<HTMLAudioElement | null>(null);
+  const [jokerMusic, setJokerMusic] = useState<HTMLAudioElement | null>(null);
   const [limit, setLimit] = useState(5);
   const [stackedScore, setStackedScore] = useState(0);
   const cardSize = 40;
@@ -149,10 +150,12 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const winAudio = new Audio('/assets/audio/win.wav');
     const dropAudio = new Audio('/assets/audio/drop.wav');
     const loseAudio = new Audio('/assets/audio/lose.wav');
+    const jokerAudio = new Audio('/assets/audio/joker.wma');
     setBackgroundMusic(bg_audio);
     setWinMusic(winAudio);
     setDropMusic(dropAudio);
     setLoseMusic(loseAudio);
+    setJokerMusic(jokerAudio);
   },[])
 
   useEffect(() => {
@@ -723,8 +726,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Handle card click
   const handleCardClick = (card: CardNode) => {
     if(highlighted) return;
-    const audio = new Audio('/assets/audio/drop.wav'); // Path to your audio file
-    !soundOff && audio.play();
+    if(card.type > 0) {
+      const audio = new Audio('/assets/audio/drop.wav'); // Path to your audio file
+      !soundOff && audio.play();
+    } else {
+      const audio = new Audio('/assets/audio/joker.wma'); // Path to your audio file
+      !soundOff && audio.play();
+    }
 
     if (card.state=="available") setRollbackAvailable(true && !rollbackPressed);
     if (card.isInAdditionalSlot) {

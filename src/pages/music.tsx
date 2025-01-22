@@ -1,57 +1,39 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 
-const MusicPage: React.FC = () => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+const BackgroundMusic: React.FC = () => {
+const [isPlaying, setIsPlaying] = useState(false);
+const [backgroundMusic, setBackgroundMusic] = useState<HTMLAudioElement | null>(null);
 
-  const handleButtonClick = () => {
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  };
+useEffect(() => {
+const audio = new Audio('/assets/audio/BG14.wav');
+audio.loop = true; // Enable seamless looping
+setBackgroundMusic(audio);
+}, []);
 
-  return (
-    <div style={styles.container}>
-      <button style={styles.button} onClick={handleButtonClick}>
-        <img
-          src="/assets/modal/buttons/start.png"
-          alt="Start Button"
-          style={styles.image}
-          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1.0)")}
-        />
-      </button>
-      <audio ref={audioRef} loop>
-        <source src="/assets/audio/BG14.wav" type="audio/wav" />
-        Your browser does not support the audio element.
-      </audio>
-    </div>
-  );
+const handlePlay = () => {
+if (backgroundMusic) {
+backgroundMusic.play().then(() => {
+setIsPlaying(true);
+}).catch((error) => {
+console.error("Playback error:", error);
+});
+}
 };
 
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    margin: 0,
-    backgroundColor: "#f4f4f4",
-    fontFamily: "Arial, sans-serif",
-  },
-  button: {
-    border: "none",
-    background: "none",
-    cursor: "pointer",
-  },
-  image: {
-    width: "100px",
-    height: "100px",
-    transition: "transform 0.3s",
-  },
+const handlePause = () => {
+if (backgroundMusic) {
+backgroundMusic.pause();
+setIsPlaying(false);
+}
 };
 
-export default MusicPage;
+return (
+
+<button onClick={isPlaying ? handlePause : handlePlay}>
+{isPlaying ? "Pause Music" : "Play Music"}
+</button>
+
+);
+};
+
+export default BackgroundMusic;
