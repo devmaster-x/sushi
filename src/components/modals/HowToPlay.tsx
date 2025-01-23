@@ -9,7 +9,7 @@ const FailedModal = () => {
       <div className="relative lg:w-1/3 h-1/3 lg:h-1/2">
         <FaTimes 
           onClick={() => setShowGuide(false) }
-          className="absolute text-gray-500 hover:text-gray-800 cursor-pointer hover:opacity-80 top-7 right-10 w-6 h-6"
+          className="absolute text-gray-500 hover:text-gray-800 cursor-pointer hover:opacity-80 top-5 right-6 w-6 h-6"
         />
         <img
           src="assets/images/HowToPlay.png"

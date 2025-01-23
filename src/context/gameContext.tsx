@@ -134,6 +134,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
+    if(isHint && layerNumber == 0) handleHintSelected();
+  }, [layerNumber])
+
+  useEffect(() => {
     const allCards: CardNode[] = [...cards, ...bucket];
     if(allCards.length === 1) {
       const newCards : CardNode[] = []; 
