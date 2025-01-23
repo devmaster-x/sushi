@@ -7,6 +7,7 @@ const CardBoard = () => {
     hintCards,
     isHint,
     cardBoardWidth,
+    layerNumber,
     resetHintCards,
     handleCardClick,
   } = useGameContext();
@@ -27,6 +28,7 @@ const CardBoard = () => {
         }}
         onClick={ resetHintCards }
       >
+        {layerNumber != 0 && <p className="text-4xl text-gray-400 absolute left-4 top-4">{layerNumber+1}</p> }
         {topCards.map((card, index) => (
           <div
             key={`t+${index}`}

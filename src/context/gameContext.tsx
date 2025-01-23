@@ -51,6 +51,7 @@ type GameContextType = {
   showSettingsModal: boolean;
   stackedScore : number;
   showGuide : boolean;
+  layerNumber: number;
   setShowGuide : (f : boolean) => void;
   setStackedScore : (n: number) => void;
   setBGMusicTime: () => void;
@@ -125,6 +126,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [winMusic, setWinMusic] = useState<HTMLAudioElement | null>(null);
   const [loseMusic, setLoseMusic] = useState<HTMLAudioElement | null>(null);
   const [jokerMusic, setJokerMusic] = useState<HTMLAudioElement | null>(null);
+  const [layerNumber, setLayerNumber] = useState(0);
   const [limit, setLimit] = useState(5);
   const [stackedScore, setStackedScore] = useState(0);
   const cardSize = 40;
@@ -147,6 +149,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       setCards(newCards);
     }
   },[cards])
+
+  useEffect(() => {
+    if(isHint) setLayerNumber(1);
+    else setLayerNumber(0);
+  },[isHint])
 
   useEffect(() => {
     const bg_audio =  new Audio('/assets/audio/BG13.wav');
@@ -400,6 +407,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   
   const handleHintSelected = () => {
     setIsHint(true);
+    setLayerNumber((prev) => prev + 1);
     const _topCards = cards.filter((card) => card.state === 'available');
     setTopCards(_topCards);
 
@@ -418,11 +426,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       }))
     }
     setTempCards(_tempCards);
-    setHintCards(_tempCards.filter((card) => card.state === 'unavailable' && card.parents.length == 0));
+    const _hintCards = _tempCards.filter((card) => card.state === 'unavailable' && card.parents.length == 0);
+    if(_hintCards.length === 0) setLayerNumber(0);
+    setHintCards(_hintCards);
   }
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer, difficulty } = round;
+    console.log("cardstype , deepLayer, difficulty : ", cardTypeNumber, deepLayer, difficulty);
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
@@ -832,6 +843,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       showSettingsModal,
       stackedScore,
       showGuide,
+      layerNumber,
       setShowGuide,
       setStackedScore,
       setBGMusicTime,
@@ -863,6 +875,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       removeJokerPair
     }),
     [
+      layerNumber,
       showGuide,
       stackedScore,
       showSettingsModal,

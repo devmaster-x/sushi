@@ -118,10 +118,7 @@ const GameBoard = () => {
     >
       {/* <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/> */}
       <div 
-        className="w-full mx-auto flex flex-col lg:hidden gap-4 h-full"
-        style={{
-          width: cardBoardWidth
-        }}
+        className={`sm:w-[${cardBoardWidth}px] w-full mx-auto flex flex-col lg:hidden gap-4 h-full`}
       >
         <Header />
         <CardBoard />
