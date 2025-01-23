@@ -11,5 +11,9 @@ export { default as HomePage } from './HomePage'
 export { 
   CongratesModal,
   ConfirmModal,
-  FailedModal
+  FailedModal,
+  Settings,
+  HowToPlay,
+  GuideModal,
+  ChangeName
 } from './modals'

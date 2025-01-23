@@ -50,6 +50,8 @@ type GameContextType = {
   jokerClaimed: boolean;
   showSettingsModal: boolean;
   stackedScore : number;
+  showGuide : boolean;
+  setShowGuide : (f : boolean) => void;
   setStackedScore : (n: number) => void;
   setBGMusicTime: () => void;
   setShowSettingsModal: (f: boolean) => void;
@@ -113,6 +115,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
   const [soundOff, setSoundOff] = useState(false);
   const [musicOff, setMusicOff] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -828,6 +831,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       jokerClaimed,
       showSettingsModal,
       stackedScore,
+      showGuide,
+      setShowGuide,
       setStackedScore,
       setBGMusicTime,
       setShowSettingsModal,
@@ -858,6 +863,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       removeJokerPair
     }),
     [
+      showGuide,
       stackedScore,
       showSettingsModal,
       musicOff,

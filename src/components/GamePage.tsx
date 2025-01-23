@@ -13,9 +13,12 @@ import {
   Header,
   CongratesModal,
   FailedModal,
-  ConfirmModal
+  ConfirmModal,
+  ChangeName,
+  GuideModal,
+  Settings,
+  HowToPlay
 } from './index'
-import { ChangeName, GuideModal, Settings } from "./modals";
 
 const GameBoard = () => {
   const {
@@ -29,6 +32,8 @@ const GameBoard = () => {
     showEditModal,
     soundOff,
     showSettingsModal,
+    showGuide,
+    setShowGuide,
     setShowSettingsModal,
     registerUser,
     restartGame,
@@ -160,6 +165,7 @@ const GameBoard = () => {
       { showGuideModal && <GuideModal /> }
       { showEditModal && <ChangeName /> }
       { showSettingsModal && <Settings /> }
+      { showGuide && <HowToPlay /> }
     </div>
   );
 };
