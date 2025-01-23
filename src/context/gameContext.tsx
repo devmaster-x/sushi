@@ -748,7 +748,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       const audio = new Audio('/assets/audio/drop.wav'); // Path to your audio file
       !soundOff && audio.play();
     } else {
-      const audio = new Audio('/assets/audio/Joker.mp3'); // Path to your audio file
+      const audio = new Audio('/assets/audio/Joker.wav'); // Path to your audio file
       !soundOff && audio.play();
     }
 
