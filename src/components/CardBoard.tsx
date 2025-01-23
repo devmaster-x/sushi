@@ -29,9 +29,7 @@ const CardBoard = () => {
         }}
         onClick={ resetHintCards }
       >
-        <div className="top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-          {layerNumber != 0 && <p className="text-6xl text-gray-400">{layerNumber+1}</p> }
-        </div>
+        {layerNumber != 0 && <p className="absolute text-2xl lg:text-4xl text-gray-400 left-4 top-4">{layerNumber+1}</p> }
         {topCards.map((card, index) => (
           <div
             key={`t+${index}`}

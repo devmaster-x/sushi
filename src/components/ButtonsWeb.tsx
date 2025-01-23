@@ -22,7 +22,7 @@ const ButtonsWeb = () => {
       <img
         src="assets/modal/buttons/Hint.png"
         alt="Hint"
-        onClick={handleHintSelected}
+        onClick={()=> gameStarted && handleHintSelected()}
         className="cursor-pointer hover:opacity-80 w-24"
       />
 
