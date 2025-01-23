@@ -744,11 +744,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Handle card click
   const handleCardClick = (card: CardNode) => {
     if(highlighted) return;
-    if(card.type > 0) {
+    if(card.type > -1) {
       const audio = new Audio('/assets/audio/drop.wav'); // Path to your audio file
       !soundOff && audio.play();
     } else {
-      const audio = new Audio('/assets/audio/joker.wma'); // Path to your audio file
+      const audio = new Audio('/assets/audio/Joker.mp3'); // Path to your audio file
       !soundOff && audio.play();
     }
 
