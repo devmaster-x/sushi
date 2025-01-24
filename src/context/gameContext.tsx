@@ -160,11 +160,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[isHint])
 
   useEffect(() => {
-    const bg_audio =  new Audio('/assets/audio/BG13.wav');
+    const bg_audio =  new Audio('/assets/audio/BG16.wav');
     const winAudio = new Audio('/assets/audio/win.wav');
     const dropAudio = new Audio('/assets/audio/drop.wav');
     const loseAudio = new Audio('/assets/audio/lose.wav');
-    const jokerAudio = new Audio('/assets/audio/joker.wma');
+    const jokerAudio = new Audio('/assets/audio/joker.mp3');
     setBackgroundMusic(bg_audio);
     setWinMusic(winAudio);
     setDropMusic(dropAudio);
@@ -176,7 +176,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     if (backgroundMusic) {
       backgroundMusic.loop = true;
       const handleLoop = () => {
-        if (backgroundMusic.currentTime > backgroundMusic.duration - 0.7) {
+        if (backgroundMusic.currentTime > backgroundMusic.duration) {
           backgroundMusic.currentTime = 0;
         }
       };
@@ -748,7 +748,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       const audio = new Audio('/assets/audio/drop.wav'); // Path to your audio file
       !soundOff && audio.play();
     } else {
-      const audio = new Audio('/assets/audio/Joker.wav'); // Path to your audio file
+      const audio = new Audio('/assets/audio/Joker.mp3'); // Path to your audio file
       !soundOff && audio.play();
     }
 
