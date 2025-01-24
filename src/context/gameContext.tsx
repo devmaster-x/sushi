@@ -160,7 +160,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   },[isHint])
 
   useEffect(() => {
-    const bg_audio =  new Audio('/assets/audio/BG16.wav');
+    const bg_audio =  new Audio('/assets/audio/BGG1.wav');
     const winAudio = new Audio('/assets/audio/win.wav');
     const dropAudio = new Audio('/assets/audio/drop.wav');
     const loseAudio = new Audio('/assets/audio/lose.wav');
