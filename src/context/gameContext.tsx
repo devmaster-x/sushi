@@ -252,7 +252,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         setCurrentUser({
           // wallet: '',
           email: email,
-          username: response.data.username,
+          username: response.data.username || userName,
           score: 0
           // current_score: 0,
           // top_score: 0,
