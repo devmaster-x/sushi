@@ -8,6 +8,9 @@ const ButtonsWeb = () => {
     restartGame,
     setShowConfirmModal,
     handleHintSelected,
+    handleSave,
+    handleLoad,
+    startNextRound,
     setBGMusicTime,
     currentUser
   } = useGameContext();
@@ -26,12 +29,35 @@ const ButtonsWeb = () => {
         className="cursor-pointer hover:opacity-80 w-24"
       />
 
+      {gameStarted ? 
+      <img
+        src="assets/modal/buttons/save.png"
+        alt="Save"
+        onClick={handleSave}
+        className="cursor-pointer hover:opacity-80 w-24"
+      /> : currentUser?.lastRound!=0 &&
+      <img
+        src="assets/modal/buttons/load.png"
+        alt="Load"
+        onClick={handleLoad}
+        className="cursor-pointer hover:opacity-80 w-24"
+      /> 
+    }
+
       <img
         src={gameStarted ? 'assets/modal/buttons/playagain.png' : 'assets/modal/buttons/play.png' }
         alt="Restart"
         onClick={handlePlay}
         className="cursor-pointer hover:opacity-80 w-24"
       />
+
+      {/* <button
+        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
+        onClick={startNextRound}
+      >
+        Next
+      </button> */}
+      
       {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={setBGMusicTime}

@@ -35,6 +35,7 @@ export interface User {
   email: string;
   username: string; // Added username for identification
   score: number;
+  lastRound: number;
   // current_score: number;
   // top_score: number; // Top score user has achieved
   // isVIP: boolean;

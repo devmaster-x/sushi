@@ -80,7 +80,9 @@ type GameContextType = {
   setSlotAvailablity: (flag: boolean) => void;
   handleAdditionalCardClick: (card: CardNode) => void;
   setCardBoardWidth: (width : number) => void;
-  fetchLeaderboard: () => Promise<void>
+  fetchLeaderboard: () => Promise<void>;
+  handleSave: () => Promise<void>;
+  handleLoad: () => Promise<void>;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -253,7 +255,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           // wallet: '',
           email: email,
           username: response.data.username || userName,
-          score: 0
+          score: 0,
+          lastRound: response.data.lastRound || 0,
           // current_score: 0,
           // top_score: 0,
           // isVIP: false
@@ -331,7 +334,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     return Math.abs(left1 - left2) < cardSize && Math.abs(top1 - top2) < cardSize;
   };
   
-  const genereateCardsByLayer = (cardsAmount: number, layer: number, offset: number = 1): layerCards => {
+  const generateCardsByLayer = (cardsAmount: number, layer: number, offset: number = 1): layerCards => {
     const arraySize = Math.min(Math.floor(Math.sqrt(cardsAmount) + Math.min(4, offset)), 7);
     const n = arraySize * 2 - 1;
     const numberizedArray = Array.from({ length: n+1 }, () => Array(n+1).fill(0));
@@ -392,13 +395,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     for (let i = 1; i < cardsAmount; i++) {
       const newPosition = getNewPosition();
       if (newPosition.x === -1) {
-        return genereateCardsByLayer(cardsAmount, layer, offset + 1);
+        return generateCardsByLayer(cardsAmount, layer, offset + 1);
       }
       setMarkArray(newPosition.y, newPosition.x);
       markedArray.push({ x: newPosition.x, y: newPosition.y });
     }
-    const offsetSize = (cardBoardWidth - arraySize * 40) / 2;
-    markedArray = markedArray.map((array) => ({ x: array.x * 20, y: array.y * 20}));
+    const offsetSize = (cardBoardWidth - arraySize * cardSize) / 2;
+    markedArray = markedArray.map((array) => ({ x: array.x * cardSize / 2, y: array.y * cardSize / 2}));
     return {array: markedArray, offset: offsetSize, array_size: arraySize};
   };
 
@@ -500,7 +503,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
     // Step 4: Generate the cards layer by layer
     for (let layer = deepLayer - 1; layer >= 0; layer--) {
-      const layerCards : layerCards = genereateCardsByLayer(cardsPerLayer[layer], layer, 1);
+      const layerCards : layerCards = generateCardsByLayer(cardsPerLayer[layer], layer, 1);
       layerCards.array.forEach((card)=> {
         addToGeneratedCards(card.x, card.y, layerCards.offset, layer, layerCards.array_size);
       })
@@ -514,7 +517,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       return prevCards.map((card) => {
         return ({
           ...card,
-          offset: (cardBoardWidth - card.array_size * 40) / 2
+          offset: (cardBoardWidth - card.array_size * cardSize) / 2
         })
       })
     });
@@ -577,13 +580,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setRollbackAvailable(false);
     setRollbackPressed(false);
     setSlotAvailablity(true);
-    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 6 : Math.min(currentRound.cardTypeNumber + 2, 22);
-    const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 6 : currentRound.deepLayer + 3;
+    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 4 : Math.min(currentRound.cardTypeNumber + 2, 22);
+    const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 3 : (currentRound.roundNumber + 1) % 4 === 0 ? currentRound.deepLayer + 3 : currentRound.deepLayer;
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
       cardTypeNumber: _cardTypeNumber, 
       deepLayer: _deepLayer,
-      difficulty: currentRound.difficulty === true ? false : _cardTypeNumber * _deepLayer > 120 ? true : false
+      difficulty: currentRound.difficulty === true ? false : _cardTypeNumber * _deepLayer > 100 ? true : false
     }
     if(_round.difficulty) setMaxBucketCount(8);
     else setMaxBucketCount(7);
@@ -806,8 +809,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     });
   };
   
-  
-  
   const handleAdditionalCardClick = (card: CardNode) => {
     // Move the card back from the additional slots to the bucket
     setAdditionalSlots((prevSlots) => {
@@ -817,6 +818,52 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     card.isInAdditionalSlot = false;
     addToBucket(card);
   };
+
+  const calculateGameData = (_round : Number) => {
+    
+  }
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: currentUser?.email,
+          lastRound: currentRound.roundNumber
+        }),
+      });
+  
+      if (response.ok) {
+
+      } else {
+        console.error("Failed to save current round info.");
+      }
+    } catch (error) {
+      console.error("Error occured while saving :", error);
+    }
+  }
+
+  const handleLoad = async () => {
+    try {
+      const response = await fetch("/api/save", {
+        method: "GET",
+        body: JSON.stringify({
+          email: currentUser?.email,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("load data info : ", data);
+        calculateGameData(data.data.lastRound);
+      } else {
+        console.error("Failed to save current round info.");
+      }
+    } catch (error) {
+      console.error("Error occured while saving :", error);
+    }
+  }
 
   const value = useMemo(
     () => ({
@@ -876,7 +923,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       handleAdditionalCardClick,
       setCardBoardWidth,
       fetchLeaderboard,
-      removeJokerPair
+      removeJokerPair,
+      handleSave,
+      handleLoad
     }),
     [
       layerNumber,

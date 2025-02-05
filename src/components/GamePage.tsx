@@ -113,50 +113,54 @@ const GameBoard = () => {
     <div 
       className="min-h-screen bg-cover text-white flex flex-col justify-center items-center px-6 py-8"
       style={{
-        backgroundImage: `url(assets/sushi/background.png)`,
+        backgroundImage: `url(assets/sushi/background.jpg)`,
       }}
     >
+      <div className="absolute inset-0 bg-yellow-200 opacity-20"></div> 
       {/* <audio controls loop autoPlay muted={musicOff} src="/assets/audio/BG5.wav" hidden/> */}
-      <div 
-        className={`sm:w-[${cardBoardWidth}px] w-full mx-auto flex flex-col lg:hidden gap-4 h-full`}
-      >
-        <Header />
-        <CardBoard />
-        <GameInfo />
-        <Bucket />
-        { currentUser && <ButtonsMobile /> }
-        {/* <ButtonsMobile /> */}
-        <LeaderBoard />
-      </div>
-      <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-4 h-full">
-        {/* Left Section: Game Info, Card Board */}
-        <div className="relative">
+      <div className="relative z-10">
+        <div 
+          className={`sm:w-[${cardBoardWidth}px] w-full mx-auto flex flex-col lg:hidden gap-4 h-full`}
+        >
+          <Header />
           <CardBoard />
-          <img 
-            src="assets/modal/setting/settings_icon.png" 
-            className="absolute bottom-2 -left-14 w-12 h-12 cursor-pointer"
-            onClick={() => setShowSettingsModal(true)}
-          />
+          <GameInfo />
+          <Bucket />
+          {/* { currentUser && <ButtonsMobile /> } */}
+          <ButtonsMobile />
+          <LeaderBoard />
         </div>
+        <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-4 h-full">
+          {/* Left Section: Game Info, Card Board */}
+          <div className="relative">
+            <CardBoard />
+            <img 
+              src="assets/modal/setting/settings_icon.png" 
+              className="absolute bottom-2 -left-14 w-12 h-12 cursor-pointer"
+              onClick={() => setShowSettingsModal(true)}
+            />
+          </div>
 
 
-        {/* Right Section: Stash, Bucket, Leaderboard */}
-        <div className="flex flex-col gap-2 lg:min-w-1/3 justify-between">
-          <div className="flex flex-col gap-4 justify-start">
-            <Header />
-            <GameInfo />
-            <Bucket />
-            {/* <ButtonsWeb /> */}
-          </div>
-          <div>
-            { currentUser && <ButtonsWeb /> }
-            <LeaderBoard />
+          {/* Right Section: Stash, Bucket, Leaderboard */}
+          <div className="flex flex-col gap-2 lg:min-w-1/3 justify-between">
+            <div className="flex flex-col gap-4 justify-start">
+              <Header />
+              <GameInfo />
+              <Bucket />
+              {/* <ButtonsWeb /> */}
+            </div>
+            <div>
+              {/* { currentUser && <ButtonsWeb /> } */}
+              <ButtonsWeb />
+              <LeaderBoard />
+            </div>
           </div>
         </div>
+        { showCongrats && (
+          <CongratesModal handleClick={handleNextRound}/>          
+        )}
       </div>
-      { showCongrats && (
-        <CongratesModal handleClick={handleNextRound}/>          
-      )}
       { gameOver && <FailedModal handleClick={restartGame}/>}
       { showConfirmModal && gameStarted && <ConfirmModal /> }
       { showGuideModal && <GuideModal /> }
