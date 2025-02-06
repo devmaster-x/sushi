@@ -52,6 +52,7 @@ type GameContextType = {
   stackedScore : number;
   showGuide : boolean;
   layerNumber: number;
+  setCardSize : (s: number) => void;
   setShowGuide : (f : boolean) => void;
   setStackedScore : (n: number) => void;
   setBGMusicTime: () => void;
@@ -131,7 +132,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [layerNumber, setLayerNumber] = useState(0);
   const [limit, setLimit] = useState(5);
   const [stackedScore, setStackedScore] = useState(0);
-  const cardSize = 40;
+  const [cardSize, setCardSize] = useState(40); 
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -440,7 +441,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer, difficulty } = round;
-    console.log("cardstype , deepLayer, difficulty : ", cardTypeNumber, deepLayer, difficulty);
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
@@ -515,8 +515,18 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const rearrangeCards = () => {
     setCards((prevCards) => {
       return prevCards.map((card) => {
+        const newOffset = (cardBoardWidth - card.array_size * cardSize) / 2;
+        const old_size = card.size.width;
+        const row = (card.top - card.offset) / old_size;
+        const col = (card.left - card.offset) / old_size;
         return ({
           ...card,
+          size: {
+            width: cardSize,
+            height: cardSize
+          },
+          top: newOffset + cardSize * row,
+          left: newOffset + cardSize * col,
           offset: (cardBoardWidth - card.array_size * cardSize) / 2
         })
       })
@@ -895,6 +905,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       stackedScore,
       showGuide,
       layerNumber,
+      setCardSize,
       setShowGuide,
       setStackedScore,
       setBGMusicTime,
@@ -928,6 +939,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       handleLoad
     }),
     [
+      cardSize,
       layerNumber,
       showGuide,
       stackedScore,

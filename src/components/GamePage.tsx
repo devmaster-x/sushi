@@ -33,6 +33,7 @@ const GameBoard = () => {
     soundOff,
     showSettingsModal,
     showGuide,
+    setCardSize,
     setShowGuide,
     setShowSettingsModal,
     registerUser,
@@ -51,9 +52,13 @@ const GameBoard = () => {
   useEffect(() => {
     const handleResize = () => {
       const minSize = Math.min(window.innerWidth, window.innerHeight);
-      minSize <= 750
-        ? setCardBoardWidth(minSize - 50)
-        : setCardBoardWidth(700);
+      if(minSize <= 750) {
+        setCardBoardWidth(minSize - 50);
+        setCardSize((minSize / 80) * 10);
+      } else {
+        setCardBoardWidth(700);
+        setCardSize(80);
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -126,8 +131,8 @@ const GameBoard = () => {
           <CardBoard />
           <GameInfo />
           <Bucket />
-          {/* { currentUser && <ButtonsMobile /> } */}
-          <ButtonsMobile />
+          { currentUser && <ButtonsMobile /> }
+          {/* <ButtonsMobile /> */}
           <LeaderBoard />
         </div>
         <div className="max-w-[1280px] mx-auto hidden lg:flex lg:flex-row gap-4 h-full">
@@ -151,8 +156,8 @@ const GameBoard = () => {
               {/* <ButtonsWeb /> */}
             </div>
             <div>
-              {/* { currentUser && <ButtonsWeb /> } */}
-              <ButtonsWeb />
+              { currentUser && <ButtonsWeb /> }
+              {/* <ButtonsWeb /> */}
               <LeaderBoard />
             </div>
           </div>

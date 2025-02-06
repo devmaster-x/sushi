@@ -38,8 +38,8 @@ const CardBoard = () => {
             style={{
               top: `${card.top + card.offset}px`,
               left: `${card.left + card.offset}px`,
-              width: `39px`,
-              height: `39px`,
+              width: `${card.size.width -1}px`,
+              height: `${card.size.height -1}px`,
               zIndex: 1,
             }}
           >
@@ -61,8 +61,8 @@ const CardBoard = () => {
             style={{
               top: `${card.top + card.offset}px`,
               left: `${card.left + card.offset}px`,
-              width: `39px`,
-              height: `39px`,
+              width: `${card.size.width -1}px`,
+              height: `${card.size.height -1}px`,
               zIndex: 2,
             }}
           >
@@ -103,8 +103,8 @@ const CardBoard = () => {
               style={{
                 top: `${card.top + card.offset}px`,
                 left: `${card.left + card.offset}px`,
-                width: `39px`,
-                height: `39px`,
+                width: `${card.size.width -1}px`,
+                height: `${card.size.height -1}px`,
                 zIndex: card.zIndex,
               }}
               onClick={() => card.state === "available" && handleCardClick(card)}
