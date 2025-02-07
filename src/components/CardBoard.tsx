@@ -33,7 +33,7 @@ const CardBoard = () => {
         {topCards.map((card, index) => (
           <div
             key={`t+${index}`}
-            className={`absolute rounded-md bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
+            className={`absolute rounded-md bg-[#EEEEEE] border-t-black border-t-2 shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
             }`}
             style={{
               top: `${card.top + card.offset}px`,
@@ -97,7 +97,7 @@ const CardBoard = () => {
               key={`c+${index}`}
               className={`absolute rounded-md ${
                 card.state === "available"
-                  ? "bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer"
+                  ? "bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer border-t-slate-400 border-t"
                   : "bg-gray-600"
               }`}
               style={{

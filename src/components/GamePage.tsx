@@ -57,7 +57,7 @@ const GameBoard = () => {
         setCardSize((minSize / 80) * 10);
       } else {
         setCardBoardWidth(700);
-        setCardSize(80);
+        setCardSize((700 / 80) * 10);
       }
     };
     handleResize();

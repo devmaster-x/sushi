@@ -29,7 +29,7 @@ const ButtonsWeb = () => {
         className="cursor-pointer hover:opacity-80 w-24"
       />
 
-      {gameStarted ? 
+      {/* {gameStarted ? 
       <img
         src="assets/modal/buttons/save.png"
         alt="Save"
@@ -42,7 +42,7 @@ const ButtonsWeb = () => {
         onClick={handleLoad}
         className="cursor-pointer hover:opacity-80 w-24"
       /> 
-    }
+    } */}
 
       <img
         src={gameStarted ? 'assets/modal/buttons/playagain.png' : 'assets/modal/buttons/play.png' }

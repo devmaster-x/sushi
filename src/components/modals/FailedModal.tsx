@@ -8,7 +8,7 @@ const FailedModal = (props: FailedModalProps) => {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
-        className="bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[220px] h-[150px] flex items-end align-bottom p-8"
+        className="bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[330px] h-[225px] flex items-end align-bottom p-12"
         style={{
           backgroundImage: `url(assets/modal/gameover/game_over_bon.png)`,
         }}
@@ -18,7 +18,7 @@ const FailedModal = (props: FailedModalProps) => {
             src="assets/modal/gameover/game_over_button.png"
             alt="OK"
             onClick={handleClick}
-            className="cursor-pointer hover:opacity-80 w-28 h-6"
+            className="cursor-pointer hover:opacity-80 w-32 h-8"
           />
         </div>
       </div>

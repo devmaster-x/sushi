@@ -8,7 +8,7 @@ const CongratesModal = (props: CongratesModalProps) => {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
-        className="bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[250px] h-[150px] flex items-end align-bottom p-8"
+        className="bg-contain bg-no-repeat rounded-lg shadow-md overflow-hidden mx-auto w-[350px] h-[210px] flex items-end align-bottom p-10"
         style={{
           backgroundImage: `url(assets/modal/congrates/congratulations.png)`,
         }}
@@ -18,7 +18,7 @@ const CongratesModal = (props: CongratesModalProps) => {
             src="assets/modal/congrates/congratulations_button.png"
             alt="OK"
             onClick={handleClick}
-            className="cursor-pointer hover:opacity-80 w-32"
+            className="cursor-pointer hover:opacity-80 w-32 h-8"
           />
         </div>
       </div>
