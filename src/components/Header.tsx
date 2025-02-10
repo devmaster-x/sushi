@@ -7,8 +7,11 @@ import { SingInButton } from '.';
 const Header = () => {
   const {
     currentUser,
+    gameStarted,
     setShowEditModal,
-    setShowSettingsModal
+    setShowSettingsModal,
+    handleSave,
+    handleLoad
   } = useGameContext();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -73,23 +76,34 @@ const Header = () => {
             {isDropdownOpen && (
               // <div className="absolute -right-2 mt-2 w-48 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">
               <div className="absolute -right-2 mt-2 w-40 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col">
-                {/* <div className="flex justify-between items-center"> */}
-                  {/* <p className="text-gray-100 overflow-clip">{currentUser ? currentUser.username : "Loading..."}</p> */}
-                  <button
-                    onClick={handleEdit}
-                    // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
-                    className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2"
-                  >
-                    Change name
-                  </button>
+                <button
+                  onClick={() => gameStarted && handleSave()}
+                  className={`hover:bg-[#3a3b4c] rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 ${gameStarted ? "text-white" : "text-gray-400"}`}
+                >
+                  Save
+                </button>
 
-                  <button
-                    onClick={handleSettings}
-                    // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
-                    className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 lg:hidden"
-                  >
-                    Sound / Music
-                  </button>
+                <button
+                  onClick={() => currentUser.lastRound && handleLoad()}
+                  className={`hover:bg-[#3a3b4c] rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 ${currentUser.lastRound ? "text-white" : "text-gray-400"}`}
+                >
+                  Load
+                </button>
+
+                <button
+                  onClick={handleEdit}
+                  // className="text-left text-blue-500 hover:text-blue-100 p-2 rounded"
+                  className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2"
+                >
+                  Change name
+                </button>
+
+                <button
+                  onClick={handleSettings}
+                  className="hover:bg-[#3a3b4c] text-white rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 lg:hidden"
+                >
+                  Sound / Music
+                </button>
 
                 {/* </div> */}
                 <button 

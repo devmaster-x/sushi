@@ -18,7 +18,7 @@ const CongratesModal = (props: CongratesModalProps) => {
             src="assets/modal/congrates/congratulations_button.png"
             alt="OK"
             onClick={handleClick}
-            className="cursor-pointer hover:opacity-80 w-32 h-8"
+            className="cursor-pointer hover:opacity-80 w-32"
           />
         </div>
       </div>

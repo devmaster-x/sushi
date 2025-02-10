@@ -18,7 +18,7 @@ const FailedModal = (props: FailedModalProps) => {
             src="assets/modal/gameover/game_over_button.png"
             alt="OK"
             onClick={handleClick}
-            className="cursor-pointer hover:opacity-80 w-32 h-8"
+            className="cursor-pointer hover:opacity-80 w-32"
           />
         </div>
       </div>

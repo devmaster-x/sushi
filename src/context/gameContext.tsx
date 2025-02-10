@@ -52,6 +52,7 @@ type GameContextType = {
   stackedScore : number;
   showGuide : boolean;
   layerNumber: number;
+  loading: boolean;
   setCardSize : (s: number) => void;
   setShowGuide : (f : boolean) => void;
   setStackedScore : (n: number) => void;
@@ -245,12 +246,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       //     current_score: 0
       //   }),
       // });
+      setLoading(true);
       const response = await axios.post("/api/register", {
         wallet: '',
         email: email,
         username: userName,
         current_score: 0
       })
+      setLoading(false);
  
       if (response.status === 200) {
         const {_id, username, lastRound } = response.data.data;
@@ -276,12 +279,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const changeUserName = async (email : string, userName : string) => {
     try {
+      setLoading(true);
       const response = await axios.post("/api/updateusername", {
         wallet: '',
         email: email,
         username: userName,
         current_score: 0
       })
+      setLoading(false);
  
       if (response.status === 200) {
         setCurrentUser((_prevUser) => { return {
@@ -838,6 +843,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const handleSave = async () => {
     try {
+      setLoading(true);
       const response = await fetch("/api/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -854,6 +860,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
           lastScore: score,
         }),
       });
+      setLoading(false);
   
       if (response.ok) {
 
@@ -867,9 +874,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const handleLoad = async () => {
     try {
+      setLoading(true);
       const response = await axios.post("/api/load", {
         email: currentUser?.email,
       })
+      setLoading(false);
 
       if (response.status === 200) {
         const { lastRound, lastScore } = response.data.data;
@@ -926,6 +935,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       stackedScore,
       showGuide,
       layerNumber,
+      loading,
       setCardSize,
       setShowGuide,
       setStackedScore,
@@ -960,6 +970,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       handleLoad
     }),
     [
+      loading,
       cardSize,
       layerNumber,
       showGuide,

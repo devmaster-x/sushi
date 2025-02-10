@@ -8,8 +8,6 @@ const ButtonsWeb = () => {
     restartGame,
     setShowConfirmModal,
     handleHintSelected,
-    handleSave,
-    handleLoad,
     startNextRound,
     setBGMusicTime,
     currentUser
@@ -36,27 +34,12 @@ const ButtonsWeb = () => {
         className="cursor-pointer hover:opacity-80 w-24 mx-auto"
       />
 
-    {gameStarted &&
-      <img
-        src="assets/modal/buttons/save.png"
-        alt="Save"
-        onClick={handleSave}
-        className="cursor-pointer hover:opacity-80 w-24 mx-auto"
-      />
-     }
-
       {/* <img
         src="assets/modal/buttons/load.png"
         alt="Load"
         onClick={handleLoad}
         className="cursor-pointer hover:opacity-80 w-24 mx-auto"
       />  */}
-      <button
-        className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
-        onClick={handleLoad}
-      >
-        Load
-      </button>
 
       {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
