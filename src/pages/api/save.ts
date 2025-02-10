@@ -19,12 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await db.collection("users").updateOne(
         { email },
         { $set: { 
-          lastRound: lastRound,
-          lastScore: lastScore,
+            lastRound: lastRound,
+            lastScore: lastScore,
           }
         }
       );
-      res.status(200).json({ message: "Round Info saved successfully." });
+      const updatedUser = await db.collection("users1").findOne({ email });
+      res.status(200).json({ message: "Round Info saved successfully.", user: updatedUser });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Failed to save current round Info." });

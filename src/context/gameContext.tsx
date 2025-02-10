@@ -449,7 +449,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer, difficulty, roundNumber, typeOffest, totalCards } = round;
-    console.log("current Round Info : ", roundNumber, cardTypeNumber, deepLayer, difficulty)
+    console.log("current Round Info : ", roundNumber, cardTypeNumber, deepLayer, difficulty, typeOffest, totalCards)
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
@@ -844,26 +844,23 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: currentUser?.email,
-          lastRound: {
-            roundNumber: currentRound.roundNumber,
-            cardTypeNumber: currentRound.cardTypeNumber,
-            deepLayer: currentRound.deepLayer,
-            difficulty: currentRound.difficulty,
-            typeOffest: currentRound.typeOffest,
-            totalCards: cards.length + bucket.length,
-          },
-          lastScore: score,
-        }),
+      const response = await axios.post("/api/save", {
+        email: currentUser?.email,
+        lastRound: {
+          roundNumber: currentRound.roundNumber,
+          cardTypeNumber: currentRound.cardTypeNumber,
+          deepLayer: currentRound.deepLayer,
+          difficulty: currentRound.difficulty,
+          typeOffest: currentRound.typeOffest,
+          totalCards: cards.length + bucket.length,
+        },
+        lastScore: score,
       });
       setLoading(false);
   
-      if (response.ok) {
-
+      if (response.status === 200) {
+        const { user } = response.data;
+        setCurrentUser(user);
       } else {
         console.error("Failed to save current round info.");
       }
