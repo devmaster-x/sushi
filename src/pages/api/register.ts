@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           username,
           score: 0
         }
-        await db.collection("users").insertOne(newUser);
+        const createdUser = await db.collection("users").insertOne(newUser);
         await db.collection("day").insertOne({ ...leaderboardUser, date: currentDate.toISOString().split('T')[0]});
         await db.collection("week").insertOne({
           ...leaderboardUser,
@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           endDate: new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // End of the week (Saturday)
         });
         await db.collection("entire").insertOne(leaderboardUser);
-        return res.status(200).json({ message: "User registered successfully." });
+        return res.status(200).json({ message: "User registered successfully.", data: createdUser });
       } else {
         const newUser = {
           ...existingUser,
@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           { email },
           { $set: newUser }
         );
-        return res.status(200).json({ message: "User updated successfully.", username: existingUser.username });
+        return res.status(200).json({ message: "User updated successfully.", data : newUser });
       }
     } catch (error) {
       console.error(error);

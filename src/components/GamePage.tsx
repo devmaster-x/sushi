@@ -80,6 +80,9 @@ const GameBoard = () => {
 
   useEffect(() => {
     if(session) checkUserRegistered();
+    return () => {
+      if(!activeID) clearInterval(activeID);
+    }
   },[signIn, session])
 
   useEffect(() => {

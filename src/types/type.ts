@@ -19,6 +19,8 @@ export interface Round {
   cardTypeNumber: number; // Number of unique card types
   deepLayer: number; // Depth of complexity for the round
   difficulty: boolean;
+  typeOffest: number;
+  totalCards: number;
 }
 
 export interface GameState {
@@ -32,10 +34,11 @@ export interface GameState {
 
 export interface User {
   // wallet: string;
+  id: string;
   email: string;
   username: string; // Added username for identification
   score: number;
-  lastRound: number;
+  lastRound: boolean;
   // current_score: number;
   // top_score: number; // Top score user has achieved
   // isVIP: boolean;

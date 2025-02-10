@@ -89,13 +89,9 @@ type GameContextType = {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: PropsWithChildren) => {
+  const initialRound : Round = { roundNumber: 1, cardTypeNumber: 4, deepLayer: 3, difficulty: false, typeOffest: 0, totalCards: 12 };
   const { address, isConnected } = useAppKitAccount();
-  const [currentRound, setCurrentRound] = useState<Round>({
-    roundNumber: 1,
-    cardTypeNumber: 4,
-    deepLayer: 3,
-    difficulty: false,
-  });
+  const [currentRound, setCurrentRound] = useState<Round>(initialRound);
   const [bucket, setBucket] = useState<CardNode[]>([]);
   const [additionalSlots, setAdditionalSlots] = useState<CardNode[]>([]);
   const [score, setScore] = useState(0);
@@ -132,7 +128,9 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [layerNumber, setLayerNumber] = useState(0);
   const [limit, setLimit] = useState(5);
   const [stackedScore, setStackedScore] = useState(0);
-  const [cardSize, setCardSize] = useState(40); 
+  const [cardSize, setCardSize] = useState(40);
+  const [loading, setLoading] = useState(false);
+  const TotalCardsType = 22;
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -255,12 +253,14 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       })
  
       if (response.status === 200) {
+        const {_id, username, lastRound } = response.data.data;
         setCurrentUser({
           // wallet: '',
+          id: _id,
           email: email,
-          username: response.data.username || userName,
+          username: username || userName,
           score: 0,
-          lastRound: response.data.lastRound || 0,
+          lastRound: lastRound ? true : false,
           // current_score: 0,
           // top_score: 0,
           // isVIP: false
@@ -443,14 +443,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   }
 
   const generateCards = (round: Round) => {
-    const { cardTypeNumber, deepLayer, difficulty, roundNumber } = round;
+    const { cardTypeNumber, deepLayer, difficulty, roundNumber, typeOffest, totalCards } = round;
     console.log("current Round Info : ", roundNumber, cardTypeNumber, deepLayer, difficulty)
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];
     let maxCardsLayer: number = 0;
     // const totalCards: number = Math.floor(0.6 * cardTypeNumber) * lcd(cardMatchingCount, deepLayer);
-    const totalCards: number = cardTypeNumber * deepLayer;
 
     const addToGeneratedCards = (t: number, l: number , offset: number, layer: number, layer_array_size: number) => {
       let parents = [];
@@ -480,7 +479,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
     // Step 1: Create a pool of cards with shuffled types
     for (let i = 0; i <  totalCards / cardMatchingCount; i++) {
-      const type = i % cardTypeNumber;
+      const type = i % cardTypeNumber + typeOffest;
       allCards.push(type);
       allCards.push(type);
       allCards.push(type);
@@ -590,19 +589,23 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   // Start the next round
   const startNextRound = () => {
     setBucket([]);
+
+    //additional features
     setAdditionalSlots([]);
     setRollbackAvailable(false);
     setRollbackPressed(false);
     setSlotAvailablity(true);
-    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 4 : Math.min(currentRound.cardTypeNumber + 2, 22);
+    const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 4 : Math.min(currentRound.cardTypeNumber + 2, TotalCardsType);
     const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 3 : (currentRound.roundNumber + 1) % 4 === 0 ? currentRound.deepLayer + 3 : currentRound.deepLayer;
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
       cardTypeNumber: _cardTypeNumber, 
       deepLayer: _deepLayer,
-      difficulty: currentRound.difficulty === true ? false : _cardTypeNumber * _deepLayer > 60 ? true : false
+      difficulty: currentRound.difficulty === true ? false : _cardTypeNumber * _deepLayer > 60 ? true : false,
+      typeOffest: Math.floor(Math.random() * (TotalCardsType - _cardTypeNumber)),
+      totalCards: _cardTypeNumber * _deepLayer
     }
-    if(_round.roundNumber > 3) setMaxBucketCount(8);
+    if(_round.roundNumber > 4) setMaxBucketCount(8);
     else setMaxBucketCount(7);
 
     setCurrentRound(_round);
@@ -753,8 +756,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setLives(1);
     setScore(0);
     setMaxBucketCount(7);
-    setCurrentRound({ roundNumber: 1, cardTypeNumber: 4, deepLayer: 3, difficulty: false });
-    generateCards({ roundNumber: 1, cardTypeNumber: 4, deepLayer: 3, difficulty: false });
+    setCurrentRound(initialRound);
+    generateCards(initialRound);
     registerUser(currentUser?.email!, currentUser?.username!);
   };
 
@@ -833,10 +836,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     addToBucket(card);
   };
 
-  const calculateGameData = (_round : Number) => {
-    
-  }
-
   const handleSave = async () => {
     try {
       const response = await fetch("/api/save", {
@@ -844,7 +843,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: currentUser?.email,
-          lastRound: currentRound.roundNumber
+          lastRound: {
+            roundNumber: currentRound.roundNumber,
+            cardTypeNumber: currentRound.cardTypeNumber,
+            deepLayer: currentRound.deepLayer,
+            difficulty: currentRound.difficulty,
+            typeOffest: currentRound.typeOffest,
+            totalCards: cards.length + bucket.length,
+          },
+          lastScore: score,
         }),
       });
   
@@ -860,17 +867,27 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const handleLoad = async () => {
     try {
-      const response = await fetch("/api/save", {
-        method: "GET",
-        body: JSON.stringify({
-          email: currentUser?.email,
-        }),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log("load data info : ", data);
-        calculateGameData(data.data.lastRound);
+      const response = await axios.post("/api/load", {
+        email: currentUser?.email,
+      })
+
+      if (response.status === 200) {
+        const { lastRound, lastScore } = response.data.data;
+        setCurrentRound(lastRound);
+        setScore(lastScore);
+        setStackedScore(0);
+        generateCards(lastRound);
+        setGameStarted(true);
+
+        setBucket([]);
+        if(lastRound.roundNumber > 4) setMaxBucketCount(8);
+        else setMaxBucketCount(7);
+
+        //additional features
+        setAdditionalSlots([]);
+        setRollbackAvailable(false);
+        setRollbackPressed(false);
+        setSlotAvailablity(true);
       } else {
         console.error("Failed to save current round info.");
       }
