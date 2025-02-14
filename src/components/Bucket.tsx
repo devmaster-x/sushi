@@ -9,7 +9,7 @@ const Bucket = () => {
 
   return (
     <div className="bg-[#55413a] p-4 rounded-xl shadow-md w-full flex justify-center">
-      <div className="grid grid-cols-5 gap-2 justify-start">
+      <div className="grid md:grid-cols-5 grid-cols-8 gap-2 justify-start">
         {bucket.map((card, index) => (
           <div
             key={`b+${index}`}
