@@ -601,7 +601,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setRollbackPressed(false);
     setSlotAvailablity(true);
     const _cardTypeNumber = currentRound.difficulty === true ? currentRound.cardTypeNumber - 4 : Math.min(currentRound.cardTypeNumber + 2, TotalCardsType);
-    const _deepLayer = currentRound.difficulty === true ? currentRound.deepLayer - 3 : (currentRound.roundNumber + 1) % 4 === 0 ? currentRound.deepLayer + 3 : currentRound.deepLayer;
+    const _deepLayer = currentRound.difficulty === true ? Math.max(currentRound.deepLayer - 3, 3) : (currentRound.roundNumber + 1) % 4 === 0 ? currentRound.deepLayer + 3 : currentRound.deepLayer;
     const _round : Round =  {
       roundNumber: currentRound.roundNumber+1, 
       cardTypeNumber: _cardTypeNumber, 

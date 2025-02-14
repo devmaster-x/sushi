@@ -55,10 +55,10 @@ const GameBoard = () => {
       const minSize = Math.min(window.innerWidth, window.innerHeight);
       if(minSize <= 750) {
         setCardBoardWidth(minSize - 50);
-        setCardSize((minSize / 80) * 10);
+        setCardSize((minSize / 90) * 10);
       } else {
         setCardBoardWidth(700);
-        setCardSize((700 / 80) * 10);
+        setCardSize((700 / 90) * 10);
       }
     };
     handleResize();
