@@ -1,11 +1,11 @@
 import React from "react";
-import { GamePage } from "src/components";
+import { HomePage } from "src/components";
 
-const MusicPage: React.FC = () => {
+const Home: React.FC = () => {
   return (
-    <GamePage />
+    <HomePage />
   );
 };
 
-export default MusicPage;
+export default Home;
 
