@@ -15,7 +15,7 @@ bot.start((ctx) => {
     🔹 Refer friends & earn extra points! 📲\n
     🚀 Join now & start matching!`,
     Markup.inlineKeyboard([
-      [Markup.button.url("🚀 Play", "https://t.me/Sushi_game_bot/sushi_cards_matching")],
+      [Markup.button.url("🚀 Play", "https://t.me/sus_g_bot/fest")],
       [Markup.button.url("📢 Follow on X", "https://x.com/playsushifarm")],
       [
         Markup.button.url("💬 Community", "https://discord.gg/yjnqnUJmYe"),
