@@ -9,6 +9,8 @@ const ButtonsMobile = () => {
     setShowConfirmModal,
     handleHintSelected,
     setBGMusicTime,
+    handleSave,
+    handleLoad,
     currentUser
   } = useGameContext();
 
@@ -18,7 +20,7 @@ const ButtonsMobile = () => {
   }
 
   return (
-    <div className="gap-4 flex lg:hidden justify-between">
+    <div className="gap-4 lg:hidden grid grid-cols-2 justify-between">
       <img
         src="assets/modal/buttons/Hint.png"
         alt="Hint"
@@ -32,6 +34,22 @@ const ButtonsMobile = () => {
         onClick={handlePlay}
         className="cursor-pointer hover:opacity-80 w-24"
       />
+
+      {gameStarted &&<img
+        src="assets/images/save.png"
+        alt="Save"
+        onClick={() => gameStarted && handleSave()}
+        className="cursor-pointer hover:opacity-80 w-24"
+      />}
+
+      { !currentUser && currentUser!.lastRound && <img
+        src="assets/images/load.png"
+        alt="Restart"
+        onClick={() => currentUser!.lastRound && handleLoad()}
+        className="cursor-pointer hover:opacity-80 w-24"
+      />
+      }
+
       {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
         onClick={startNextRound}

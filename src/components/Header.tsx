@@ -76,7 +76,7 @@ const Header = () => {
             {isDropdownOpen && (
               // <div className="absolute -right-2 mt-2 w-48 px-4 py-2 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col gap-2">
               <div className="absolute -right-2 mt-2 w-40 bg-gray-600 rounded-md shadow-lg z-10 flex flex-col">
-                <button
+                {/* <button
                   onClick={() => gameStarted && handleSave()}
                   className={`hover:bg-[#3a3b4c] rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 ${gameStarted ? "text-white" : "text-gray-400"}`}
                 >
@@ -88,7 +88,7 @@ const Header = () => {
                   className={`hover:bg-[#3a3b4c] rounded-md transition-colors duration-200 cursor-pointer px-4 py-2 ${currentUser.lastRound ? "text-white" : "text-gray-400"}`}
                 >
                   Load
-                </button>
+                </button> */}
 
                 <button
                   onClick={handleEdit}
