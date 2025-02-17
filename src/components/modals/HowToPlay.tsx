@@ -12,7 +12,7 @@ const FailedModal = () => {
           className="absolute text-gray-500 hover:text-gray-800 cursor-pointer hover:opacity-80 top-5 right-6 w-6 h-6"
         />
         <img
-          src="assets/images/HowToPlay-tg.png"
+          src="assets/images/Howtoplay-tg.png"
           alt="OK"
         />
       </div>
