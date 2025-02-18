@@ -37,7 +37,7 @@ const ButtonsMobile = () => {
 
       { currentUser!.lastRound && <img
         src="assets/images/load.png"
-        alt="Restart"
+        alt="Load"
         onClick={() => currentUser!.lastRound && handleLoad()}
         className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
       />
