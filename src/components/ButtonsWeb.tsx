@@ -37,7 +37,7 @@ const ButtonsWeb = () => {
       />
 
       { currentUser!.lastRound && <img
-        src="assets/images/load.png"
+        src="assets/images/load_btn.png"
         alt="Load"
         onClick={() => currentUser!.lastRound && handleLoad()}
         className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
@@ -45,7 +45,7 @@ const ButtonsWeb = () => {
       }
 
       {gameStarted &&<img
-        src="assets/images/save.png"
+        src="assets/images/save_btn.png"
         alt="Save"
         onClick={() => gameStarted && handleSave()}
         className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
