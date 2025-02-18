@@ -32,6 +32,7 @@ const Home = () => {
         <p>
           Hello, {data.claims?.sub},
           <button
+            className="bg-[#704337] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
             onClick={() => {
               window.location.assign('/api/logto/sign-out');
             }}
@@ -42,6 +43,7 @@ const Home = () => {
       ) : (
         <p>
           <button
+            className="bg-[#704337] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
             onClick={() => {
               window.location.assign('/api/logto/sign-in');
             }}
