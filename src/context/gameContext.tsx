@@ -865,6 +865,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         console.error("Failed to save current round info.");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error occured while saving :", error);
     }
   }
@@ -898,6 +899,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         console.error("Failed to save current round info.");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error occured while saving :", error);
     }
   }

@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { email, lastRound, lastScore } = req.body;
       const [ _users ] = await Promise.all([
-        db.collection("users1").findOne({ email }),
+        db.collection("users").findOne({ email }),
       ]);
 
       if (!_users) {
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
       );
-      const updatedUser = await db.collection("users1").findOne({ email });
+      const updatedUser = await db.collection("users").findOne({ email });
       res.status(200).json({ message: "Round Info saved successfully.", user: updatedUser });
     } catch (error) {
       console.error(error);
