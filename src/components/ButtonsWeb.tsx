@@ -10,6 +10,8 @@ const ButtonsWeb = () => {
     handleHintSelected,
     startNextRound,
     setBGMusicTime,
+    handleLoad,
+    handleSave,
     currentUser
   } = useGameContext();
   
@@ -23,23 +25,31 @@ const ButtonsWeb = () => {
       <img
         src="assets/modal/buttons/Hint.png"
         alt="Hint"
-        onClick={()=> gameStarted && handleHintSelected()}
-        className="cursor-pointer hover:opacity-80 w-24 mx-auto"
+        onClick={handleHintSelected}
+        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
       />
 
       <img
         src={gameStarted ? 'assets/modal/buttons/playagain.png' : 'assets/modal/buttons/play.png' }
         alt="Restart"
         onClick={handlePlay}
-        className="cursor-pointer hover:opacity-80 w-24 mx-auto"
+        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
       />
 
-      {/* <img
-        src="assets/modal/buttons/load.png"
-        alt="Load"
-        onClick={handleLoad}
-        className="cursor-pointer hover:opacity-80 w-24 mx-auto"
-      />  */}
+      { currentUser!.lastRound && <img
+        src="assets/images/load.png"
+        alt="Restart"
+        onClick={() => currentUser!.lastRound && handleLoad()}
+        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
+      />
+      }
+
+      {gameStarted &&<img
+        src="assets/images/save.png"
+        alt="Save"
+        onClick={() => gameStarted && handleSave()}
+        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
+      />}
 
       {/* <button
         className="bg-[#2a2b3c] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
