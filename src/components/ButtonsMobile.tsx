@@ -25,21 +25,21 @@ const ButtonsMobile = () => {
         src="assets/modal/buttons/Hint.png"
         alt="Hint"
         onClick={handleHintSelected}
-        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
+        className="cursor-pointer hover:opacity-80 w-28 justify-self-center"
       />
 
       <img
         src={gameStarted ? 'assets/modal/buttons/playagain.png' : 'assets/modal/buttons/play.png' }
         alt="Restart"
         onClick={handlePlay}
-        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
+        className="cursor-pointer hover:opacity-80 w-28 justify-self-center"
       />
 
       { currentUser!.lastRound && <img
         src="assets/images/load_btn.png"
         alt="Load"
         onClick={() => currentUser!.lastRound && handleLoad()}
-        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
+        className="cursor-pointer hover:opacity-80 w-28 justify-self-center"
       />
       }
 
@@ -47,7 +47,7 @@ const ButtonsMobile = () => {
         src="assets/images/save_btn.png"
         alt="Save"
         onClick={() => gameStarted && handleSave()}
-        className="cursor-pointer hover:opacity-80 w-24 justify-self-center"
+        className="cursor-pointer hover:opacity-80 w-28 justify-self-center"
       />}
 
       {/* <button
