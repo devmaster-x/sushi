@@ -104,3 +104,11 @@ body {
   font-size: medium;
   margin: 5px;
 }
+
+.clip-arrow {
+  clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%);
+}
+
+.clip-arrow1 {
+  clip-path: polygon(0% 0%, 90% 0%, 99% 50%, 90% 100%, 0% 100%);
+}

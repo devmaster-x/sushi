@@ -6,14 +6,14 @@ export default function Component() {
 
   if (session) {
     return <button
-      className="bg-[#704337] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
+      className="bg-[#704337] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
       onClick={() => signOut()}
     >
       Sign out
     </button>
   }
   return <button
-    className="bg-[#704337] hover:bg-[#3a3b4c] text-white px-4 py-3 rounded-md transition-colors duration-200 cursor-pointer"
+    className="bg-[#704337] hover:bg-[#3a3b4c] text-white px-4 py-2 rounded-md transition-colors duration-200 cursor-pointer"
     onClick={() => signIn()}
   >
     Sign in

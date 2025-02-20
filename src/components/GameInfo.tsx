@@ -8,13 +8,14 @@ const GameInfo = () => {
   } = useGameContext();
 
   return (
-    <div className="w-full bg-[#704337] px-4 py-2 rounded-xl shadow-xl">
-    {/* <div className="w-full bg-transparent px-4 rounded-md shadow-md"> */}
-      {/* <h2 className="text-lg font-bold text-center text-gray-200">Game Info</h2> */}
-      <div className="flex justify-between lg:justify-around text-[37474F]">
-        {/* <p>Lives: {lives}</p> */}
-        <p>Score: <span className="pl-6">{score}</span></p>
-        <p>Stage: {currentRound.roundNumber}</p>
+    <div className="w-full bg-[#704337] p-1 rounded-md clip-arrow">
+      <div className="w-full p-0.5 bg-white rounded-md clip-arrow1">
+        <div className="w-full bg-[#704337] pl-4 pr-8 py-2 shadow-xl text-white rounded-md text-md clip-arrow1">
+          <div className="flex justify-between">
+            <p>Score: <span className="pl-6">{score}</span></p>
+            <p>Stage: {currentRound.roundNumber}</p>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -52,16 +52,11 @@ const Header = () => {
   else return (
     <div className="w-full bg-[#704337] px-4 py-2 rounded-xl shadow-md">
       <div className="flex justify-between text-[37474F]">
-        <div className='flex items-center'>
-          <div
-            className="rounded-full bg-cover text-gray-100 mr-4"
-            style={{ 
-              backgroundImage: `url(assets/sushi/22.png)`,
-              width: "24px",
-              height: "24px"
-            }}
-          />
-          <p>{currentUser.username}</p>
+        <div className='flex items-center relative'>
+          <div className="rounded-full border-[#704337] bg-white p-2 border-4 bg-cover text-gray-100 absolute -top-6">
+            <img src="assets/sushi/22.png" className='w-8'/>
+          </div>
+          <p className='ml-16'>{currentUser.username}</p>
         </div>
           <div
             ref = { dropdownRef }
