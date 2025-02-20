@@ -14,7 +14,7 @@ const FailedModal = () => {
       <div className={`relative m-auto ${isMobile ? "w-4/5" : "w-1/2"}`}>
         <FaTimes 
           onClick={() => setShowGuide(false) }
-          className="absolute text-gray-500 hover:text-gray-800 cursor-pointer hover:opacity-80 top-5 right-6 w-6 h-6"
+          className="absolute text-gray-500 hover:text-gray-800 cursor-pointer hover:opacity-80 top-5 right-6 md:top-6 md:right:8 xl:top-8 xl:right-10 w-6 h-6"
         />
         <img
           src={`${isMobile ? "assets/images/Howtoplay-tg.png" : "assets/images/HowToPlay-pc.png"}`}
