@@ -95,9 +95,9 @@ const CardBoard = () => {
           {cards.map((card, index) => (
             <div
               key={`c+${index}`}
-              className={`absolute rounded-md hover:scale-110 ${
+              className={`absolute rounded-md ${
                 card.state === "available"
-                  ? "bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer border-t-slate-400 border-t"
+                  ? "bg-[#EEEEEE] shadow-[0px_5px_5px_rgba(0,0,0,0.9),_0px_2px_2px_rgba(0,0,0,0.4)] cursor-pointer border-t-slate-400 border-t hover:scale-110"
                   : "bg-gray-600"
               }`}
               style={{
