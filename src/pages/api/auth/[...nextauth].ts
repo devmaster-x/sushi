@@ -9,6 +9,16 @@ export default NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax", // Adjust if needed
+        secure: process.env.NODE_ENV === "production", // Ensure secure in production
+      },
+    },
+  },
   callbacks: {
     async session({ session }) {
       return session;
