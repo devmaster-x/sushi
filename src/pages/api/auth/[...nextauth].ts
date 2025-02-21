@@ -14,7 +14,7 @@ export default NextAuth({
       name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: "lax", // Adjust if needed
+        sameSite: "none", // Adjust if needed
         secure: process.env.NODE_ENV === "production", // Ensure secure in production
       },
     },
