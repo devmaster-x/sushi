@@ -18,7 +18,7 @@ export default NextAuth({
       options: {
         httpOnly: true,
         sameSite: "lax", // Ensures session cookies work properly on iOS Safari
-        secure: process.env.NODE_ENV === "production", // Required for iPhones in production
+        secure: true // Required for iPhones in production
       },
     },
   },
