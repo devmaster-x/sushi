@@ -97,17 +97,17 @@ const GameBoard = () => {
 
   const checkUserRegistered = async () => {
     try {
-      const response = await axios.post("https://api.sushifarm.io/users/exist",{ mail : session?.user?.email})
-      if (response.status === 200 && response.data.data === true) {
+      // const response = await axios.post("https://api.sushifarm.io/users/exist",{ mail : session?.user?.email})
+      // if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
         if(activeID == undefined) {
           // const id = setInterval(() => sendUserActive(), 10000);
           const id = setInterval(() => fetchLeaderboard(), 10000);
           setActiveID(id);  
         }
-      } else {
-        setShowGuideModal(true);
-      }
+      // } else {
+      //   setShowGuideModal(true);
+      // }
     } catch (error) {
       console.error("Error checking user registered :", error);
     }
