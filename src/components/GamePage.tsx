@@ -97,7 +97,7 @@ const GameBoard = () => {
 
   const checkUserRegistered = async () => {
     try {
-      const response = await axios.post("https://devapi.sushifarm.io/users/exist",{ mail : session?.user?.email})
+      const response = await axios.post("https://api.sushifarm.io/users/exist",{ mail : session?.user?.email})
       if (response.status === 200 && response.data.data === true) {
         registerUser(session?.user?.email!, session?.user?.name!)
         if(activeID == undefined) {
