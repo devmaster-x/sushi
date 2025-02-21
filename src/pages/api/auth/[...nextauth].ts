@@ -9,16 +9,20 @@ export default NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt", // Helps with session persistence on iOS
+  },
   cookies: {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: "none", // Adjust if needed
-        secure: process.env.NODE_ENV === "production", // Ensure secure in production
+        sameSite: "lax", // Ensures session cookies work properly on iOS Safari
+        secure: process.env.NODE_ENV === "production", // Required for iPhones in production
       },
     },
   },
+  useSecureCookies: process.env.NODE_ENV === "production", // Ensures authentication works on iOS
   callbacks: {
     async session({ session }) {
       return session;
