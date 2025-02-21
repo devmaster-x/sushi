@@ -80,6 +80,7 @@ const GameBoard = () => {
   }, [cards, bucket, additionalSlots]);
 
   useEffect(() => {
+    console.log("session information : ", session);
     if(session) checkUserRegistered();
     return () => {
       if(!activeID) clearInterval(activeID);

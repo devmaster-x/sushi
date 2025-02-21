@@ -14,17 +14,22 @@ export default NextAuth({
   },
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: process.env.NODE_ENV === "production" ? "__Secure-next-auth.session-token" : "next-auth.session-token",
       options: {
         httpOnly: true,
         sameSite: "lax", // Ensures session cookies work properly on iOS Safari
-        secure: true // Required for iPhones in production
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
       },
     },
   },
-  useSecureCookies: process.env.NODE_ENV === "production", // Ensures authentication works on iOS
+  pages: {
+    signIn: "/auth/signin", // Custom sign-in page (optional)
+  },
+  debug: true, // Enable debugging logs
   callbacks: {
     async session({ session }) {
+      console.log("session : ", session);
       return session;
     },
   },
