@@ -211,7 +211,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if(cards.length > 0) {
-      console.log("current card size : ", cardSize);
       rearrangeCards();
     }
   },[cardBoardWidth])
@@ -449,7 +448,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const generateCards = (round: Round) => {
     const { cardTypeNumber, deepLayer, difficulty, roundNumber, typeOffest, totalCards } = round;
-    console.log("current Round Info : ", roundNumber, cardTypeNumber, deepLayer, difficulty, typeOffest, totalCards)
     const generatedCards: CardNode[] = [];
     const allCards: number[] = [];
     const cardsPerLayer: number[] = [];

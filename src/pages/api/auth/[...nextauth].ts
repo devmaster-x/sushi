@@ -29,7 +29,6 @@ export default NextAuth({
   debug: true, // Enable debugging logs
   callbacks: {
     async session({ session }) {
-      console.log("session : ", session);
       return session;
     },
   },
