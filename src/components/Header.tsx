@@ -53,7 +53,7 @@ const Header = () => {
     <div className="w-full bg-[#704337] px-4 py-2 rounded-xl shadow-md">
       <div className="flex justify-between text-[37474F]">
         <div className='flex items-center relative'>
-          <div className="rounded-full border-[#704337] bg-white p-2 border-4 bg-cover text-gray-100 absolute -top-6">
+          <div className="rounded-full border-[#704337] bg-[#edb742] p-2 border-4 bg-cover text-gray-100 absolute -top-6">
             <img src="assets/sushi/22.png" className='w-8'/>
           </div>
           <p className='ml-16'>{currentUser.username}</p>
