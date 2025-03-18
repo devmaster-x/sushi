@@ -131,7 +131,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   const [stackedScore, setStackedScore] = useState(0);
   const [cardSize, setCardSize] = useState(40);
   const [loading, setLoading] = useState(false);
-  const TotalCardsType = 23;
+  const TotalCardsType = 22;
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
